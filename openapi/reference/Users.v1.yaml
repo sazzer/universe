@@ -1,0 +1,140 @@
+openapi: 3.0.0
+info:
+  title: Users
+  version: '1.0'
+  contact:
+    name: Graham Cox
+    email: graham@grahamcox.co.uk
+  description: Universe API for working with User records
+servers:
+  - url: 'http://localhost:8000'
+    description: Local
+tags:
+  - name: users
+  - name: get
+paths:
+  '/users/{userId}':
+    parameters:
+      - schema:
+          type: string
+        name: userId
+        in: path
+        required: true
+        description: The ID of the User
+    get:
+      summary: Your GET endpoint
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/FullUser'
+                  - $ref: '#/components/schemas/BareUser'
+              examples:
+                Bare User:
+                  value:
+                    id: 310bd8fe-2ea1-4dfb-b129-d4b46e9b13f2
+                    displayName: Test User
+                Full User:
+                  value:
+                    id: 310bd8fe-2ea1-4dfb-b129-d4b46e9b13f2
+                    displayName: Test User
+                    email: test@example.com
+                    username: testuser
+                    authentications:
+                      - provider: google
+                        userId: '12345678'
+                        displayName: test@example.com
+                      - provider: twitter
+                        userId: abcdefgh
+                        displayName: '@testuser'
+          headers:
+            ETag:
+              schema:
+                type: string
+              required: true
+            Last-Modified:
+              schema:
+                type: string
+                format: date-time
+              required: true
+            Cache-Control:
+              schema:
+                type: string
+              required: true
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: './Shared.v1.yaml#/components/schemas/Problem'
+              examples:
+                Unknown User:
+                  value:
+                    type: 'tag:universe,2020:/problems/users/not-found'
+                    title: The requested user was not found
+                    status: 404
+      operationId: get-users-userId
+      description: Get a single User by ID
+      tags:
+        - users
+        - get
+components:
+  schemas:
+    FullUser:
+      title: User
+      type: object
+      properties:
+        id:
+          type: string
+        displayName:
+          type: string
+        email:
+          type: string
+        username:
+          type: string
+        authentications:
+          type: array
+          minItems: 1
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/Authentication'
+      required:
+        - id
+        - displayName
+        - authentications
+    Authentication:
+      title: Authentication
+      type: object
+      properties:
+        provider:
+          type: string
+        userId:
+          type: string
+        displayName:
+          type: string
+      required:
+        - provider
+        - userId
+        - displayName
+    BareUser:
+      title: BareUser
+      type: object
+      properties:
+        id:
+          type: string
+        displayName:
+          type: string
+      required:
+        - id
+        - displayName
+      description: ''
+  securitySchemes:
+    Bearer Token:
+      name: Authorization
+      type: apiKey
+      in: header
+security:
+  - Bearer Token: []
