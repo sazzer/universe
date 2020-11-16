@@ -1,4 +1,4 @@
-import { Server } from './server';
+import { Server } from '../server';
 import debug from 'debug';
 
 const LOG = debug('universe:service');
