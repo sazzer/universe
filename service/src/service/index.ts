@@ -1,4 +1,4 @@
-import { Server } from '../server';
+import { buildServer } from './server';
 import debug from 'debug';
 
 const LOG = debug('universe:service');
@@ -17,14 +17,14 @@ export interface Service {
  */
 export async function newService(): Promise<Service> {
   LOG('Building universe');
-  const server = new Server();
+  const server = buildServer();
 
   LOG('Built universe');
 
   return {
     start: async (port: number) => {
       LOG('Starting service');
-      await server.start(port);
+      await server.server.start(port);
     }
   };
 }
