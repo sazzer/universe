@@ -1,4 +1,5 @@
-import { Server } from '../server';
+import { EndpointConfig, Server } from '../server';
+
 import debug from 'debug';
 
 const LOG = debug('universe:service');
@@ -13,10 +14,10 @@ export interface ServerComponent {
 /**
  * Build the configuration for the server.
  */
-export function buildServer(): ServerComponent {
+export function buildServer(endpoints: EndpointConfig[]): ServerComponent {
   LOG('Building HTTP server');
 
   return {
-    server: new Server()
+    server: new Server(endpoints)
   };
 }

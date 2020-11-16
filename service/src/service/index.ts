@@ -26,7 +26,7 @@ export async function newService(config: ServiceConfig): Promise<Service> {
   LOG('Building universe');
 
   const db = await buildDatabase(config.database);
-  const server = buildServer();
+  const server = buildServer([]);
 
   LOG('Built universe');
 
