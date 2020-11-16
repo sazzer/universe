@@ -1,3 +1,4 @@
+import { Database } from '../database';
 import debug from 'debug';
 
 const LOG = debug('universe:service');
@@ -12,14 +13,21 @@ export interface DatabaseConfig {
 /**
  * Service component for the database
  */
-export interface DatabaseComponent {}
+export interface DatabaseComponent {
+  database: Database;
+}
 
 /**
  * Build the database component.
  * @param config The database configuration
  */
-export function buildDatabase(config: DatabaseConfig): DatabaseComponent {
+export async function buildDatabase(config: DatabaseConfig): Promise<DatabaseComponent> {
   LOG('Building database connection');
 
-  return {};
+  const database = new Database(config.url);
+  await database.checkHealth();
+
+  return {
+    database
+  };
 }

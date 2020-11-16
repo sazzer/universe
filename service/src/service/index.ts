@@ -25,7 +25,7 @@ export interface Service {
 export async function newService(config: ServiceConfig): Promise<Service> {
   LOG('Building universe');
 
-  const db = buildDatabase(config.database);
+  const db = await buildDatabase(config.database);
   const server = buildServer();
 
   LOG('Built universe');

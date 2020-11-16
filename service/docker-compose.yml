@@ -1,0 +1,11 @@
+version: "3"
+
+services:
+  universe-dev-postgres:
+    image: postgres:12.4-alpine
+    environment:
+      POSTGRES_DB: universe
+      POSTGRES_USER: universe
+      POSTGRES_PASSWORD: universe
+    ports:
+      - "127.0.0.1:45432:5432"
