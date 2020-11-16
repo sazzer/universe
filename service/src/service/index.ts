@@ -1,7 +1,14 @@
+import { DatabaseConfig, buildDatabase } from './database';
+
 import { buildServer } from './server';
 import debug from 'debug';
 
 const LOG = debug('universe:service');
+
+/** Configuration needed for building the service */
+export interface ServiceConfig {
+  database: DatabaseConfig;
+}
 
 /** Service is the actual universe service */
 export interface Service {
@@ -15,8 +22,10 @@ export interface Service {
 /**
  * Create a new service
  */
-export async function newService(): Promise<Service> {
+export async function newService(config: ServiceConfig): Promise<Service> {
   LOG('Building universe');
+
+  const db = buildDatabase(config.database);
   const server = buildServer();
 
   LOG('Built universe');
