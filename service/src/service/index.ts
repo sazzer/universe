@@ -1,5 +1,6 @@
 import { DatabaseConfig, buildDatabase } from './database';
 
+import { buildHealth } from './health';
 import { buildServer } from './server';
 import debug from 'debug';
 
@@ -26,7 +27,8 @@ export async function newService(config: ServiceConfig): Promise<Service> {
   LOG('Building universe');
 
   const db = await buildDatabase(config.database);
-  const server = buildServer([]);
+  const health = buildHealth();
+  const server = buildServer([health.endpoints]);
 
   LOG('Built universe');
 
