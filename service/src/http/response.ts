@@ -12,6 +12,7 @@ export interface StatusCode {
  * Type guard for the Status Code interface.
  * @param payload The payload to check
  */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function isStatusCode(payload: any): payload is StatusCode {
   return 'statusCode' in payload;
 }
@@ -21,7 +22,8 @@ function isStatusCode(payload: any): payload is StatusCode {
  * @param res The express response object
  * @param payload The payload to send to the response
  */
-export function respond(res: Response, payload: any) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any,@typescript-eslint/explicit-module-boundary-types
+export function respond(res: Response, payload: any): void {
   if (isStatusCode(payload)) {
     res.status(payload.statusCode());
   }

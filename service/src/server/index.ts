@@ -37,7 +37,7 @@ export class Server {
    * Start the HTTP server.
    * @param port The port to listen on
    */
-  async start(port: number) {
+  async start(port: number): Promise<void> {
     LOG('Starting server on port %d', port);
     await this.app.listen(port);
   }

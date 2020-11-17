@@ -1,5 +1,5 @@
-import * as sut from '../src/index';
-
 describe('First Test', () => {
-  test('Something', () => {});
+  test('Something', () => {
+    expect(1 + 1).toEqual(2);
+  });
 });

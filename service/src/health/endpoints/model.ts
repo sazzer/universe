@@ -23,7 +23,7 @@ export class SystemHealth {
   }
 
   /** The status code to use */
-  statusCode() {
+  statusCode(): number {
     return this.healthy ? 200 : 503;
   }
 }

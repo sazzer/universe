@@ -21,7 +21,7 @@ export class EndpointConfig {
    * Register the endpoints for the healthchecks
    * @param router The router to register endpoints on
    */
-  configure(router: Router) {
+  configure(router: Router): void {
     router.get('/health', checkHealth(this.healthChecker));
   }
 }

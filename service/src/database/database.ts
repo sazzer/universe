@@ -26,7 +26,7 @@ export class Database {
    * Check the health of the database.
    * If unhealthy then this will return a rejected promise.
    */
-  async checkHealth() {
+  async checkHealth(): Promise<void> {
     await this.pool.query('SELECT 1');
   }
 }
