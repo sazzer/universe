@@ -1,4 +1,7 @@
 import { Pool } from 'pg';
+import debug from 'debug';
+
+const LOG = debug('universe:database');
 
 /**
  * Wrapper around the database connection.
@@ -13,6 +16,10 @@ export class Database {
    */
   constructor(url: string) {
     this.pool = new Pool({ connectionString: url });
+
+    this.pool.on('error', (e) => {
+      LOG('Received error from database connection pool: %o', e);
+    });
   }
 
   /**

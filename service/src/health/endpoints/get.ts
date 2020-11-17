@@ -1,15 +1,23 @@
+import { ComponentHealth, SystemHealth } from './model';
+
+import { CheckHealthUseCase } from '../usecases';
 import { RequestHandler } from 'express';
-import { SystemHealth } from './model';
 import { respond } from '../../http/response';
 
-export function checkHealth(): RequestHandler {
-  return (req, res) => {
-    const result = new SystemHealth({
-      db: {
-        healthy: false,
-        message: 'Oops'
-      }
-    });
-    respond(res, result);
+/**
+ * HTTP endpoint for checking the health of the system
+ * @param checkHealthUseCase Use case for checking the system health
+ */
+export function checkHealth(checkHealthUseCase: CheckHealthUseCase): RequestHandler {
+  return async (req, res) => {
+    const result = await checkHealthUseCase.checkHealth();
+
+    const components: { [key: string]: ComponentHealth } = {};
+    for (const [key, component] of Object.entries(result.components)) {
+      components[key] = component;
+    }
+
+    const systemHealth = new SystemHealth(components);
+    respond(res, systemHealth);
   };
 }

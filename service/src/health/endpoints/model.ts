@@ -1,16 +1,11 @@
 /**
  * Representation of the health of a single component
  */
-export class ComponentHealth {
+export interface ComponentHealth {
   /** Whether the component is healthy */
   healthy: boolean;
   /** A message about the component health */
   message?: string;
-
-  constructor(healthy: boolean, message?: string) {
-    this.healthy = healthy;
-    this.message = message;
-  }
 }
 
 /**

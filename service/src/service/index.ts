@@ -27,7 +27,7 @@ export async function newService(config: ServiceConfig): Promise<Service> {
   LOG('Building universe');
 
   const db = await buildDatabase(config.database);
-  const health = buildHealth();
+  const health = buildHealth({ db: db.database });
   const server = buildServer([health.endpoints]);
 
   LOG('Built universe');
