@@ -1,5 +1,5 @@
-import { EndpointConfig, Server } from '../server';
-
+import { EndpointConfig } from '../server';
+import { TestableServer } from '../server/testing';
 import debug from 'debug';
 
 const LOG = debug('universe:service');
@@ -8,7 +8,7 @@ const LOG = debug('universe:service');
  * The shape of the configuration for the server.
  */
 export interface ServerComponent {
-  server: Server;
+  server: TestableServer;
 }
 
 /**
@@ -18,6 +18,6 @@ export function buildServer(endpoints: EndpointConfig[]): ServerComponent {
   LOG('Building HTTP server');
 
   return {
-    server: new Server(endpoints)
+    server: new TestableServer(endpoints)
   };
 }

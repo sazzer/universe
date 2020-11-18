@@ -23,6 +23,15 @@ export class Database {
   }
 
   /**
+   * Stop the database connection pool.
+   * USE WITH CARE.
+   */
+  async stop(): Promise<void> {
+    LOG('Closing database connection pool');
+    await this.pool.end();
+  }
+
+  /**
    * Check the health of the database.
    * If unhealthy then this will return a rejected promise.
    */

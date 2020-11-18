@@ -1,5 +1,6 @@
 import { DatabaseConfig, buildDatabase } from './database';
 
+import { TestableServer } from '../server/testing';
 import { buildHealth } from './health';
 import { buildServer } from './server';
 import debug from 'debug';
@@ -13,11 +14,18 @@ export interface ServiceConfig {
 
 /** Service is the actual universe service */
 export interface Service {
+  server: TestableServer;
+
   /**
    * Start the service listening
    * @param port The port to start listening on
    */
   start(port: number): Promise<void>;
+
+  /**
+   * Shutdown the service
+   */
+  shutdown(): Promise<void>;
 }
 
 /**
@@ -33,9 +41,16 @@ export async function newService(config: ServiceConfig): Promise<Service> {
   LOG('Built universe');
 
   return {
+    server: server.server,
+
     start: async (port: number) => {
       LOG('Starting service');
       await server.server.start(port);
+    },
+
+    shutdown: async () => {
+      LOG('Stopping servuce');
+      await db.database.stop();
     }
   };
 }
