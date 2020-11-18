@@ -49,7 +49,7 @@ export async function newService(config: ServiceConfig): Promise<Service> {
     },
 
     shutdown: async () => {
-      LOG('Stopping servuce');
+      LOG('Stopping service');
       await db.database.stop();
     }
   };

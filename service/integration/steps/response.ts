@@ -1,27 +1,14 @@
-import { binding, then } from 'cucumber-tsflow';
-
-import { World } from './world';
+import { Then } from '@cucumber/cucumber';
 import { expect } from 'chai';
+import { getLastResponse } from '../world/service';
 
-@binding([World])
-export class HttpResponseSteps {
-  /** The world */
-  private world: World;
+Then(/I get an "OK" response/, function () {
+  expect(getLastResponse().status).to.equal(200);
+});
 
-  constructor(world: World) {
-    this.world = world;
-  }
+Then(/I get an "application\/json" content of/, function (content: string) {
+  const expected = JSON.parse(content);
+  const actual = JSON.parse(getLastResponse().body);
 
-  @then(/I get an "OK" response/)
-  checkStatusCode(): void {
-    expect(this.world.response?.status).to.equal(200);
-  }
-
-  @then(/I get an "application\/json" content of/)
-  checkResponseBody(content: string): void {
-    const expected = JSON.parse(content);
-    const actual = JSON.parse(this.world.response?.body || '');
-
-    expect(actual).to.deep.equal(expected);
-  }
-}
+  expect(actual).to.deep.equal(expected);
+});
