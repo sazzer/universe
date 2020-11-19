@@ -1,6 +1,6 @@
 import { DatabaseConfig, buildDatabase } from './database';
+import { EndpointConfig, Server } from '../server';
 
-import { TestableServer } from '../server/testing';
 import { buildHealth } from './health';
 import { buildServer } from './server';
 import debug from 'debug';
@@ -13,8 +13,8 @@ export interface ServiceConfig {
 }
 
 /** Service is the actual universe service */
-export interface Service {
-  server: TestableServer;
+export interface Service<S extends Server> {
+  server: S;
 
   /**
    * Start the service listening
@@ -31,21 +31,24 @@ export interface Service {
 /**
  * Create a new service
  */
-export async function newService(config: ServiceConfig): Promise<Service> {
+export async function newService<S extends Server>(
+  config: ServiceConfig,
+  buildServerFunc: (endpoints: EndpointConfig[]) => S = buildServer
+): Promise<Service<S>> {
   LOG('Building universe');
 
   const db = await buildDatabase(config.database);
   const health = buildHealth({ db: db.database });
-  const server = buildServer([health.endpoints]);
+  const server = buildServerFunc([health.endpoints]);
 
   LOG('Built universe');
 
   return {
-    server: server.server,
+    server,
 
     start: async (port: number) => {
       LOG('Starting service');
-      await server.server.start(port);
+      await server.start(port);
     },
 
     shutdown: async () => {

@@ -1,4 +1,4 @@
-import { EndpointConfig, Server } from './server';
+import { EndpointConfig, Server } from '../../src/server';
 
 import debug from 'debug';
 import request from 'supertest';

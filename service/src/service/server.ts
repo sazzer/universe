@@ -1,23 +1,14 @@
 import { EndpointConfig } from '../server';
-import { TestableServer } from '../server/testing';
+import { Server } from '../server';
 import debug from 'debug';
 
 const LOG = debug('universe:service');
 
 /**
- * The shape of the configuration for the server.
+ * Build the server.
  */
-export interface ServerComponent {
-  server: TestableServer;
-}
-
-/**
- * Build the configuration for the server.
- */
-export function buildServer(endpoints: EndpointConfig[]): ServerComponent {
+export function buildServer<S extends Server>(endpoints: EndpointConfig[]): S {
   LOG('Building HTTP server');
 
-  return {
-    server: new TestableServer(endpoints)
-  };
+  return new Server(endpoints) as S;
 }

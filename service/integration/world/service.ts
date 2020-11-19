@@ -1,5 +1,5 @@
-import { Request, Response } from '../../src/server/testing';
-import { TestableService, newTestableService } from '../../src/service/testing';
+import { Request, Response } from './testServer';
+import { TestableService, newTestableService } from './testService';
 
 import debug from 'debug';
 
