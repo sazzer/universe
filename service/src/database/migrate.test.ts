@@ -22,4 +22,12 @@ describe('Database Migrations', () => {
     }
     await migrate(db);
   });
+
+  test('Migrate database twice', async () => {
+    if (db === undefined) {
+      throw new Error('Database not available');
+    }
+    await migrate(db);
+    await migrate(db);
+  });
 });
