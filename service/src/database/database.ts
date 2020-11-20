@@ -1,5 +1,8 @@
-import { Pool } from 'pg';
+import { ClientBase, Pool } from 'pg';
+
 import debug from 'debug';
+
+export { ClientBase as Client };
 
 const LOG = debug('universe:database');
 
@@ -37,5 +40,31 @@ export class Database {
    */
   async checkHealth(): Promise<void> {
     await this.pool.query('SELECT 1');
+  }
+
+  /**
+   * Execute some code inside a transaction.
+   * This will do a COMMIT if the callback is successful, or a ROLLBACK if it fails.
+   */
+  async begin<T>(callback: (client: ClientBase) => Promise<T>) {
+    const client = await this.pool.connect();
+    try {
+      LOG('Starting transaction');
+      await client.query('BEGIN');
+      const result = await callback(client);
+
+      LOG('Commiting transaction');
+      await client.query('COMMIT');
+
+      return result;
+    } catch (e) {
+      LOG('Error during transaction: %o', e);
+
+      await client.query('ROLLBACK');
+
+      throw e;
+    } finally {
+      await client.release();
+    }
   }
 }

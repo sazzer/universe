@@ -12,7 +12,8 @@
     "start": "ts-node ./src/index",
     "build:build": "tsc",
     "build": "run-s clean build:build",
-    "docker": "docker build -t universe-service ."
+    "docker": "docker build -t universe-service .",
+    "psql": "PGPASSWORD=universe psql --host localhost --port 45432 --user universe"
   },
   "author": "",
   "license": "ISC",

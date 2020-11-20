@@ -1,5 +1,6 @@
 import { Database } from '../database';
 import debug from 'debug';
+import { migrate } from '../database/migrate';
 
 const LOG = debug('universe:service');
 
@@ -26,6 +27,8 @@ export async function buildDatabase(config: DatabaseConfig): Promise<DatabaseCom
 
   const database = new Database(config.url);
   await database.checkHealth();
+
+  await migrate(database);
 
   return {
     database
