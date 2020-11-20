@@ -11,7 +11,8 @@
     "test": "run-s test:lint test:unit test:integration",
     "start": "ts-node ./src/index",
     "build:build": "tsc",
-    "build": "run-s clean build:build"
+    "build": "run-s clean build:build",
+    "docker": "docker build -t universe-service ."
   },
   "author": "",
   "license": "ISC",
