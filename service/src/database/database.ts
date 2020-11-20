@@ -46,7 +46,7 @@ export class Database {
    * Execute some code inside a transaction.
    * This will do a COMMIT if the callback is successful, or a ROLLBACK if it fails.
    */
-  async begin<T>(callback: (client: ClientBase) => Promise<T>) {
+  async begin<T>(callback: (client: ClientBase) => Promise<T>): Promise<T> {
     const client = await this.pool.connect();
     try {
       LOG('Starting transaction');

@@ -1,5 +1,5 @@
 import { After, Before, setDefaultTimeout } from '@cucumber/cucumber';
-import { startDatabase, stopDatabase } from './database';
+import { startDatabase, stopDatabase } from '../../testing/database';
 import { startService, stopService } from './service';
 
 import debug from 'debug';
