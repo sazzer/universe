@@ -29,11 +29,13 @@ RUN npm install --production
 
 # Then copy the built code
 COPY --from=builder /universe/target /universe/target
+COPY migrations /universe/migrations
 
 # Required environment properties
 ENV PORT=8000
 ENV DATABASE_URL=
 ENV DOCKERIZE_ARGS=
+ENV NODE_ENV=production
 
 # Set up healthchecks
 HEALTHCHECK --interval=30s --start-period=5s CMD curl -f http://localhost:$PORT/health || exit 1
