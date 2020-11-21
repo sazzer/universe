@@ -5,13 +5,10 @@ import { Router } from 'express';
  */
 export class EndpointConfig {
   /**
-   * Constructor for the users endpoints
-   */
-  constructor() {}
-
-  /**
    * Register the endpoints for working with users
    * @param router The router to register endpoints on
    */
-  configure(router: Router): void {}
+  configure(router: Router): void {
+    router.toString();
+  }
 }
