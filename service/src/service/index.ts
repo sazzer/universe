@@ -3,6 +3,7 @@ import { EndpointConfig, Server } from '../server';
 
 import { buildHealth } from './health';
 import { buildServer } from './server';
+import { buildUsers } from './users';
 import debug from 'debug';
 
 const LOG = debug('universe:service');
@@ -39,7 +40,8 @@ export async function newService<S extends Server>(
 
   const db = await buildDatabase(config.database);
   const health = buildHealth({ db: db.database });
-  const server = buildServerFunc([health.endpoints]);
+  const users = buildUsers();
+  const server = buildServerFunc([health.endpoints, users.endpoints]);
 
   LOG('Built universe');
 
