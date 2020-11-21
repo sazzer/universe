@@ -4,8 +4,9 @@ import bunyan from 'bunyan';
  * Build a logger to log with
  * @param name The name of the logger
  */
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export function newLogger(name: string) {
-  let logLevelString = process.env.LOG_LEVEL;
+  const logLevelString = process.env.LOG_LEVEL;
   let logLevel: number | undefined = undefined;
 
   if (logLevelString !== undefined) {
