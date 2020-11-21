@@ -4,9 +4,9 @@ import { EndpointConfig, Server } from '../server';
 import { buildHealth } from './health';
 import { buildServer } from './server';
 import { buildUsers } from './users';
-import debug from 'debug';
+import { newLogger } from '../logger';
 
-const LOG = debug('universe:service');
+const LOG = newLogger('universe:service');
 
 /** Configuration needed for building the service */
 export interface ServiceConfig {
@@ -36,25 +36,25 @@ export async function newService<S extends Server>(
   config: ServiceConfig,
   buildServerFunc: (endpoints: EndpointConfig[]) => S = buildServer
 ): Promise<Service<S>> {
-  LOG('Building universe');
+  LOG.debug('Building universe');
 
   const db = await buildDatabase(config.database);
   const health = buildHealth({ db: db.database });
   const users = buildUsers();
   const server = buildServerFunc([health.endpoints, users.endpoints]);
 
-  LOG('Built universe');
+  LOG.debug('Built universe');
 
   return {
     server,
 
     start: async (port: number) => {
-      LOG('Starting service');
+      LOG.info('Starting service');
       await server.start(port);
     },
 
     shutdown: async () => {
-      LOG('Stopping service');
+      LOG.info('Stopping service');
       await db.database.stop();
     }
   };

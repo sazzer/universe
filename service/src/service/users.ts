@@ -1,7 +1,7 @@
 import { EndpointConfig } from '../users/endpoints';
-import debug from 'debug';
+import { newLogger } from '../logger';
 
-const LOG = debug('universe:service');
+const LOG = newLogger('universe:service');
 
 /**
  * Service component for working with users
@@ -14,7 +14,7 @@ export interface UsersComponent {
  * Build the users component.
  */
 export function buildUsers(): UsersComponent {
-  LOG('Building users');
+  LOG.debug('Building users');
 
   return {
     endpoints: new EndpointConfig()

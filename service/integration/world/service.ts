@@ -1,9 +1,9 @@
 import { Request, Response } from './testServer';
 import { TestableService, newTestableService } from './testService';
 
-import debug from 'debug';
+import { newLogger } from '../../src/logger';
 
-const LOG = debug('integration:world:service');
+const LOG = newLogger('integration:world:service');
 
 let service: TestableService | undefined;
 
@@ -11,7 +11,7 @@ let lastResponse: Response | undefined;
 
 export async function startService(databaseUrl: string): Promise<void> {
   if (service === undefined) {
-    LOG('Building test service');
+    LOG.debug('Building test service');
     service = await newTestableService({
       database: {
         url: databaseUrl
@@ -22,7 +22,7 @@ export async function startService(databaseUrl: string): Promise<void> {
 
 export async function stopService(): Promise<void> {
   if (service !== undefined) {
-    LOG('Stopping test service');
+    LOG.debug('Stopping test service');
     await service.shutdown();
     service = undefined;
   }

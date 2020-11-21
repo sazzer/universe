@@ -1,10 +1,10 @@
 import { Client, Database } from './database';
 
-import debug from 'debug';
 import fs from 'fs';
+import { newLogger } from '../logger';
 import path from 'path';
 
-const LOG = debug('universe:database:migrate');
+const LOG = newLogger('universe:database:migrate');
 
 const MIGRATION_BASE = './migrations';
 
@@ -13,7 +13,7 @@ const MIGRATION_BASE = './migrations';
  * @param database The database to migrate
  */
 export async function migrate(database: Database): Promise<void> {
-  LOG('Migrating database');
+  LOG.info('Migrating database');
 
   // Get a new database transaction
   await database.begin(async (client) => {
@@ -22,23 +22,23 @@ export async function migrate(database: Database): Promise<void> {
 
     // List the migration files that have been run
     const applied = await listAppliedMigrations(client);
-    LOG('Applied files: %o', applied);
+    LOG.trace({ applied }, 'Applied files');
 
     // List the migration files to run
     const available = await listAvailableMigrations();
-    LOG('Available files: %o', available);
+    LOG.trace({ available }, 'Available files');
 
     const toApply = available.filter((file) => applied.indexOf(file) === -1);
-    LOG('Files to apply: %o', toApply);
+    LOG.trace({ toApply }, 'Files to apply');
 
     // Actually run the files that haven't yet been run
     for (const file of toApply) {
-      LOG('Applying file: %s', file);
+      LOG.trace({ file }, 'Applying file');
       await applyFile(client, file);
     }
   });
 
-  LOG('Migrated database');
+  LOG.info('Migrated database');
 }
 
 /**
@@ -53,9 +53,9 @@ async function lockMigrationsTable(client: Client) {
     executed_from TEXT NOT NULL DEFAULT inet_client_addr()
   )`);
 
-  LOG('Locking migrations table');
+  LOG.trace('Locking migrations table');
   await client.query('LOCK TABLE __migrations IN EXCLUSIVE MODE');
-  LOG('Locked migrations table');
+  LOG.trace('Locked migrations table');
 }
 
 /**

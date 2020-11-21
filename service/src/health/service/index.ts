@@ -1,8 +1,8 @@
 import { ComponentHealth, HealthCheck, SystemHealth } from '../model';
 
-import debug from 'debug';
+import { newLogger } from '../../logger';
 
-const LOG = debug('universe:health:service');
+const LOG = newLogger('universe:health:service');
 
 /**
  * The HealthChecker is the service implementation for checking the health of the system.
@@ -29,13 +29,13 @@ export class HealthChecker {
       try {
         await component.checkHealth();
 
-        LOG('Component "%s" is healthy', key);
+        LOG.info({ key }, 'Component is healthy');
 
         result[key] = {
           healthy: true
         };
       } catch (e) {
-        LOG('Component "%s" is unhealthy: %o', key, e);
+        LOG.warn({ err: e, key }, 'Component is unhealthy');
 
         result[key] = {
           healthy: false,

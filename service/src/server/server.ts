@@ -1,11 +1,11 @@
 import bodyParser from 'body-parser';
 import compression from 'compression';
 import cors from 'cors';
-import debug from 'debug';
 import express from 'express';
+import { newLogger } from '../logger';
 import responseTime from 'response-time';
 
-const LOG = debug('universe:server');
+const LOG = newLogger('universe:server');
 
 /**
  * Interface that components able to contribute entpoints can implement.
@@ -41,7 +41,7 @@ export class Server {
    * @param port The port to listen on
    */
   async start(port: number): Promise<void> {
-    LOG('Starting server on port %d', port);
+    LOG.info({ port }, 'Starting server');
     await this.app.listen(port);
   }
 }

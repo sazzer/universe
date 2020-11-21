@@ -2,20 +2,20 @@ import { After, Before, setDefaultTimeout } from '@cucumber/cucumber';
 import { startDatabase, stopDatabase } from '../../testing/database';
 import { startService, stopService } from './service';
 
-import debug from 'debug';
+import { newLogger } from '../../src/logger';
 
-const LOG = debug('integration:world');
+const LOG = newLogger('integration:world');
 
 setDefaultTimeout(60 * 1000);
 
 Before(async () => {
-  LOG('Setting up world');
+  LOG.debug('Setting up world');
   const databaseUrl = await startDatabase();
   await startService(databaseUrl);
 });
 
 After(async () => {
-  LOG('Destroying world');
+  LOG.debug('Destroying world');
   try {
     await stopService();
   } finally {

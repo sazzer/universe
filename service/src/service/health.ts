@@ -1,9 +1,9 @@
 import { EndpointConfig } from '../health/endpoints';
 import { HealthCheck } from '../health';
 import { HealthChecker } from '../health/service';
-import debug from 'debug';
+import { newLogger } from '../logger';
 
-const LOG = debug('universe:service');
+const LOG = newLogger('universe:service');
 
 /**
  * Service component for the healthchecks
@@ -16,7 +16,7 @@ export interface HealthComponent {
  * Build the healthchecks component.
  */
 export function buildHealth(components: { [key: string]: HealthCheck }): HealthComponent {
-  LOG('Building healthchecks');
+  LOG.debug('Building healthchecks');
 
   const healthChecker = new HealthChecker(components);
 

@@ -1,9 +1,9 @@
 import { EndpointConfig, Server } from '../../src/server';
 
-import debug from 'debug';
+import { newLogger } from '../../src/logger';
 import request from 'supertest';
 
-const LOG = debug('universe:server:testing');
+const LOG = newLogger('universe:server:testing');
 
 /**
  * Details of an HTTP request that we can inject as part of a test.
@@ -31,7 +31,7 @@ export class TestableServer extends Server {
    * @param req The request to inject
    */
   async injectRequest(req: Request): Promise<Response> {
-    LOG('Injecting request: %o', req);
+    LOG.trace({ req }, 'Injecting request');
     const client = request(this.app);
 
     if (req.method === 'GET') {

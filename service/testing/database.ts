@@ -1,8 +1,8 @@
 import { GenericContainer, StartedTestContainer } from 'testcontainers';
 
-import debug from 'debug';
+import { newLogger } from '../src/logger';
 
-const LOG = debug('integration:world:database');
+const LOG = newLogger('integration:world:database');
 
 const container = new GenericContainer('postgres', '12.4-alpine')
   .withExposedPorts(5432)
@@ -14,7 +14,7 @@ let startedContainer: StartedTestContainer | undefined;
 
 export async function startDatabase(): Promise<string> {
   if (startedContainer === undefined) {
-    LOG('Starting test database');
+    LOG.debug('Starting test database');
 
     startedContainer = await container.start();
   }
@@ -24,14 +24,14 @@ export async function startDatabase(): Promise<string> {
 
   const url = `postgres://universe-test:universe-test@${host}:${port}/universe-test`;
 
-  LOG('Started database: %s', url);
+  LOG.debug({ url }, 'Started database');
 
   return url;
 }
 
 export async function stopDatabase(): Promise<void> {
   if (startedContainer !== undefined) {
-    LOG('Stopping test database');
+    LOG.debug('Stopping test database');
     await startedContainer.stop();
 
     startedContainer = undefined;

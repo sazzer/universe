@@ -2,10 +2,10 @@ import 'dotenv/config';
 
 import * as env from 'env-var';
 
-import debug from 'debug';
+import { newLogger } from './logger';
 import { newService } from './service';
 
-const LOG = debug('universe');
+const LOG = newLogger('universe');
 
 async function run() {
   const config = {
@@ -17,7 +17,7 @@ async function run() {
     }
   };
 
-  LOG('Configuration: %o', config);
+  LOG.trace({ config }, 'Configuration');
 
   const service = await newService(config);
   await service.start(config.http.port);
