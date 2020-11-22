@@ -12,7 +12,7 @@ const LOG = newLogger('universe:server:testing');
 export interface Request {
   method: 'GET';
   url: string;
-  params?: { [key: string]: any };
+  params?: { [key: string]: any }; // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
 /**

@@ -1,4 +1,3 @@
-import { Some } from '@hqoss/monads';
 import { parseUserID } from './userId';
 
 describe('UserID', () => {

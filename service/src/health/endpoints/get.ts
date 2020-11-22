@@ -1,8 +1,7 @@
-import { ComponentHealth, SystemHealth } from './model';
+import { ComponentHealth, SystemHealthResponse } from './model';
 
 import { CheckHealthUseCase } from '../usecases';
 import { RequestHandler } from 'express';
-import { respond } from '../../http/response';
 
 /**
  * HTTP endpoint for checking the health of the system
@@ -17,7 +16,6 @@ export function checkHealth(checkHealthUseCase: CheckHealthUseCase): RequestHand
       components[key] = component;
     }
 
-    const systemHealth = new SystemHealth(components);
-    respond(res, systemHealth);
+    new SystemHealthResponse(components).send(res);
   };
 }

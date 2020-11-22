@@ -1,3 +1,5 @@
+import { Response } from '../../http/response';
+
 /**
  * Representation of the health of a single component
  */
@@ -11,19 +13,19 @@ export interface ComponentHealth {
 /**
  * Representation of the overall system health
  */
-export class SystemHealth {
+export interface SystemHealth {
   /** Whether the system is healthy */
   healthy: boolean;
   /** The components that make up the system */
   components: { [key: string]: ComponentHealth };
+}
 
+export class SystemHealthResponse extends Response<SystemHealth> {
   constructor(components: { [key: string]: ComponentHealth }) {
-    this.components = components;
-    this.healthy = Object.values(components).every((component) => component.healthy);
-  }
-
-  /** The status code to use */
-  statusCode(): number {
-    return this.healthy ? 200 : 503;
+    super({
+      components,
+      healthy: Object.values(components).every((component) => component.healthy)
+    });
+    this.status = this.payload.healthy ? 200 : 503;
   }
 }
