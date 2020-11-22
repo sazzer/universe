@@ -2,7 +2,8 @@ import { UserModel, parseUserID } from '../model';
 
 import { NOT_FOUND_PROBLEM } from '../../http/problem';
 import { RequestHandler } from 'express';
-import { UserResponse } from './model';
+import { User } from './model';
+import { respond } from '../../http/response';
 
 /**
  * HTTP endpoint for getting a User by ID
@@ -11,7 +12,7 @@ export function getUserByID(): RequestHandler {
   return async (req, res) => {
     const userId = parseUserID(req.params['userId'] || '');
     if (userId.isNone()) {
-      return NOT_FOUND_PROBLEM.send(res);
+      return respond(res, NOT_FOUND_PROBLEM);
     }
 
     const user: UserModel = {
@@ -40,6 +41,8 @@ export function getUserByID(): RequestHandler {
       }
     };
 
-    new UserResponse(user).send(res);
+    respond(res, {
+      payload: new User(user)
+    });
   };
 }

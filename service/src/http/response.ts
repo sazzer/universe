@@ -1,29 +1,26 @@
 import express from 'express';
 
+/** Shape of a response object to send to the client */
+export interface Response<T> {
+  /** The actual response payload */
+  payload: T;
+  /** The status code */
+  status?: number;
+  /** The content type */
+  contentType?: string;
+}
+
 /**
- * Representation of an API resposne to send over HTTP
+ * Send a response to the client
+ * @param res The express Response object
+ * @param response The response to send to the client
  */
-export class Response<T> {
-  /** The payload of the response */
-  protected payload: T;
-
-  /** The status code of the response */
-  protected status = 200;
-
-  /** The content type of the response */
-  protected contentType = 'application/json';
-
-  constructor(payload: T) {
-    this.payload = payload;
+export function respond<T>(res: express.Response, response: Response<T>): void {
+  if (response.status !== undefined) {
+    res.status(response.status);
   }
-
-  /**
-   * Send this API response to the client.
-   * @param res The Express response to send this down
-   */
-  send(res: express.Response): void {
-    res.status(this.status);
-    res.contentType(this.contentType);
-    res.json(this.payload);
+  if (response.contentType !== undefined) {
+    res.contentType(response.contentType);
   }
+  res.json(response.payload);
 }

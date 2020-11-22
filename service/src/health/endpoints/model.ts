@@ -20,12 +20,17 @@ export interface SystemHealth {
   components: { [key: string]: ComponentHealth };
 }
 
-export class SystemHealthResponse extends Response<SystemHealth> {
-  constructor(components: { [key: string]: ComponentHealth }) {
-    super({
+/**
+ * Build the response to send
+ * @param components The health of the various components of the system
+ */
+export function buildResponse(components: { [key: string]: ComponentHealth }): Response<SystemHealth> {
+  const healthy = Object.values(components).every((component) => component.healthy);
+  return {
+    payload: {
       components,
-      healthy: Object.values(components).every((component) => component.healthy)
-    });
-    this.status = this.payload.healthy ? 200 : 503;
-  }
+      healthy
+    },
+    status: healthy ? 200 : 503
+  };
 }

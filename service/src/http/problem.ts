@@ -6,21 +6,13 @@ export interface Problem {
   status: number;
 }
 
-export class ProblemResponse extends Response<Problem> {
-  constructor(type: string, title: string, status: number) {
-    super({
-      type,
-      title,
-      status
-    });
-    this.status = status;
-    this.contentType = 'application/problem+json';
-  }
-}
-
 /** Problem for when a resource is not found */
-export const NOT_FOUND_PROBLEM = new ProblemResponse(
-  'tag:universe,2020:problems/not_found',
-  'The requested resource was not found',
-  404
-);
+export const NOT_FOUND_PROBLEM: Response<Problem> = {
+  payload: {
+    type: 'tag:universe,2020:problems/not_found',
+    title: 'The requested resource was not found',
+    status: 404
+  },
+  status: 404,
+  contentType: 'application/problem+json'
+};
