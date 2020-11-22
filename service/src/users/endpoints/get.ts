@@ -1,6 +1,8 @@
+import { UserModel, parseUserID } from '../model';
+
 import { NOT_FOUND_PROBLEM } from '../../http/problem';
 import { RequestHandler } from 'express';
-import { parseUserID } from '../model';
+import { User } from './model';
 import { respond } from '../../http/response';
 
 /**
@@ -13,6 +15,32 @@ export function getUserByID(): RequestHandler {
       return respond(res, NOT_FOUND_PROBLEM);
     }
 
-    respond(res, {});
+    const user: UserModel = {
+      identity: {
+        id: userId.unwrap(),
+        version: '287d73ef-674f-42b9-85c7-0ab986431f6a',
+        created: new Date(),
+        updated: new Date()
+      },
+      data: {
+        displayName: 'Test User',
+        email: 'testuser@example.com',
+        username: 'testuser',
+        authentications: [
+          {
+            provider: 'google',
+            userId: '12345678',
+            displayName: 'testuser@example.com'
+          },
+          {
+            provider: 'twitter',
+            userId: 'abcdefgh',
+            displayName: '@testuser'
+          }
+        ]
+      }
+    };
+
+    respond(res, new User(user));
   };
 }
