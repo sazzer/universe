@@ -2,6 +2,10 @@ import * as uuid from 'uuid';
 
 import { None, Option, Some } from '@hqoss/monads';
 
+import { newLogger } from '../../logger';
+
+const LOG = newLogger('universe:users:model');
+
 /** The ID of a user */
 export type UserID = string;
 
@@ -20,7 +24,7 @@ export function parseUserID(input: string): Option<UserID> {
   const processed = input.trim().toLowerCase();
 
   if (!uuid.validate(processed)) {
-    // Invalid
+    LOG.warn({ input }, 'Malformed User ID');
     return None;
   }
 

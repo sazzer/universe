@@ -2,6 +2,7 @@ import { EndpointConfig, Server } from '../../src/server';
 
 import { newLogger } from '../../src/logger';
 import request from 'supertest';
+import template from 'url-template';
 
 const LOG = newLogger('universe:server:testing');
 
@@ -11,6 +12,7 @@ const LOG = newLogger('universe:server:testing');
 export interface Request {
   method: 'GET';
   url: string;
+  params?: { [key: string]: any };
 }
 
 /**
@@ -34,8 +36,10 @@ export class TestableServer extends Server {
     LOG.trace({ req }, 'Injecting request');
     const client = request(this.app);
 
+    const url = template.parse(req.url).expand(req.params);
+
     if (req.method === 'GET') {
-      return await client.get(req.url).then((res) => {
+      return await client.get(url).then((res) => {
         return {
           status: res.status,
           body: res.text

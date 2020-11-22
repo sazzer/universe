@@ -7,7 +7,7 @@
     "clean": "rimraf target",
     "test:lint": "eslint . --ext .ts",
     "test:unit": "jest src",
-    "test:integration": "cucumber-js integration/features/health.feature --require-module ts-node/register --require 'integration/**/*.ts' --format progress-bar --publish-quiet",
+    "test:integration": "cucumber-js integration/features --require-module ts-node/register --require 'integration/**/*.ts' --format progress-bar --publish-quiet",
     "test": "run-s test:lint test:unit test:integration",
     "start": "ts-node ./src/index | bunyan",
     "build:build": "tsc",
@@ -32,6 +32,7 @@
     "@types/pg": "^7.14.6",
     "@types/response-time": "^2.3.4",
     "@types/supertest": "^2.0.10",
+    "@types/url-template": "^2.0.28",
     "@types/uuid": "^8.3.0",
     "@typescript-eslint/eslint-plugin": "^4.7.0",
     "@typescript-eslint/parser": "^4.7.0",
@@ -60,6 +61,7 @@
     "express": "^4.17.1",
     "pg": "^8.5.1",
     "response-time": "^2.3.2",
+    "url-template": "^2.0.8",
     "uuid": "^8.3.1"
   }
 }

@@ -9,12 +9,29 @@ export interface StatusCode {
 }
 
 /**
- * Type guard for the Status Code interface.
+ * Type guard for the StatusCode interface.
  * @param payload The payload to check
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function isStatusCode(payload: any): payload is StatusCode {
   return 'statusCode' in payload;
+}
+
+/**
+ * Interface for payloads to indicate their HTTP content type.
+ */
+export interface ContentType {
+  /** The content type to return */
+  contentType: () => string;
+}
+
+/**
+ * Type guard for the ContentType interface.
+ * @param payload The payload to check
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function isContentType(payload: any): payload is ContentType {
+  return 'contentType' in payload;
 }
 
 /**
@@ -26,6 +43,9 @@ function isStatusCode(payload: any): payload is StatusCode {
 export function respond(res: Response, payload: any): void {
   if (isStatusCode(payload)) {
     res.status(payload.statusCode());
+  }
+  if (isContentType(payload)) {
+    res.contentType(payload.contentType());
   }
 
   res.json(payload);

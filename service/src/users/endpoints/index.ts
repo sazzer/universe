@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { getUserByID } from './get';
 
 /**
  * Configuration for the users endpoints
@@ -9,6 +10,6 @@ export class EndpointConfig {
    * @param router The router to register endpoints on
    */
   configure(router: Router): void {
-    router.toString();
+    router.get('/users/:userId', getUserByID());
   }
 }
