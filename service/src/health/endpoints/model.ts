@@ -24,7 +24,7 @@ export interface SystemHealth {
  * Build the response to send
  * @param components The health of the various components of the system
  */
-export function buildResponse(components: { [key: string]: ComponentHealth }): Response<SystemHealth> {
+export function buildResponse(components: { [key: string]: ComponentHealth }): Response {
   const healthy = Object.values(components).every((component) => component.healthy);
   return {
     payload: {

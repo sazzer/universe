@@ -1,9 +1,9 @@
 import express from 'express';
 
 /** Shape of a response object to send to the client */
-export interface Response<T> {
+export interface Response {
   /** The actual response payload */
-  payload: T;
+  payload: any; // eslint-disable-line @typescript-eslint/no-explicit-any
   /** The status code */
   status?: number;
   /** The content type */
@@ -19,7 +19,7 @@ export interface Response<T> {
  * @param res The express Response object
  * @param response The response to send to the client
  */
-export function respond<T>(res: express.Response, response: Response<T>): void {
+export function respond(res: express.Response, response: Response): void {
   if (response.etag !== undefined) {
     if (res.req?.header('if-none-match') === response.etag) {
       res.status(304);
