@@ -42,7 +42,9 @@ export function getUserByID(): RequestHandler {
     };
 
     respond(res, {
-      payload: new User(user)
+      payload: new User(user),
+      cachePeriod: 3600,
+      etag: `"${user.identity.version}"`
     });
   };
 }
