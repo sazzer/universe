@@ -1,4 +1,5 @@
 import { ClientBase, Pool } from 'pg';
+import { None, Option, Some } from '@hqoss/monads';
 
 import { newLogger } from '../logger';
 
@@ -66,5 +67,20 @@ export class Database {
     } finally {
       await client.release();
     }
+  }
+
+  /**
+   * Query the database for exactly one row.
+   * This will not happen within a transaction.
+   * @param sql The SQL to execute
+   * @param binds The binds to use
+   */
+  async queryRow<T>(sql: string, binds: any[]): Promise<Option<T>> {
+    LOG.debug({ sql, binds }, 'Executing query for single row');
+    const result = await this.pool.query(sql, binds);
+    if (result.rows.length == 0) {
+      return None;
+    }
+    return Some(result.rows[0] as T);
   }
 }

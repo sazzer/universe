@@ -2,6 +2,10 @@ import { None, Option } from '@hqoss/monads';
 import { UserID, UserModel } from '../model';
 
 import { Database } from '../../database';
+import { newLogger } from '../../logger';
+
+/** The logger to use */
+const LOG = newLogger('universe:users:repository');
 
 export interface GetUsersRepository {
   /**
@@ -18,6 +22,11 @@ export interface GetUsersRepository {
 export function buildGetUserRepository(database: Database): GetUsersRepository {
   return {
     async getUserByID(userId: UserID): Promise<Option<UserModel>> {
+      LOG.debug({ userId }, 'Getting user by ID');
+      const row = await database.queryRow('SELECT * FROM users WHERE user_id = $1', [userId]);
+
+      LOG.debug({ userId, row }, 'Fetched user by ID');
+
       return None;
     }
   };
