@@ -40,7 +40,7 @@ export async function newService<S extends Server>(
 
   const db = await buildDatabase(config.database);
   const health = buildHealth({ db: db.database });
-  const users = buildUsers();
+  const users = buildUsers(db.database);
   const server = buildServerFunc([health.endpoints, users.endpoints]);
 
   LOG.debug('Built universe');

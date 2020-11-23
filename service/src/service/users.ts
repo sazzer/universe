@@ -1,4 +1,6 @@
+import { Database } from '../database';
 import { EndpointConfig } from '../users/endpoints';
+import { buildUserRepository } from '../users/repository';
 import { buildUsersService } from '../users/service';
 import { newLogger } from '../logger';
 
@@ -14,10 +16,11 @@ export interface UsersComponent {
 /**
  * Build the users component.
  */
-export function buildUsers(): UsersComponent {
+export function buildUsers(database: Database): UsersComponent {
   LOG.debug('Building users');
 
-  const userService = buildUsersService();
+  const userRepository = buildUserRepository(database);
+  const userService = buildUsersService(userRepository);
 
   return {
     endpoints: new EndpointConfig(userService)
