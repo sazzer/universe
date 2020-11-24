@@ -1,5 +1,6 @@
 #![deny(clippy::all, clippy::pedantic, clippy::nursery)]
 
+mod server;
 mod service;
 
 /// Main entrypoint for the Universe application.
