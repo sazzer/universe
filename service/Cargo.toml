@@ -11,4 +11,5 @@ name = "universe_lib"
 name = "universe"
 
 [dependencies]
+dotenv = "0.15.0"
 [dev-dependencies]
