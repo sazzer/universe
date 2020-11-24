@@ -2,6 +2,7 @@
 
 use dotenv::dotenv;
 
+/// Main entrypoint for the Universe application.
 fn main() {
     dotenv().ok();
 
