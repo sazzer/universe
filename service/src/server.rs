@@ -9,7 +9,7 @@ impl Server {
     }
 
     /// Start the Universe HTTP Server listening for requests.
-    pub fn start(&self) {
+    pub async fn start(&self) {
         tracing::debug!("Starting HTTP Server");
     }
 }

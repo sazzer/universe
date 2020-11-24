@@ -7,7 +7,7 @@ pub struct Service {
 
 impl Service {
     /// Construct a new instance of the Universe service.
-    pub fn new() -> Self {
+    pub async fn new() -> Self {
         tracing::debug!("Building Universe");
         let server = Server::new();
         tracing::debug!("Built Universe");
@@ -16,8 +16,8 @@ impl Service {
     }
 
     /// Start the Universe service running.
-    pub fn start(&self) {
+    pub async fn start(&self) {
         tracing::debug!("Starting Universe");
-        self.server.start();
+        self.server.start().await;
     }
 }

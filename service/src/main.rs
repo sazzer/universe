@@ -3,10 +3,11 @@
 use dotenv::dotenv;
 
 /// Main entrypoint for the Universe application.
-fn main() {
+#[actix_rt::main]
+async fn main() {
     dotenv().ok();
 
     tracing_subscriber::fmt::init();
 
-    universe_lib::main()
+    universe_lib::main().await
 }

@@ -4,9 +4,9 @@ mod server;
 mod service;
 
 /// Main entrypoint for the Universe application.
-pub fn main() {
+pub async fn main() {
     tracing::info!("Starting Universe");
 
-    let service = service::Service::new();
-    service.start();
+    let service = service::Service::new().await;
+    service.start().await;
 }
