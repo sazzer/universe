@@ -4,12 +4,12 @@ pub struct Server {}
 impl Server {
     /// Construct a new instance of the Universe HTTP Server.
     pub fn new() -> Self {
-        tracing::debug!("Built HTTP Server");
+        tracing::debug!("Building HTTP Server");
         Self {}
     }
 
     /// Start the Universe HTTP Server listening for requests.
-    pub async fn start(&self) {
-        tracing::debug!("Starting HTTP Server");
+    pub async fn start(&self, port: u16) {
+        tracing::debug!({ port }, "Starting HTTP Server");
     }
 }

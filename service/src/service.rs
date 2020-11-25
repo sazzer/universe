@@ -1,4 +1,12 @@
+use crate::database::{Config as DatabaseConfig, Database};
 use crate::server::Server;
+
+/// Configuration needed to build the service
+#[derive(Debug)]
+pub struct Config {
+    /// Database connection configuration.
+    pub database: DatabaseConfig,
+}
 
 /// The actual Universe service.
 pub struct Service {
@@ -7,8 +15,9 @@ pub struct Service {
 
 impl Service {
     /// Construct a new instance of the Universe service.
-    pub async fn new() -> Self {
-        tracing::debug!("Building Universe");
+    pub async fn new(config: Config) -> Self {
+        tracing::debug!(config = ?config, "Building Universe");
+        let _database = Database::new(&config.database);
         let server = Server::new();
         tracing::debug!("Built Universe");
 
@@ -16,8 +25,8 @@ impl Service {
     }
 
     /// Start the Universe service running.
-    pub async fn start(&self) {
+    pub async fn start(&self, port: u16) {
         tracing::debug!("Starting Universe");
-        self.server.start().await;
+        self.server.start(port).await;
     }
 }
