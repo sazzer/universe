@@ -18,8 +18,6 @@ pub struct Database {
 impl Database {
     /// Construct a new database connection.
     pub fn new(config: &Config) -> Self {
-        tracing::debug!(config = ?config, "Building database connection");
-
         let pg_config = tokio_postgres::Config::from_str(&config.url).unwrap();
 
         let mgr_config = ManagerConfig {

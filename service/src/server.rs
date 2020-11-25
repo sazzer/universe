@@ -3,8 +3,7 @@ pub struct Server {}
 
 impl Server {
     /// Construct a new instance of the Universe HTTP Server.
-    pub fn new() -> Self {
-        tracing::debug!("Building HTTP Server");
+    pub const fn new() -> Self {
         Self {}
     }
 
