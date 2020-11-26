@@ -1,5 +1,6 @@
 mod database;
 mod server;
+pub mod testing;
 
 use crate::database::Config as DatabaseConfig;
 use crate::server::Server;
@@ -31,7 +32,7 @@ impl Service {
     }
 
     /// Start the Universe service running.
-    pub async fn start(&self, port: u16) {
+    pub async fn start(self, port: u16) {
         tracing::debug!("Starting Universe");
         self.server.start(port).await;
     }

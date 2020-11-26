@@ -47,10 +47,10 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           toolchain: ${{ env.RUST_TOOLCHAIN }}
-          args: --manifest-path service/Cargo.toml
+          args: --manifest-path service/Cargo.toml --lib --tests
 
       - name: Run cargo test
-        uses: actions-rs/cargo@v1
-        with:
-          command: test
-          args: --manifest-path service/Cargo.toml
+        working-directory: service
+        run: cargo test
+        env:
+          RUST_LOG: debug
