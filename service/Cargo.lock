@@ -1920,6 +1920,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "213701ba3370744dcd1a12960caa4843b3d68b4d1c0a5d575e0d65b2ee9d16c0"
 
 [[package]]
+name = "string-error"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "439558b73299d7afdf52c36399c3c812cca10fe5ca08429f38815df5bacf3ef7"
+
+[[package]]
 name = "stringprep"
 version = "0.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2301,6 +2307,7 @@ dependencies = [
  "actix-rt",
  "actix-web",
  "assert2",
+ "async-trait",
  "bytes",
  "config",
  "deadpool",
@@ -2309,6 +2316,7 @@ dependencies = [
  "rust-embed",
  "serde 1.0.117",
  "spandoc",
+ "string-error",
  "tokio-postgres",
  "tracing",
  "tracing-futures",

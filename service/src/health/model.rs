@@ -1,18 +1,14 @@
+use async_trait::async_trait;
 use std::{boxed::Box, collections::HashMap, error::Error};
 
-/// Trait that all components able to report on their health should implement.
-pub trait Healthcheck {
-    /// Check the health of the component.
-    fn check_health(&self) -> Result<(), Box<dyn Error>>;
-}
-
-/// ComponentHealth represents the health of a single component
+/// The health of a single component
 #[derive(Debug, PartialEq)]
 pub enum ComponentHealth {
     Healthy,
     Unhealthy(String),
 }
 
+/// The health of the whole system
 #[derive(Debug)]
 pub struct SystemHealth {
     pub components: HashMap<String, ComponentHealth>,
@@ -32,6 +28,23 @@ impl SystemHealth {
     }
 }
 
+/// Trait that all components able to report on their health should implement.
+#[async_trait]
+pub trait Healthcheck: Send + Sync {
+    /// Check the health of the component.
+    async fn check_health(&self) -> Result<(), Box<dyn Error>>;
+}
+
+#[async_trait]
+#[cfg(test)]
+impl Healthcheck for ComponentHealth {
+    async fn check_health(&self) -> Result<(), Box<dyn Error>> {
+        match self {
+            Self::Healthy => Ok(()),
+            Self::Unhealthy(e) => Err(string_error::new_err(&e)),
+        }
+    }
+}
 #[cfg(test)]
 mod tests {
     use super::*;

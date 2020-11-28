@@ -1,4 +1,5 @@
 mod database;
+mod health;
 mod server;
 pub mod testing;
 
@@ -23,6 +24,8 @@ impl Service {
         tracing::debug!(config = ?config, "Building Universe");
 
         database::build(&config.database).await;
+
+        let _ = health::HealthComponent::new();
 
         let server = server::build();
 
