@@ -1,16 +1,16 @@
+use std::error::Error;
+
 use super::Database;
+use crate::health::Healthcheck;
+use async_trait::async_trait;
 
-impl Database {
+#[async_trait]
+impl Healthcheck for Database {
     /// Check if the database connection is healthy.
-    pub async fn check_health(&self) -> Result<(), String> {
-        let conn = self
-            .checkout()
-            .await
-            .map_err(|e| format!("Failed to checkout connection: {}", e))?;
+    async fn check_health(&self) -> Result<(), Box<dyn Error>> {
+        let conn = self.checkout().await?;
 
-        conn.query_one("SELECT 1", &[])
-            .await
-            .map_err(|e| format!("Failed to execute query: {}", e))?;
+        conn.query_one("SELECT 1", &[]).await?;
 
         Ok(())
     }

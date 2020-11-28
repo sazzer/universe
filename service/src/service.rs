@@ -23,9 +23,11 @@ impl Service {
     pub async fn new(config: Config) -> Self {
         tracing::debug!(config = ?config, "Building Universe");
 
-        database::build(&config.database).await;
+        let db = database::build(&config.database).await;
 
-        let _ = health::HealthComponent::new();
+        let _ = health::HealthComponent::builder()
+            .with_component("db", db)
+            .build();
 
         let server = server::build();
 

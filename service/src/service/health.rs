@@ -1,5 +1,5 @@
-use crate::health::service::HealthService;
-use std::sync::Arc;
+use crate::health::{service::HealthService, Healthcheck};
+use std::{collections::HashMap, sync::Arc};
 
 /// Representation of the Health component in the service
 pub struct HealthComponent {
@@ -7,11 +7,29 @@ pub struct HealthComponent {
 }
 
 impl HealthComponent {
-    pub fn new() -> Self {
-        let components = std::collections::HashMap::new();
+    pub fn builder() -> HealthComponentBuilder {
+        HealthComponentBuilder::default()
+    }
+}
 
-        Self {
-            healthservice: Arc::new(HealthService::new(components)),
+#[derive(Default)]
+pub struct HealthComponentBuilder {
+    components: HashMap<String, Arc<dyn Healthcheck>>,
+}
+
+impl HealthComponentBuilder {
+    pub fn with_component<S>(self, name: S, component: Arc<dyn Healthcheck>) -> Self
+    where
+        S: Into<String>,
+    {
+        let mut components = self.components;
+        components.insert(name.into(), component);
+        Self { components }
+    }
+
+    pub fn build(self) -> HealthComponent {
+        HealthComponent {
+            healthservice: Arc::new(HealthService::new(self.components)),
         }
     }
 }
