@@ -41,7 +41,7 @@ impl Healthcheck for ComponentHealth {
     async fn check_health(&self) -> Result<(), Box<dyn Error>> {
         match self {
             Self::Healthy => Ok(()),
-            Self::Unhealthy(e) => Err(string_error::new_err(&e)),
+            Self::Unhealthy(e) => Err(string_error::new_err(e)),
         }
     }
 }
