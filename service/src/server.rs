@@ -9,7 +9,7 @@ pub trait Configurer: Send + Sync {
 
 /// The wrapper around the HTTP Server
 pub struct Server {
-    config: Vec<Arc<dyn Configurer>>,
+    pub(super) config: Vec<Arc<dyn Configurer>>,
 }
 
 impl Server {

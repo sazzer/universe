@@ -5,7 +5,13 @@ use actix_web::App;
 impl Service {
     /// Inject a request into the server. Only used for testing
     pub async fn inject(&self, req: Request) -> TestResponse {
-        let app = App::new();
+        let mut app = App::new();
+
+        for c in &self.server.config {
+            app = app.configure(move |server_config| {
+                c.configure_server(server_config);
+            });
+        }
 
         let mut test_service = actix_web::test::init_service(app).await;
         let response = actix_web::test::call_service(&mut test_service, req).await;
@@ -45,5 +51,16 @@ impl TestResponse {
         S: Into<String>,
     {
         self.headers.get(name.into())
+    }
+
+    /// Convert the response body to JSON
+    ///
+    /// # Returns
+    /// The body of the response, converted to a Serde JSON object
+    ///
+    /// # Errors
+    /// Any errors from deserializing the response
+    pub fn to_json(&self) -> Result<serde_json::Value, serde_json::error::Error> {
+        serde_json::from_slice(&self.body)
     }
 }

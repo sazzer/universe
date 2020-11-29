@@ -1,6 +1,7 @@
 use actix_web::web::ServiceConfig;
 
 use crate::{
+    health::endpoints,
     health::HealthCheckUseCase,
     health::{service::HealthService, Healthcheck},
     server::Configurer,
@@ -15,6 +16,7 @@ pub struct HealthComponent {
 impl Configurer for HealthComponent {
     fn configure_server(&self, config: &mut ServiceConfig) {
         config.data(self.healthservice.clone() as Arc<dyn HealthCheckUseCase>);
+        endpoints::configure(config);
     }
 }
 

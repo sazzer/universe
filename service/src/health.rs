@@ -1,3 +1,4 @@
+pub mod endpoints;
 mod model;
 pub mod service;
 mod usecases;

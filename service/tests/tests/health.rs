@@ -10,5 +10,15 @@ async fn test_healthchecks() {
         .inject(TestRequest::get().uri("/health").to_request())
         .await;
 
-    check!(response.status == 404); // Change when the healthchecks are implemented
+    check!(response.status == 200);
+    insta::assert_json_snapshot!(response.to_json().unwrap(), @r###"
+    {
+      "components": {
+        "db": {
+          "healthy": true
+        }
+      },
+      "healthy": true
+    }
+    "###);
 }
