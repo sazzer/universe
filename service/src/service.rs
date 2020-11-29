@@ -25,11 +25,9 @@ impl Service {
 
         let db = database::build(&config.database).await;
 
-        let _ = health::HealthComponent::builder()
-            .with_component("db", db)
-            .build();
+        let health = health::builder().with_component("db", db).build();
 
-        let server = server::build();
+        let server = server::builder().with_component(health).build();
 
         tracing::debug!("Built Universe");
 
