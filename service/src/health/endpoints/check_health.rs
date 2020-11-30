@@ -1,15 +1,12 @@
-use std::sync::Arc;
-
-use actix_web::web::{Data, Json};
-
-use crate::health::HealthCheckUseCase;
-
 use super::model::SystemHealthModel;
+use crate::{health::HealthCheckUseCase, http::Response};
+use actix_web::web::Data;
+use std::sync::Arc;
 
 pub async fn check_health(
     health_service: Data<Arc<dyn HealthCheckUseCase>>,
-) -> Json<SystemHealthModel> {
+) -> Response<SystemHealthModel> {
     let system_health = health_service.check_health().await;
 
-    Json(system_health.into())
+    system_health.into()
 }

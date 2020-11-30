@@ -3,6 +3,7 @@
 
 mod database;
 mod health;
+mod http;
 mod server;
 mod service;
 

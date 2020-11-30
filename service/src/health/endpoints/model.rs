@@ -1,8 +1,11 @@
+use actix_http::http::StatusCode;
+use serde::Serialize;
 use std::collections::HashMap;
 
-use serde::Serialize;
-
-use crate::health::{ComponentHealth, SystemHealth};
+use crate::{
+    health::{ComponentHealth, SystemHealth},
+    http::Response,
+};
 
 /// HTTP Model to represent the health of a single component
 #[derive(Debug, Serialize)]
@@ -44,6 +47,22 @@ impl From<SystemHealth> for SystemHealthModel {
                 .into_iter()
                 .map(|(k, v)| (k, v.into()))
                 .collect(),
+        }
+    }
+}
+
+impl From<SystemHealth> for Response<SystemHealthModel> {
+    fn from(system_health: SystemHealth) -> Self {
+        let status = if system_health.is_healthy() {
+            StatusCode::OK
+        } else {
+            StatusCode::SERVICE_UNAVAILABLE
+        };
+
+        Self {
+            body: Some(system_health.into()),
+            status,
+            ..Self::default()
         }
     }
 }
