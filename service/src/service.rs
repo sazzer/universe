@@ -2,6 +2,7 @@ mod database;
 mod health;
 mod server;
 pub mod testing;
+mod users;
 
 use crate::database::Config as DatabaseConfig;
 use crate::server::Server;
@@ -26,8 +27,12 @@ impl Service {
         let db = database::build(&config.database).await;
 
         let health = health::builder().with_component("db", db).build();
+        let users = users::build();
 
-        let server = server::builder().with_component(health).build();
+        let server = server::builder()
+            .with_component(health)
+            .with_component(users)
+            .build();
 
         tracing::debug!("Built Universe");
 
