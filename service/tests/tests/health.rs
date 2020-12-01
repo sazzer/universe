@@ -13,12 +13,12 @@ async fn test_healthchecks() {
     check!(response.status == 200);
     insta::assert_json_snapshot!(response.to_json().unwrap(), @r###"
     {
+      "healthy": true,
       "components": {
         "db": {
           "healthy": true
         }
-      },
-      "healthy": true
+      }
     }
     "###);
 }
