@@ -1,3 +1,5 @@
+use serde::Serialize;
+
 /// A username..
-#[derive(Debug)]
+#[derive(Debug, Serialize)]
 pub struct Username(String);

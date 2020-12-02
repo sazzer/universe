@@ -1,9 +1,11 @@
+use serde::Serialize;
+
 /// ID of an authentication provider.
-#[derive(Debug)]
+#[derive(Debug, Serialize)]
 pub struct ProviderID(String);
 
 /// ID of a user at an authentication provider.
-#[derive(Debug)]
+#[derive(Debug, Serialize)]
 pub struct ProviderUserID(String);
 
 /// Details of a users authentication details at an authentication provider.

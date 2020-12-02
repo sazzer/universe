@@ -4,7 +4,7 @@ use actix_web::web::ServiceConfig;
 
 use crate::{
     server::Configurer,
-    users::{service::UsersService, GetUserUseCase},
+    users::{endpoints, service::UsersService, GetUserUseCase},
 };
 
 /// The Users Component.
@@ -15,6 +15,8 @@ pub struct UsersComponent {
 impl Configurer for UsersComponent {
     fn configure_server(&self, config: &mut ServiceConfig) {
         config.data(self.service.clone() as Arc<dyn GetUserUseCase>);
+
+        endpoints::configure(config);
     }
 }
 

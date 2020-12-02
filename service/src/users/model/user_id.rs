@@ -2,6 +2,8 @@ use std::str::FromStr;
 
 use uuid::Uuid;
 
+use crate::http::Link;
+
 /// The unique ID of a user.
 #[derive(Debug, PartialEq)]
 pub struct UserID(Uuid);
@@ -26,6 +28,12 @@ impl FromStr for UserID {
             tracing::warn!(e = ?e, input = s, "Malformed User ID");
             ParseUserIDError::Malformed
         })
+    }
+}
+
+impl From<UserID> for Link {
+    fn from(user_id: UserID) -> Self {
+        Self::new(format!("/users/{}", user_id.0), false)
     }
 }
 

@@ -5,7 +5,7 @@ pub struct UsersService {}
 
 impl UsersService {
     /// Create a new instance of the users service.
-    pub fn new() -> Self {
+    pub const fn new() -> Self {
         Self {}
     }
 }
