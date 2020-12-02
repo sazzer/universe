@@ -3,6 +3,7 @@ use std::sync::Arc;
 use actix_web::web::ServiceConfig;
 
 use crate::{
+    database::Database,
     server::Configurer,
     users::{endpoints, service::UsersService, GetUserUseCase},
 };
@@ -21,7 +22,7 @@ impl Configurer for UsersComponent {
 }
 
 /// Build the Users Component.
-pub fn build() -> Arc<UsersComponent> {
-    let service = Arc::new(UsersService::new());
+pub fn build(database: Arc<Database>) -> Arc<UsersComponent> {
+    let service = Arc::new(UsersService::new(database));
     Arc::new(UsersComponent { service })
 }

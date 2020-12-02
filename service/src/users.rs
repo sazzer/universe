@@ -1,5 +1,6 @@
 pub mod endpoints;
 mod model;
+mod repository;
 pub mod service;
 mod usecases;
 

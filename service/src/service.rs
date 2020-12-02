@@ -26,8 +26,8 @@ impl Service {
 
         let db = database::build(&config.database).await;
 
+        let users = users::build(db.clone());
         let health = health::builder().with_component("db", db).build();
-        let users = users::build();
 
         let server = server::builder()
             .with_component(health)
