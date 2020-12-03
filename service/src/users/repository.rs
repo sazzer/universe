@@ -1,6 +1,7 @@
+use crate::database::Database;
 use std::sync::Arc;
 
-use crate::database::Database;
+mod get_user;
 
 /// Repository for accessing user data
 pub struct UsersRepository {
