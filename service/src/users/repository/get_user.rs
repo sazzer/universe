@@ -20,8 +20,8 @@ impl UsersRepository {
                     updated: row.get("updated"),
                 },
                 data: UserData {
-                    username: None,
-                    email: None,
+                    username: row.get("username"),
+                    email: row.get("email"),
                     display_name: row.get("display_name"),
                     authentications: vec![],
                 },

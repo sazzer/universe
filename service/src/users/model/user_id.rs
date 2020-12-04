@@ -1,10 +1,8 @@
-use std::str::FromStr;
-
+use crate::http::Link;
 use bytes::BytesMut;
 use postgres_types::{accepts, to_sql_checked, FromSql, IsNull, ToSql, Type};
+use std::str::FromStr;
 use uuid::Uuid;
-
-use crate::http::Link;
 
 /// The unique ID of a user.
 #[derive(Debug, PartialEq, FromSql)]
@@ -54,6 +52,13 @@ impl ToSql for UserID {
 }
 
 #[cfg(test)]
+impl PartialEq<&str> for UserID {
+    fn eq(&self, other: &&str) -> bool {
+        self.0.to_string() == *other
+    }
+}
+
+#[cfg(test)]
 mod tests {
     use super::*;
     use assert2::{check, let_assert};
@@ -71,13 +76,15 @@ mod tests {
         check!(err == expected);
     }
 
-    #[test_case("5046e050-47d3-4a11-b2c6-0517ed30d805" ; "Simple")]
-    #[test_case("  5046e050-47d3-4a11-b2c6-0517ed30d805" ; "Left padded")]
-    #[test_case("5046e050-47d3-4a11-b2c6-0517ed30d805  " ; "Right padded")]
-    #[test_case("  5046e050-47d3-4a11-b2c6-0517ed30d805  " ; "Both padded")]
-    #[test_case("5046e05047d34a11b2c60517ed30d805" ; "Missing hyphens")]
-    fn successful_parse(input: &str) {
+    #[test_case("5046e050-47d3-4a11-b2c6-0517ed30d805", "5046e050-47d3-4a11-b2c6-0517ed30d805" ; "Simple")]
+    #[test_case("  5046e050-47d3-4a11-b2c6-0517ed30d805", "5046e050-47d3-4a11-b2c6-0517ed30d805" ; "Left padded")]
+    #[test_case("5046e050-47d3-4a11-b2c6-0517ed30d805  ", "5046e050-47d3-4a11-b2c6-0517ed30d805" ; "Right padded")]
+    #[test_case("  5046e050-47d3-4a11-b2c6-0517ed30d805  ", "5046e050-47d3-4a11-b2c6-0517ed30d805" ; "Both padded")]
+    #[test_case("5046e05047d34a11b2c60517ed30d805", "5046e050-47d3-4a11-b2c6-0517ed30d805" ; "Missing hyphens")]
+    fn successful_parse(input: &str, expected: &str) {
         let parsed: Result<UserID, ParseUserIDError> = input.parse();
-        let_assert!(Ok(_) = parsed);
+        let_assert!(Ok(user_id) = parsed);
+
+        check!(user_id == expected);
     }
 }
