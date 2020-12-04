@@ -4,32 +4,56 @@ use async_trait::async_trait;
 
 #[async_trait]
 impl GetUserUseCase for UsersService {
-    async fn get_user(&self, user_id: UserID) -> Option<UserModel> {
+    async fn get_user(&self, user_id: &UserID) -> Option<UserModel> {
         self.repository.get_user(user_id).await
     }
 }
 
 #[cfg(test)]
 mod tests {
-    use std::sync::Arc;
-
-    use crate::database::Database;
+    use crate::database::test::TestDatabase;
 
     use super::*;
-    use assert2::check;
-    use universe_testdatabase::TestDatabase;
+    use assert2::{check, let_assert};
+    use universe_testdatabase::seed::SeedUser;
 
     #[actix_rt::test]
     async fn get_unknown_user() {
-        let test_database = TestDatabase::default();
-        let database = Arc::new(Database::new(&crate::database::Config {
-            url: test_database.url,
-        }));
-        let sut = UsersService::new(database);
+        let test_database = TestDatabase::new().await;
+        let sut = UsersService::new(test_database.database.clone());
 
         let user_id = "2caefb5e-712c-4e99-8d18-199c344cc311".parse().unwrap();
 
-        let result = sut.get_user(user_id).await;
+        let result = sut.get_user(&user_id).await;
         check!(result.is_none());
+    }
+
+    #[actix_rt::test]
+    async fn get_known_user() {
+        let test_database = TestDatabase::new().await;
+        let sut = UsersService::new(test_database.database.clone());
+
+        let test_user = SeedUser {
+            user_id: "2caefb5e-712c-4e99-8d18-199c344cc311".parse().unwrap(),
+            ..SeedUser::default()
+        };
+
+        test_database.seed(&test_user).await;
+
+        let user_id = "2caefb5e-712c-4e99-8d18-199c344cc311".parse().unwrap();
+
+        let result = sut.get_user(&user_id).await;
+
+        let_assert!(Some(user) = result);
+
+        check!(user.identity.id == user_id);
+        check!(user.identity.version == test_user.version);
+        check!(user.identity.created == test_user.created);
+        check!(user.identity.updated == test_user.updated);
+
+        check!(user.data.display_name == test_user.display_name);
+        check!(user.data.username.is_none());
+        check!(user.data.email.is_none());
+        check!(user.data.authentications.is_empty());
     }
 }

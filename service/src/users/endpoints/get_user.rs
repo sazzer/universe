@@ -18,8 +18,8 @@ pub async fn get_user(
         Problem::new(NOT_FOUND)
     })?;
 
-    let user = users_service.get_user(user_id).await.ok_or_else(|| {
-        tracing::info!(user_id = ?path.0, "Failed to find user");
+    let user = users_service.get_user(&user_id).await.ok_or_else(|| {
+        tracing::info!(user_id = ?user_id, "Failed to find user");
         Problem::new(NOT_FOUND)
     })?;
 

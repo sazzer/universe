@@ -1,4 +1,9 @@
+use std::str::FromStr;
+
+use crate::seed::SeedData;
+
 use super::postgres::Postgres;
+use deadpool_postgres::{Manager, ManagerConfig, Pool, RecyclingMethod};
 use lazy_static::lazy_static;
 use testcontainers::{clients::Cli, Container, Docker};
 
@@ -32,5 +37,29 @@ impl Default for TestDatabase {
             port,
             url,
         }
+    }
+}
+
+impl TestDatabase {
+    /// Seed some data into the database
+    ///
+    /// # Parameters
+    /// - `data` - The data to seed
+    pub async fn seed(&self, data: &dyn SeedData) -> &Self {
+        tracing::debug!(data = ?data, "Seeding data");
+
+        let pg_config = tokio_postgres::Config::from_str(&self.url).unwrap();
+
+        let mgr_config = ManagerConfig {
+            recycling_method: RecyclingMethod::Fast,
+        };
+        let mgr = Manager::from_config(pg_config, tokio_postgres::NoTls, mgr_config);
+        let pool = Pool::new(mgr, 16);
+
+        let conn = pool.get().await.unwrap();
+
+        conn.execute(data.sql(), &data.binds()[..]).await.unwrap();
+
+        self
     }
 }
