@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use super::Response;
 use actix_http::http::{
-    header::{CacheDirective, ContentType},
+    header::{CacheDirective, ContentType, EntityTag},
     StatusCode,
 };
 use serde::Serialize;
@@ -42,6 +42,9 @@ where
 
     #[serde(skip)]
     pub cache_control: Vec<CacheDirective>,
+
+    #[serde(skip)]
+    pub etag: Option<EntityTag>,
 
     #[serde(flatten)]
     pub data: Option<T>,
@@ -83,6 +86,7 @@ where
             data: None,
             status: StatusCode::OK,
             cache_control: vec![CacheDirective::NoCache],
+            etag: None,
             links: HashMap::new(),
         }
     }
@@ -101,6 +105,7 @@ where
         Self {
             status: hal_response.status,
             cache_control: hal_response.cache_control.clone(),
+            etag: hal_response.etag.clone(),
             content_type,
             body: Some(hal_response),
         }

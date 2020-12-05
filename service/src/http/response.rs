@@ -1,7 +1,7 @@
 use actix_http::{
     http::header::CacheControl,
     http::{
-        header::{CacheDirective, ContentType},
+        header::{CacheDirective, ContentType, ETag, EntityTag},
         StatusCode,
     },
     Error, Response as HttpResponse,
@@ -18,6 +18,7 @@ where
     pub status: StatusCode,
     pub cache_control: Vec<CacheDirective>,
     pub content_type: ContentType,
+    pub etag: Option<EntityTag>,
     pub body: Option<T>,
 }
 
@@ -30,6 +31,7 @@ where
             status: StatusCode::OK,
             cache_control: vec![CacheDirective::NoCache],
             content_type: ContentType::json(),
+            etag: None,
             body: None,
         }
     }
@@ -43,11 +45,17 @@ where
     type Future = Ready<Result<HttpResponse, Error>>;
 
     fn respond_to(self, _req: &actix_web::HttpRequest) -> Self::Future {
-        let response = HttpResponse::build(self.status)
-            .set(CacheControl(self.cache_control))
-            .set(self.content_type)
-            .json(self.body);
+        let mut response = HttpResponse::build(self.status);
 
-        ok(response)
+        response.set(CacheControl(self.cache_control));
+        response.set(self.content_type);
+
+        if let Some(etag) = self.etag {
+            response.set(ETag(etag));
+        }
+
+        let built = response.json(self.body);
+
+        ok(built)
     }
 }
