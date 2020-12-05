@@ -48,7 +48,7 @@ impl SeedUser {
         let new_authentication = json!(
             {
                 "provider": provider.into(),
-                "user": user.into(),
+                "user_id": user.into(),
                 "display_name": display_name.into(),
             }
         );

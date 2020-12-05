@@ -66,7 +66,9 @@ mod tests {
             email: Some("testuser@example.com".to_owned()),
             username: Some("testuser".to_owned()),
             ..SeedUser::default()
-        };
+        }
+        .with_authentication("twitter", "abcdefgh", "@testuser")
+        .with_authentication("google", "12345678", "testuser@example.com");
 
         test_database.seed(&test_user).await;
 
@@ -84,6 +86,17 @@ mod tests {
         check!(user.data.display_name == test_user.display_name);
         check!(user.data.username.unwrap() == "testuser");
         check!(user.data.email.unwrap() == "testuser@example.com");
-        check!(user.data.authentications.is_empty());
+
+        check!(user.data.authentications.len() == 2);
+
+        let_assert!(Some(authentication1) = user.data.authentications.get(0));
+        check!(authentication1.provider == "google");
+        check!(authentication1.user_id == "12345678");
+        check!(authentication1.display_name == "testuser@example.com");
+
+        let_assert!(Some(authentication2) = user.data.authentications.get(1));
+        check!(authentication2.provider == "twitter");
+        check!(authentication2.user_id == "abcdefgh");
+        check!(authentication2.display_name == "@testuser");
     }
 }
