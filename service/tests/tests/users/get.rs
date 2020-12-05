@@ -1,9 +1,10 @@
 use crate::TestService;
 use actix_web::test::TestRequest;
 use assert2::check;
+use universe_testdatabase::seed::SeedUser;
 
 #[actix_rt::test]
-async fn test_get_invalid_id() {
+async fn get_invalid_id() {
     let sut = TestService::new().await;
 
     let response = sut
@@ -22,7 +23,7 @@ async fn test_get_invalid_id() {
 }
 
 #[actix_rt::test]
-async fn test_get_unknown_user() {
+async fn get_unknown_user() {
     let sut = TestService::new().await;
 
     let response = sut
@@ -40,6 +41,95 @@ async fn test_get_unknown_user() {
       "type": "tag:universe/2020:problems/not_found",
       "title": "The requested resource was not found",
       "status": 404
+    }
+    "###);
+}
+
+#[actix_rt::test]
+async fn get_bare_user() {
+    let test_user = SeedUser {
+        user_id: "0f71cb77-9b98-4db8-8b6f-4e736a34133c".parse().unwrap(),
+        display_name: "Test User".to_string(),
+        ..SeedUser::default()
+    };
+
+    let sut = TestService::new().await;
+    sut.seed(&test_user).await;
+
+    let response = sut
+        .inject(
+            TestRequest::get()
+                .uri("/users/0f71cb77-9b98-4db8-8b6f-4e736a34133c")
+                .to_request(),
+        )
+        .await;
+
+    check!(response.status == 200);
+    check!(response.headers.get("content-type").unwrap() == "application/hal+json");
+    insta::assert_json_snapshot!(response.to_json().unwrap(), @r###"
+    {
+      "displayName": "Test User",
+      "email": null,
+      "username": null,
+      "authentications": [],
+      "_links": {
+        "self": {
+          "href": "/users/0f71cb77-9b98-4db8-8b6f-4e736a34133c",
+          "templated": false
+        }
+      }
+    }
+    "###);
+}
+
+#[actix_rt::test]
+async fn get_populated_user() {
+    let test_user = SeedUser {
+        user_id: "0f71cb77-9b98-4db8-8b6f-4e736a34133c".parse().unwrap(),
+        display_name: "Test User".to_string(),
+        email: Some("testuser@example.com".to_owned()),
+        username: Some("testuser".to_owned()),
+        ..SeedUser::default()
+    }
+    .with_authentication("twitter", "abcdefgh", "@testuser")
+    .with_authentication("google", "12345678", "testuser@example.com");
+
+    let sut = TestService::new().await;
+    sut.seed(&test_user).await;
+
+    let response = sut
+        .inject(
+            TestRequest::get()
+                .uri("/users/0f71cb77-9b98-4db8-8b6f-4e736a34133c")
+                .to_request(),
+        )
+        .await;
+
+    check!(response.status == 200);
+    check!(response.headers.get("content-type").unwrap() == "application/hal+json");
+    insta::assert_json_snapshot!(response.to_json().unwrap(), @r###"
+    {
+      "displayName": "Test User",
+      "email": "testuser@example.com",
+      "username": "testuser",
+      "authentications": [
+        {
+          "provider": "google",
+          "userId": "12345678",
+          "displayName": "testuser@example.com"
+        },
+        {
+          "provider": "twitter",
+          "userId": "abcdefgh",
+          "displayName": "@testuser"
+        }
+      ],
+      "_links": {
+        "self": {
+          "href": "/users/0f71cb77-9b98-4db8-8b6f-4e736a34133c",
+          "templated": false
+        }
+      }
     }
     "###);
 }
