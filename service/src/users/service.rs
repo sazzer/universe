@@ -2,6 +2,7 @@ use super::repository::UsersRepository;
 use crate::database::Database;
 use std::sync::Arc;
 
+mod authenticate;
 mod get_user;
 
 /// Service for interacting with Users.
