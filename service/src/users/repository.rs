@@ -4,6 +4,7 @@ use serde_json::Value;
 use std::sync::Arc;
 use tokio_postgres::Row;
 
+mod create_user;
 mod get_user;
 
 /// Repository for accessing user data

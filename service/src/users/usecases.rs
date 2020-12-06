@@ -12,7 +12,8 @@ pub trait GetUserUseCase {
 pub struct UserAuthentication {
     pub provider: ProviderID,
     pub user_id: ProviderUserID,
-    pub display_name: String,
+    pub authentication_display_name: String,
+    pub user_display_name: String,
     pub email: Option<Email>,
     pub username: Option<Username>,
 }
