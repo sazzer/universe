@@ -18,10 +18,26 @@ pub struct UserAuthentication {
     pub username: Option<Username>,
 }
 
+/// Errors that can occur when creating or saving a user.
+#[derive(Debug, PartialEq, thiserror::Error)]
+pub enum SaveUserError {
+    #[error("Email Address is registered to another user")]
+    DuplicateEmail,
+
+    #[error("Username is registered to another user")]
+    DuplicateUsername,
+
+    #[error("An unknown error occurred")]
+    UnknownError,
+}
+
 /// Use Case for authenticating a user.
 #[async_trait]
 pub trait AuthenticateUserUseCase {
     /// Authenticate the user with the given details.
     /// This will either register a new user or retrieve the existing user that matches the details.
-    async fn authenticate(&self, authentication: UserAuthentication) -> UserModel;
+    async fn authenticate(
+        &self,
+        authentication: UserAuthentication,
+    ) -> Result<UserModel, SaveUserError>;
 }

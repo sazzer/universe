@@ -1,12 +1,15 @@
 use super::UsersService;
 use crate::users::{
-    AuthenticateUserUseCase, Authentication, UserAuthentication, UserData, UserModel,
+    AuthenticateUserUseCase, Authentication, SaveUserError, UserAuthentication, UserData, UserModel,
 };
 use async_trait::async_trait;
 
 #[async_trait]
 impl AuthenticateUserUseCase for UsersService {
-    async fn authenticate(&self, authentication: UserAuthentication) -> UserModel {
+    async fn authenticate(
+        &self,
+        authentication: UserAuthentication,
+    ) -> Result<UserModel, SaveUserError> {
         let user = self
             .repository
             .find_authenticated_user(&authentication.provider, &authentication.user_id)
@@ -15,7 +18,7 @@ impl AuthenticateUserUseCase for UsersService {
         if let Some(user) = user {
             tracing::info!(user = ?user, "Authenticated as existing user");
 
-            user
+            Ok(user)
         } else {
             let user_data = UserData {
                 username: authentication.username,
@@ -28,7 +31,7 @@ impl AuthenticateUserUseCase for UsersService {
                 }],
             };
 
-            let user = self.repository.create(user_data).await.unwrap();
+            let user = self.repository.create(user_data).await;
 
             tracing::info!(user = ?user, "Authenticated as new user");
 
@@ -60,7 +63,7 @@ mod tests {
 
         test_database.seed(&test_user).await;
 
-        let user = sut
+        let result = sut
             .authenticate(UserAuthentication {
                 provider: "google".into(),
                 user_id: "12345678".into(),
@@ -70,6 +73,8 @@ mod tests {
                 username: None,
             })
             .await;
+
+        let_assert!(Ok(user) = result);
 
         check!(user.identity.id == "2caefb5e-712c-4e99-8d18-199c344cc311");
         check!(user.identity.version == test_user.version);
@@ -98,7 +103,7 @@ mod tests {
         let test_database = TestDatabase::new().await;
         let sut = UsersService::new(test_database.database.clone());
 
-        let user = sut
+        let result = sut
             .authenticate(UserAuthentication {
                 provider: "google".into(),
                 user_id: "12345678".into(),
@@ -108,6 +113,8 @@ mod tests {
                 username: None,
             })
             .await;
+
+        let_assert!(Ok(user) = result);
 
         check!(user.data.display_name == "Display Name");
         check!(user.data.username.is_none());
@@ -126,7 +133,7 @@ mod tests {
         let test_database = TestDatabase::new().await;
         let sut = UsersService::new(test_database.database.clone());
 
-        let user = sut
+        let result = sut
             .authenticate(UserAuthentication {
                 provider: "google".into(),
                 user_id: "12345678".into(),
@@ -136,6 +143,8 @@ mod tests {
                 username: Some("testuser".parse().unwrap()),
             })
             .await;
+
+        let_assert!(Ok(user) = result);
 
         check!(user.data.display_name == "Display Name");
         check!(user.data.username.unwrap() == "testuser");
@@ -147,5 +156,59 @@ mod tests {
         check!(authentication1.provider == "google");
         check!(authentication1.user_id == "12345678");
         check!(authentication1.display_name == "testuser@example.com");
+    }
+
+    #[actix_rt::test]
+    async fn authenticate_duplicate_email() {
+        let test_database = TestDatabase::new().await;
+        let sut = UsersService::new(test_database.database.clone());
+
+        let test_user = SeedUser {
+            email: Some("testuser@example.com".to_owned()),
+            ..SeedUser::default()
+        };
+
+        test_database.seed(&test_user).await;
+
+        let result = sut
+            .authenticate(UserAuthentication {
+                provider: "google".into(),
+                user_id: "12345678".into(),
+                authentication_display_name: "testuser@example.com".to_string(),
+                user_display_name: "Display Name".to_string(),
+                email: Some("testuser@example.com".parse().unwrap()),
+                username: None,
+            })
+            .await;
+
+        let_assert!(Err(err) = result);
+        check!(SaveUserError::DuplicateEmail == err);
+    }
+
+    #[actix_rt::test]
+    async fn authenticate_duplicate_username() {
+        let test_database = TestDatabase::new().await;
+        let sut = UsersService::new(test_database.database.clone());
+
+        let test_user = SeedUser {
+            username: Some("testuser".to_owned()),
+            ..SeedUser::default()
+        };
+
+        test_database.seed(&test_user).await;
+
+        let result = sut
+            .authenticate(UserAuthentication {
+                provider: "google".into(),
+                user_id: "12345678".into(),
+                authentication_display_name: "testuser@example.com".to_string(),
+                user_display_name: "Display Name".to_string(),
+                email: None,
+                username: Some("testuser".parse().unwrap()),
+            })
+            .await;
+
+        let_assert!(Err(err) = result);
+        check!(SaveUserError::DuplicateUsername == err);
     }
 }

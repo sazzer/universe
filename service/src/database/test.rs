@@ -12,6 +12,8 @@ pub struct TestDatabase {
 
 impl TestDatabase {
     pub async fn new() -> Self {
+        let _ = tracing_subscriber::fmt::try_init();
+
         let test_database = universe_testdatabase::TestDatabase::default();
         let database = Arc::new(Database::new(&crate::database::Config {
             url: test_database.url.clone(),

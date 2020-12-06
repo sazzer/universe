@@ -2,10 +2,10 @@ use chrono::Utc;
 use uuid::Uuid;
 
 use super::UsersRepository;
-use crate::users::{UserData, UserID, UserModel};
+use crate::users::{SaveUserError, UserData, UserID, UserModel};
 
 impl UsersRepository {
-    pub async fn create(&self, data: UserData) -> Result<UserModel, ()> {
+    pub async fn create(&self, data: UserData) -> Result<UserModel, SaveUserError> {
         let user_id = UserID::default();
         let version = Uuid::new_v4();
         let now = Utc::now();
@@ -23,7 +23,7 @@ impl UsersRepository {
             .map_err(|e| {
               tracing::warn!(e = ?e, "Error creating user");
 
-              ()
+              e.into()
             })
     }
 }

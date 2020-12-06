@@ -1,11 +1,13 @@
+mod create_user;
+mod errors;
+mod get_user;
+
 use super::{Authentication, UserData, UserID, UserModel};
 use crate::{database::Database, model::Identity};
+pub use errors::*;
 use serde_json::Value;
 use std::sync::Arc;
 use tokio_postgres::Row;
-
-mod create_user;
-mod get_user;
 
 /// Repository for accessing user data
 pub struct UsersRepository {
