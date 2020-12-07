@@ -1,5 +1,9 @@
-use crate::{authorization::service::AuthorizationService, server::Configurer};
+use crate::{
+    authorization::service::AuthorizationService, authorization::service::SigningKey,
+    server::Configurer,
+};
 use actix_web::web::ServiceConfig;
+use chrono::Duration;
 use std::sync::Arc;
 
 /// The Authorization Component.
@@ -15,6 +19,9 @@ impl Configurer for AuthorizationComponent {
 
 /// Build the Authorization Component.
 pub fn build() -> Arc<AuthorizationComponent> {
-    let service = Arc::new(AuthorizationService::new());
+    let signing_key = SigningKey::new("todo-replace-me");
+    let duration = Duration::days(365);
+
+    let service = Arc::new(AuthorizationService::new(signing_key, duration));
     Arc::new(AuthorizationComponent { service })
 }
