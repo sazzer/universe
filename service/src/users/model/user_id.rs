@@ -53,7 +53,7 @@ impl ToSql for UserID {
 
 impl From<UserID> for Principal {
     fn from(user_id: UserID) -> Self {
-        Principal::User(user_id.0.to_string())
+        Self::User(user_id.0.to_string())
     }
 }
 

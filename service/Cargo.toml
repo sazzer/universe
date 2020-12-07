@@ -35,7 +35,7 @@ tracing-log = "0.1.1"
 tracing-subscriber = "0.2.15"
 uuid = {version = "0.8.1", features = ["v4", "serde"] }
 thiserror = "1.0.22"
-jsonwebtoken = "7.2.0"
+biscuit = "0.5.0"
 
 [dev-dependencies]
 assert2 = "0.3.3"
