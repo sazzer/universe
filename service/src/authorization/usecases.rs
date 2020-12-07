@@ -1,8 +1,8 @@
-use super::{AccessToken, Principal, SerializedAccessToken};
+use super::{AccessToken, Principal, SecurityContext};
 
-/// Use Case for generating an access token for a principal.
-pub trait GenerateAccessTokenUseCase {
-    /// Generate the access token for the given principal.
-    /// This returns the access token both as a raw and serialized form.
-    fn generate_access_token(&self, principal: Principal) -> (AccessToken, SerializedAccessToken);
+/// Use Case for generating an security context for a principal.
+pub trait GenerateSecurityContextUseCase {
+    /// Generate the security context for the given principal.
+    /// This returns the security context both as a raw and serialized form.
+    fn generate_security_context(&self, principal: Principal) -> (SecurityContext, AccessToken);
 }

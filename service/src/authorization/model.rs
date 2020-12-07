@@ -7,18 +7,18 @@ pub enum Principal {
     User(String),
 }
 
-/// The ID of an Access Token.
+/// The ID of a security context.
 #[derive(Debug)]
-pub struct AccessTokenId(Uuid);
+pub struct SecurityContextId(Uuid);
 
-/// The actual details of an Access Token.
+/// The actual details of a security context.
 #[derive(Debug)]
-pub struct AccessToken {
-    pub id: AccessTokenId,
+pub struct SecurityContext {
+    pub id: SecurityContextId,
     pub principal: Principal,
     pub issued: DateTime<Utc>,
     pub expires: DateTime<Utc>,
 }
 
-/// The details of an access token that has been serialized for transmission.
-pub struct SerializedAccessToken(String);
+/// The details of an access token. That is a Security Context that has been serialized into a single string form.
+pub struct AccessToken(String);

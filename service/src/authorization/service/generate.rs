@@ -1,10 +1,10 @@
 use super::AuthorizationService;
 use crate::authorization::{
-    AccessToken, GenerateAccessTokenUseCase, Principal, SerializedAccessToken,
+    AccessToken, GenerateSecurityContextUseCase, Principal, SecurityContext,
 };
 
-impl GenerateAccessTokenUseCase for AuthorizationService {
-    fn generate_access_token(&self, principal: Principal) -> (AccessToken, SerializedAccessToken) {
+impl GenerateSecurityContextUseCase for AuthorizationService {
+    fn generate_security_context(&self, principal: Principal) -> (SecurityContext, AccessToken) {
         todo!()
     }
 }
