@@ -1,4 +1,4 @@
-use crate::http::Link;
+use crate::{authorization::Principal, http::Link};
 use bytes::BytesMut;
 use postgres_types::{accepts, to_sql_checked, FromSql, IsNull, ToSql, Type};
 use std::str::FromStr;
@@ -48,6 +48,12 @@ impl ToSql for UserID {
         w: &mut BytesMut,
     ) -> Result<IsNull, Box<dyn std::error::Error + Sync + Send>> {
         self.0.to_sql(t, w)
+    }
+}
+
+impl From<UserID> for Principal {
+    fn from(user_id: UserID) -> Self {
+        Principal::User(user_id.0.to_string())
     }
 }
 
