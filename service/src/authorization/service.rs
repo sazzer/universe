@@ -1,4 +1,3 @@
-mod claims;
 mod generate;
 mod signing_key;
 

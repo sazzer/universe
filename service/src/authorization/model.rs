@@ -8,12 +8,12 @@ pub enum Principal {
 }
 
 /// The ID of a security context.
-#[derive(Debug)]
-pub struct SecurityContextId(pub(super) Uuid);
+#[derive(Debug, PartialEq)]
+pub struct SecurityContextId(pub(super) String);
 
 impl Default for SecurityContextId {
     fn default() -> Self {
-        Self(Uuid::new_v4())
+        Self(Uuid::new_v4().to_string())
     }
 }
 
@@ -27,4 +27,5 @@ pub struct SecurityContext {
 }
 
 /// The details of an access token. That is a Security Context that has been serialized into a single string form.
+#[derive(Debug)]
 pub struct AccessToken(pub String);
