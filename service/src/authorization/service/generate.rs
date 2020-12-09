@@ -128,18 +128,18 @@ mod tests {
         check!(security_context.principal == verified_security_context.principal);
     }
 
-    #[test_case("", VerifyAccessTokenError::Malformed ; "Blank")]
-    #[test_case("  ", VerifyAccessTokenError::Malformed ; "Whitespace")]
-    #[test_case("Not a JWT", VerifyAccessTokenError::Malformed ; "Not a JWT")]
-    #[test_case("eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.-fr-kR9PUmipVJel3_tWpDAYSpjJsO8VIvDoBtxGGRpzVmpjsnOey9_-UjXCjAaVE_D9TJXYNzUPvtwK36sVcg", VerifyAccessTokenError::Malformed ; "Wrong Passphrase")]
-    #[test_case("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.Tt3YeF965eLLcBcJX3nAn62joFcjfCkUySs0GqT0Ggc", VerifyAccessTokenError::Malformed ; "Wrong Algorithm")]
-    #[test_case("eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.ytwIVQ4mP9UoOsUvwWPjzgkgbZu4qVFePZpIbD1d4UBkKmZufnXI65ktZmT5Bbiw3vunQvcQ6GeYWLBRq8r92g", VerifyAccessTokenError::Malformed ; "Missing Values")]
-    fn verify_malformed(input: &str, expected: VerifyAccessTokenError) {
+    #[test_case("", &VerifyAccessTokenError::Malformed ; "Blank")]
+    #[test_case("  ", &VerifyAccessTokenError::Malformed ; "Whitespace")]
+    #[test_case("Not a JWT", &VerifyAccessTokenError::Malformed ; "Not a JWT")]
+    #[test_case("eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.-fr-kR9PUmipVJel3_tWpDAYSpjJsO8VIvDoBtxGGRpzVmpjsnOey9_-UjXCjAaVE_D9TJXYNzUPvtwK36sVcg", &VerifyAccessTokenError::Malformed ; "Wrong Passphrase")]
+    #[test_case("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.Tt3YeF965eLLcBcJX3nAn62joFcjfCkUySs0GqT0Ggc", &VerifyAccessTokenError::Malformed ; "Wrong Algorithm")]
+    #[test_case("eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.ytwIVQ4mP9UoOsUvwWPjzgkgbZu4qVFePZpIbD1d4UBkKmZufnXI65ktZmT5Bbiw3vunQvcQ6GeYWLBRq8r92g", &VerifyAccessTokenError::Malformed ; "Missing Values")]
+    fn verify_malformed(input: &str, expected: &VerifyAccessTokenError) {
         let sut = AuthorizationService::new(SigningKey::new("signingkey"), Duration::days(5));
 
         let verified = sut.verify_access_token(AccessToken(input.to_string()));
 
         let_assert!(Err(err) = verified);
-        check!(err == expected);
+        check!(&err == expected);
     }
 }
