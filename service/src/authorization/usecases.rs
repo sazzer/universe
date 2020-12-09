@@ -7,8 +7,17 @@ pub trait GenerateSecurityContextUseCase {
     fn generate_security_context(&self, principal: Principal) -> (SecurityContext, AccessToken);
 }
 
+#[derive(Debug, PartialEq, thiserror::Error)]
+pub enum VerifyAccessTokenError {
+    #[error("The access token was malformed")]
+    Malformed,
+}
+
 /// Use Case for verifying and parsing an Access Token
 pub trait VerifyAccessTokenUseCase {
     /// Verify the `AccessToken` is valid, and parse it back into a `SecurityContext`.
-    fn verify_access_token(&self, access_token: AccessToken) -> Result<SecurityContext, ()>;
+    fn verify_access_token(
+        &self,
+        access_token: AccessToken,
+    ) -> Result<SecurityContext, VerifyAccessTokenError>;
 }
