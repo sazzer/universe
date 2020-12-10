@@ -12,9 +12,11 @@ use serde::Serialize;
 pub struct Link {
     pub href: String,
     pub templated: bool,
+    pub name: Option<String>,
 }
 
 impl Link {
+    /// Create a new link
     pub fn new<S>(href: S, templated: bool) -> Self
     where
         S: Into<String>,
@@ -22,6 +24,18 @@ impl Link {
         Self {
             href: href.into(),
             templated,
+            name: None,
+        }
+    }
+
+    /// Specify a name for the link
+    pub fn with_name<S>(self, name: S) -> Self
+    where
+        S: Into<String>,
+    {
+        Self {
+            name: Some(name.into()),
+            ..self
         }
     }
 }
