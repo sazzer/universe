@@ -11,19 +11,19 @@ use serde::Serialize;
 #[derive(Debug, Serialize)]
 pub struct Link {
     pub href: String,
-    pub templated: bool,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
 impl Link {
     /// Create a new link
-    pub fn new<S>(href: S, templated: bool) -> Self
+    pub fn new<S>(href: S) -> Self
     where
         S: Into<String>,
     {
         Self {
             href: href.into(),
-            templated,
             name: None,
         }
     }
@@ -155,8 +155,8 @@ mod tests {
 
     #[test]
     fn with_single_link() {
-        let result = HalResponse::<TestResponseModel>::default()
-            .with_link("self", Link::new("/self", false));
+        let result =
+            HalResponse::<TestResponseModel>::default().with_link("self", Link::new("/self"));
 
         check!(result.links.len() == 1);
 
@@ -164,14 +164,13 @@ mod tests {
         let_assert!(Links::Single(self_link) = self_links);
 
         check!(self_link.href == "/self");
-        check!(self_link.templated == false);
     }
 
     #[test]
     fn with_multiple_individual_link() {
         let result = HalResponse::<TestResponseModel>::default()
-            .with_link("self", Link::new("/self", false))
-            .with_link("other", Link::new("/other", false));
+            .with_link("self", Link::new("/self"))
+            .with_link("other", Link::new("/other"));
 
         check!(result.links.len() == 2);
 
@@ -179,20 +178,18 @@ mod tests {
         let_assert!(Links::Single(self_link) = self_links);
 
         check!(self_link.href == "/self");
-        check!(self_link.templated == false);
 
         let_assert!(Some(other_links) = result.links.get("other"));
         let_assert!(Links::Single(other_link) = other_links);
 
         check!(other_link.href == "/other");
-        check!(other_link.templated == false);
     }
 
     #[test]
     fn with_multiple_same_links() {
         let result = HalResponse::<TestResponseModel>::default()
-            .with_link("self", Link::new("/self", false))
-            .with_link("self", Link::new("/other", false));
+            .with_link("self", Link::new("/self"))
+            .with_link("self", Link::new("/other"));
 
         check!(result.links.len() == 1);
 
@@ -200,9 +197,7 @@ mod tests {
         let_assert!(Links::Multiple(self_link) = self_links);
 
         check!(self_link[0].href == "/self");
-        check!(self_link[0].templated == false);
 
         check!(self_link[1].href == "/other");
-        check!(self_link[1].templated == false);
     }
 }

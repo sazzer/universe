@@ -77,8 +77,7 @@ async fn get_bare_user() {
       "authentications": [],
       "_links": {
         "self": {
-          "href": "/users/0f71cb77-9b98-4db8-8b6f-4e736a34133c",
-          "templated": false
+          "href": "/users/0f71cb77-9b98-4db8-8b6f-4e736a34133c"
         }
       }
     }
@@ -132,8 +131,7 @@ async fn get_populated_user() {
       ],
       "_links": {
         "self": {
-          "href": "/users/0f71cb77-9b98-4db8-8b6f-4e736a34133c",
-          "templated": false
+          "href": "/users/0f71cb77-9b98-4db8-8b6f-4e736a34133c"
         }
       }
     }

@@ -33,7 +33,7 @@ impl FromStr for UserID {
 
 impl From<UserID> for Link {
     fn from(user_id: UserID) -> Self {
-        Self::new(format!("/users/{}", user_id.0), false)
+        Self::new(format!("/users/{}", user_id.0))
     }
 }
 

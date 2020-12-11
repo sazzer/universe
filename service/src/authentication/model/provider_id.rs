@@ -15,7 +15,6 @@ where
 
 impl From<ProviderID> for Link {
     fn from(provider_id: ProviderID) -> Self {
-        Self::new(format!("/authentication/{}/start", provider_id.0), false)
-            .with_name(provider_id.0)
+        Self::new(format!("/authentication/{}/start", provider_id.0)).with_name(provider_id.0)
     }
 }
