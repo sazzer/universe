@@ -1,4 +1,5 @@
 use crate::{
+    authentication::ListProvidersUseCase,
     authentication::{endpoints, service::AuthenticationService},
     server::Configurer,
 };
@@ -12,7 +13,7 @@ pub struct AuthenticationComponent {
 
 impl Configurer for AuthenticationComponent {
     fn configure_server(&self, config: &mut ServiceConfig) {
-        config.data(self.service.clone());
+        config.data(self.service.clone() as Arc<dyn ListProvidersUseCase>);
 
         endpoints::configure(config);
     }

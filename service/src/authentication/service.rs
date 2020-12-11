@@ -1,3 +1,5 @@
+mod list;
+
 /// Service for dealing with Authentication.
 pub struct AuthenticationService {}
 
