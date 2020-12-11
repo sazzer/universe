@@ -30,7 +30,7 @@ impl Service {
 
         let _authorization = authorization::build();
         let users = users::build(db.clone());
-        let authentication = authentication::build();
+        let authentication = authentication::builder().build();
         let health = health::builder().with_component("db", db).build();
 
         let server = server::builder()

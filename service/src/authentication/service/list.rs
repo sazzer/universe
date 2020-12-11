@@ -3,6 +3,10 @@ use crate::authentication::{ListProvidersUseCase, ProviderID};
 
 impl ListProvidersUseCase for AuthenticationService {
     fn list_providers(&self) -> Vec<ProviderID> {
-        vec![ProviderID::from("google"), ProviderID::from("twitter")]
+        self.providers
+            .iter()
+            .map(|provider| provider.0)
+            .cloned()
+            .collect()
     }
 }
