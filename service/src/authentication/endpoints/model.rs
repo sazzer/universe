@@ -13,7 +13,7 @@ impl From<Vec<ProviderID>> for HalResponse<()> {
         }
         .with_link("self", Link::new("/authentication"));
 
-        for provider in providers.into_iter() {
+        for provider in providers {
             result = result.with_link("item", provider.into());
         }
 

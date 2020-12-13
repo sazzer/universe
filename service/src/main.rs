@@ -11,6 +11,11 @@ struct Settings {
     pub port: Option<u16>,
     /// The URL to connect to the database with
     pub database_url: String,
+
+    pub google_client_id: Option<String>,
+    pub google_client_secret: Option<String>,
+    pub google_auth_uri: Option<String>,
+    pub google_token_uri: Option<String>,
 }
 
 impl Default for Settings {
@@ -32,6 +37,12 @@ impl Into<universe_lib::Config> for Settings {
         universe_lib::Config {
             database: universe_lib::DatabaseConfig {
                 url: self.database_url,
+            },
+            google: universe_lib::GoogleConfig {
+                google_client_id: self.google_client_id,
+                google_client_secret: self.google_client_secret,
+                google_auth_uri: self.google_auth_uri,
+                google_token_uri: self.google_token_uri,
             },
         }
     }

@@ -12,4 +12,5 @@ mod service;
 mod users;
 
 pub use database::Config as DatabaseConfig;
+pub use service::GoogleConfig;
 pub use service::{testing::TestResponse, Config, Service};

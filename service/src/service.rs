@@ -6,6 +6,7 @@ mod server;
 pub mod testing;
 mod users;
 
+pub use self::authentication::GoogleConfig;
 use crate::database::Config as DatabaseConfig;
 use crate::server::Server;
 
@@ -14,6 +15,9 @@ use crate::server::Server;
 pub struct Config {
     /// Database connection configuration.
     pub database: DatabaseConfig,
+
+    /// Google Authentication configuration.
+    pub google: GoogleConfig,
 }
 
 /// The actual Universe service.
@@ -30,7 +34,7 @@ impl Service {
 
         let _authorization = authorization::build();
         let users = users::build(db.clone());
-        let authentication = authentication::builder().build();
+        let authentication = authentication::builder().with_google(config.google).build();
         let health = health::builder().with_component("db", db).build();
 
         let server = server::builder()

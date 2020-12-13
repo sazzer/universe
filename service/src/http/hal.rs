@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::collections::BTreeMap;
 
 use super::Response;
 use actix_http::http::{
@@ -63,8 +63,8 @@ where
     #[serde(flatten)]
     pub data: Option<T>,
 
-    #[serde(rename = "_links", skip_serializing_if = "HashMap::is_empty")]
-    pub links: HashMap<String, Links>,
+    #[serde(rename = "_links", skip_serializing_if = "BTreeMap::is_empty")]
+    pub links: BTreeMap<String, Links>,
 }
 
 impl<T> HalResponse<T>
@@ -101,7 +101,7 @@ where
             status: StatusCode::OK,
             cache_control: vec![CacheDirective::NoCache],
             etag: None,
-            links: HashMap::new(),
+            links: BTreeMap::new(),
         }
     }
 }

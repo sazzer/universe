@@ -1,7 +1,7 @@
 use crate::http::Link;
 
 /// The Id of an authentication provider.
-#[derive(Debug, PartialEq, Clone)]
+#[derive(Debug, PartialEq, Eq, Hash, Clone)]
 pub struct ProviderID(String);
 
 impl<S> From<S> for ProviderID

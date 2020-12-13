@@ -1,6 +1,7 @@
 use super::ProviderID;
 use std::{collections::HashMap, sync::Arc};
 
+pub mod google;
 mod list;
 
 /// Trait that authentication providers implement.
