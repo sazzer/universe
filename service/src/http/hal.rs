@@ -27,17 +27,6 @@ impl Link {
             name: None,
         }
     }
-
-    /// Specify a name for the link
-    pub fn with_name<S>(self, name: S) -> Self
-    where
-        S: Into<String>,
-    {
-        Self {
-            name: Some(name.into()),
-            ..self
-        }
-    }
 }
 #[derive(Debug, Serialize)]
 #[serde(untagged)]

@@ -1,7 +1,6 @@
 use super::SeedData;
 use chrono::{DateTime, Timelike, Utc};
 use postgres_types::ToSql;
-use serde_json::json;
 use uuid::Uuid;
 
 /// Representation of a user ready to seed into the test database.
@@ -14,7 +13,6 @@ pub struct SeedUser {
     pub username: Option<String>,
     pub email: Option<String>,
     pub display_name: String,
-    pub authentications: serde_json::Value,
 }
 
 impl Default for SeedUser {
@@ -27,45 +25,14 @@ impl Default for SeedUser {
             username: None,
             email: None,
             display_name: format!("{}", Uuid::new_v4()),
-            authentications: json!([]),
         }
-    }
-}
-
-impl SeedUser {
-    /// Add a new authentication detail to the user
-    ///
-    /// # Parameters
-    /// - `provider` - The ID of the provider
-    /// - `user` - The ID of the user with this provider
-    /// - `display_name` - The display name of this user with this provider
-    pub fn with_authentication<P, I, D>(mut self, provider: P, user: I, display_name: D) -> Self
-    where
-        P: Into<String>,
-        I: Into<String>,
-        D: Into<String>,
-    {
-        let new_authentication = json!(
-            {
-                "provider": provider.into(),
-                "user_id": user.into(),
-                "display_name": display_name.into(),
-            }
-        );
-
-        self.authentications
-            .as_array_mut()
-            .unwrap()
-            .push(new_authentication);
-
-        self
     }
 }
 
 impl SeedData for SeedUser {
     fn sql(&self) -> &str {
-        "INSERT INTO users(user_id, version, created, updated, username, email, display_name, authentications)
-          VALUES ($1, $2, $3, $4, $5, $6, $7, $8)"
+        "INSERT INTO users(user_id, version, created, updated, username, email, display_name)
+          VALUES ($1, $2, $3, $4, $5, $6, $7)"
     }
 
     fn binds(&self) -> Vec<&(dyn ToSql + Sync)> {
@@ -77,7 +44,6 @@ impl SeedData for SeedUser {
             &self.username,
             &self.email,
             &self.display_name,
-            &self.authentications,
         ]
     }
 }

@@ -19,12 +19,6 @@ impl TestService {
             database: DatabaseConfig {
                 url: db.url.clone(),
             },
-            google: universe_lib::GoogleConfig {
-                google_client_id: Some("GoogleClientID".to_string()),
-                google_client_secret: Some("GoogleClientSecret".to_string()),
-                google_auth_uri: None,
-                google_token_uri: None,
-            },
         };
 
         let service = Service::new(config).await;

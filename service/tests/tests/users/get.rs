@@ -74,7 +74,6 @@ async fn get_bare_user() {
       "displayName": "Test User",
       "email": null,
       "username": null,
-      "authentications": [],
       "_links": {
         "self": {
           "href": "/users/0f71cb77-9b98-4db8-8b6f-4e736a34133c"
@@ -93,9 +92,7 @@ async fn get_populated_user() {
         email: Some("testuser@example.com".to_owned()),
         username: Some("testuser".to_owned()),
         ..SeedUser::default()
-    }
-    .with_authentication("twitter", "abcdefgh", "@testuser")
-    .with_authentication("google", "12345678", "testuser@example.com");
+    };
 
     let sut = TestService::new().await;
     sut.seed(&test_user).await;
@@ -117,18 +114,6 @@ async fn get_populated_user() {
       "displayName": "Test User",
       "email": "testuser@example.com",
       "username": "testuser",
-      "authentications": [
-        {
-          "provider": "google",
-          "userId": "12345678",
-          "displayName": "testuser@example.com"
-        },
-        {
-          "provider": "twitter",
-          "userId": "abcdefgh",
-          "displayName": "@testuser"
-        }
-      ],
       "_links": {
         "self": {
           "href": "/users/0f71cb77-9b98-4db8-8b6f-4e736a34133c"
