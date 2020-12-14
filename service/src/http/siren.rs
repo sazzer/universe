@@ -496,7 +496,6 @@ where
             status: siren_response.status,
             cache_control: siren_response.cache_control,
             etag: siren_response.etag,
-            ..Response::default()
         }
     }
 }
@@ -507,6 +506,7 @@ mod tests {
     use serde_json::json;
 
     #[test]
+    #[allow(clippy::too_many_lines)]
     fn build_api_example() {
         let response = SirenPayload::new(json!({
           "orderNumber": 42,
