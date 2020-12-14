@@ -1,4 +1,4 @@
-use crate::{authorization::Principal, http::Link};
+use crate::{authorization::Principal, http::siren::Link};
 use bytes::BytesMut;
 use postgres_types::{accepts, to_sql_checked, FromSql, IsNull, ToSql, Type};
 use std::str::FromStr;
