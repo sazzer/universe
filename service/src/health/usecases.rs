@@ -5,5 +5,8 @@ use async_trait::async_trait;
 #[async_trait]
 pub trait HealthCheckUseCase {
     /// Check the health of the system.
+    ///
+    /// # Returns
+    /// The status of the system health.
     async fn check_health(&self) -> SystemHealth;
 }

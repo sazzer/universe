@@ -9,6 +9,7 @@ use serde::Serialize;
 use serde_json::Value;
 use std::collections::HashMap;
 
+/// HTTP representation of an RFC-7807 Problem response.
 #[derive(Serialize)]
 struct ProblemModel {
     /// The type code for the problem

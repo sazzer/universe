@@ -4,21 +4,34 @@ use std::sync::Arc;
 /// Trait implemented by all components that can contribute to the Actix service.
 pub trait Configurer: Send + Sync {
     /// Configure some details onto the Actix service.
+    ///
+    /// # Parameters
+    /// - `config` - The Actix `ServiceConfig` that routes and data can be wired onto.
     fn configure_server(&self, config: &mut ServiceConfig);
 }
 
 /// The wrapper around the HTTP Server
 pub struct Server {
+    /// The set of configurers to wire details into the server.
     pub(super) config: Vec<Arc<dyn Configurer>>,
 }
 
 impl Server {
     /// Construct a new instance of the Universe HTTP Server.
+    ///
+    /// # Parameters
+    /// - `config` - The set of configurers to wire details into the server
+    ///
+    /// # Returns
+    /// The HTTP server, ready to use.
     pub fn new(config: Vec<Arc<dyn Configurer>>) -> Self {
         Self { config }
     }
 
     /// Start the Universe HTTP Server listening for requests.
+    ///
+    /// # Parameters
+    /// - `port` - The port to listen on.
     pub async fn start(self, port: u16) {
         let address = format!("0.0.0.0:{}", port);
         tracing::info!(address = ?address, "Starting HTTP server");

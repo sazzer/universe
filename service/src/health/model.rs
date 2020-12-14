@@ -32,6 +32,10 @@ impl SystemHealth {
 #[async_trait]
 pub trait Healthcheck: Send + Sync {
     /// Check the health of the component.
+    ///
+    /// # Returns
+    /// If the component is healthy then `Ok(())`.
+    /// If the component is unhealthy then `Err(error)` to represent the reason.
     async fn check_health(&self) -> Result<(), Box<dyn Error>>;
 }
 

@@ -14,8 +14,10 @@ impl Default for UserID {
     }
 }
 
+/// Potential errors from parsing a user ID from a string.
 #[derive(Debug, PartialEq, Clone, Copy, thiserror::Error)]
 pub enum ParseUserIDError {
+    /// The User ID was malformed
     #[error("The User ID was malformed")]
     Malformed,
 }

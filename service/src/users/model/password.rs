@@ -1,4 +1,4 @@
-use argonautica::{config::Version, Hasher, Verifier};
+use argonautica::{Hasher, Verifier};
 
 /// Representation of a password for a user, either hashed or not.
 #[derive(Debug, PartialEq)]
@@ -6,6 +6,12 @@ pub struct Password(String);
 
 impl Password {
     /// Construct a new hashed password from the already hashed string.
+    ///
+    /// # Parameters
+    /// - `input` - The hashed password to wrap.
+    ///
+    /// # Returns
+    /// The password
     pub fn from_hash<S>(input: S) -> Self
     where
         S: Into<String>,
@@ -14,6 +20,12 @@ impl Password {
     }
 
     /// Construct a new hashed password from the plaintext version.
+    ///
+    /// # Parameters
+    /// - `input` - The plaintext password to hash.
+    ///
+    /// # Returns
+    /// The password
     pub fn from_plaintext<S>(input: S) -> Self
     where
         S: Into<String>,

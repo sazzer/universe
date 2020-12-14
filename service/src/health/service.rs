@@ -5,6 +5,7 @@ use super::{ComponentHealth, HealthCheckUseCase, Healthcheck, SystemHealth};
 
 /// The actual health service.
 pub struct HealthService {
+    /// The components to check the health of.
     components: HashMap<String, Arc<dyn Healthcheck>>,
 }
 

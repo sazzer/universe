@@ -10,6 +10,7 @@ use crate::{
 
 /// The Users Component.
 pub struct UsersComponent {
+    /// The users service.
     service: Arc<UsersService>,
 }
 
@@ -22,6 +23,12 @@ impl Configurer for UsersComponent {
 }
 
 /// Build the Users Component.
+///
+/// # Parameters
+/// - `database` - The database connection
+///
+/// # Returns
+/// The users component to wire in to other components.
 pub fn build(database: Arc<Database>) -> Arc<UsersComponent> {
     let service = Arc::new(UsersService::new(database));
     Arc::new(UsersComponent { service })

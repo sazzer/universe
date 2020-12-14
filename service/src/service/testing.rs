@@ -3,7 +3,13 @@ use actix_http::Request;
 use actix_web::App;
 
 impl Service {
-    /// Inject a request into the server. Only used for testing
+    /// Inject a request into the server. Only used for testing.
+    ///
+    /// # Parameters
+    /// - `req` - The request to inject
+    ///
+    /// # Returns
+    /// The response from injecting the request.
     pub async fn inject(&self, req: Request) -> TestResponse {
         let mut app = App::new();
 

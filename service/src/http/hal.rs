@@ -10,14 +10,21 @@ use serde::Serialize;
 /// Representation of a link to another resource
 #[derive(Debug, Serialize)]
 pub struct Link {
+    /// The actual href for the link.
     pub href: String,
-
+    /// The name of the link.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
 }
 
 impl Link {
     /// Create a new link
+    ///
+    /// # Parameters
+    /// - `href` - The href for the link
+    ///
+    /// # Returns
+    /// The link
     pub fn new<S>(href: S) -> Self
     where
         S: Into<String>,
@@ -28,30 +35,40 @@ impl Link {
         }
     }
 }
+
+/// Wrapper around a set of links in a HAL document.
 #[derive(Debug, Serialize)]
 #[serde(untagged)]
 pub enum Links {
+    /// A single link.
     Single(Link),
+    /// A set of multiple links.
     Multiple(Vec<Link>),
 }
 
+/// Representation of a HAL Response.
 #[derive(Debug, Serialize)]
 pub struct HalResponse<T>
 where
     T: Serialize,
 {
+    /// The status code
     #[serde(skip)]
     pub status: StatusCode,
 
+    /// The caching controls
     #[serde(skip)]
     pub cache_control: Vec<CacheDirective>,
 
+    /// The etag
     #[serde(skip)]
     pub etag: Option<EntityTag>,
 
+    /// The data for the response
     #[serde(flatten)]
     pub data: Option<T>,
 
+    /// The links for the response
     #[serde(rename = "_links", skip_serializing_if = "BTreeMap::is_empty")]
     pub links: BTreeMap<String, Links>,
 }
@@ -60,6 +77,11 @@ impl<T> HalResponse<T>
 where
     T: Serialize,
 {
+    /// Add a new link to the response
+    ///
+    /// # Parameters
+    /// - `key` - The key of the link
+    /// - `link` - The link itself
     pub fn with_link<S>(mut self, key: S, link: Link) -> Self
     where
         S: Into<String>,

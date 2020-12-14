@@ -6,11 +6,15 @@ use crate::{
     users::{Email, UserModel, Username},
 };
 
+/// Representation of the data that makes up a user in the HTTP response.
 #[derive(Debug, Serialize)]
 #[serde(rename_all = "camelCase")]
 pub struct UserResponse {
+    /// The display name of the user
     display_name: String,
+    /// The email address of the user
     email: Option<Email>,
+    /// The username of the user
     username: Option<Username>,
 }
 

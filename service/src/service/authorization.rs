@@ -8,6 +8,7 @@ use std::sync::Arc;
 
 /// The Authorization Component.
 pub struct AuthorizationComponent {
+    /// The authorization service.
     service: Arc<AuthorizationService>,
 }
 
@@ -18,6 +19,9 @@ impl Configurer for AuthorizationComponent {
 }
 
 /// Build the Authorization Component.
+///
+/// # Returns
+/// The build authorization component.
 pub fn build() -> Arc<AuthorizationComponent> {
     let signing_key = SigningKey::new("todo-replace-me");
     let duration = Duration::days(365);

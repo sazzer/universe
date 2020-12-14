@@ -8,7 +8,7 @@ mod users;
 use crate::database::Config as DatabaseConfig;
 use crate::server::Server;
 
-/// Configuration needed to build the service
+/// Configuration needed to build the service.
 #[derive(Debug)]
 pub struct Config {
     /// Database connection configuration.
@@ -17,11 +17,18 @@ pub struct Config {
 
 /// The actual Universe service.
 pub struct Service {
+    /// The HTTP Server.
     server: Server,
 }
 
 impl Service {
     /// Construct a new instance of the Universe service.
+    ///
+    /// # Parameters
+    /// - `config` - The configuration to build the service from.
+    ///
+    /// # Returns
+    /// The service, ready to use.
     pub async fn new(config: Config) -> Self {
         tracing::debug!(config = ?config, "Building Universe");
 
@@ -29,9 +36,9 @@ impl Service {
 
         let _authorization = authorization::build();
         let users = users::build(db.clone());
-        let health = health::builder().with_component("db", db).build();
+        let health = health::Builder::default().with_component("db", db).build();
 
-        let server = server::builder()
+        let server = server::Builder::default()
             .with_component(health)
             .with_component(users)
             .build();
@@ -42,6 +49,9 @@ impl Service {
     }
 
     /// Start the Universe service running.
+    ///
+    /// # Parameters
+    /// - `port` - The port number to listen on.
     pub async fn start(self, port: u16) {
         tracing::debug!("Starting Universe");
         self.server.start(port).await;

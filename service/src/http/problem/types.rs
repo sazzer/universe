@@ -2,10 +2,14 @@ use super::{Problem, ProblemType, ProblemTypeStatus};
 use actix_http::http::StatusCode;
 use std::fmt::{Display, Formatter};
 
+/// A simple representation of a problem type.
 #[derive(Debug)]
 pub struct SimpleProblemType {
+    /// The actual problem code
     pub problem_type: &'static str,
+    /// The title of the problem
     pub problem_title: &'static str,
+    /// The default status code for the problem
     pub status_code: StatusCode,
 }
 

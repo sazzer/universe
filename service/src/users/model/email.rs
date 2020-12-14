@@ -7,8 +7,10 @@ use std::str::FromStr;
 #[derive(Debug, PartialEq, Serialize, FromSql)]
 pub struct Email(String);
 
+/// Potential errors from parsing an email address from a string.
 #[derive(Debug, PartialEq, Clone, Copy, thiserror::Error)]
 pub enum ParseEmailError {
+    /// The Email was blank
     #[error("The Email was blank")]
     Blank,
 }

@@ -3,6 +3,12 @@ use crate::health::Healthcheck;
 use std::sync::Arc;
 
 /// Build the database component.
+///
+/// # Parameters
+/// - `config` - The database configuration
+///
+/// # Returns
+/// The database connection itself.
 pub async fn build(config: &Config) -> Arc<Database> {
     tracing::debug!(config = ?config, "Building database connection");
 

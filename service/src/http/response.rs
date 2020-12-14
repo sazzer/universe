@@ -15,10 +15,15 @@ pub struct Response<T>
 where
     T: Serialize,
 {
+    /// The HTTP Status Code
     pub status: StatusCode,
+    /// The caching controls
     pub cache_control: Vec<CacheDirective>,
+    /// The content type
     pub content_type: ContentType,
+    /// The etag to return, if applicable
     pub etag: Option<EntityTag>,
+    /// The actual response body
     pub body: Option<T>,
 }
 

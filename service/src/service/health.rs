@@ -9,11 +9,12 @@ use crate::{
 use std::{collections::HashMap, sync::Arc};
 
 /// Representation of the Health component in the service
-pub struct HealthComponent {
+pub struct Component {
+    /// The health service.
     healthservice: Arc<HealthService>,
 }
 
-impl Configurer for HealthComponent {
+impl Configurer for Component {
     fn configure_server(&self, config: &mut ServiceConfig) {
         config.data(self.healthservice.clone() as Arc<dyn HealthCheckUseCase>);
         endpoints::configure(config);
@@ -22,17 +23,17 @@ impl Configurer for HealthComponent {
 
 /// Builder for creating the Health Component
 #[derive(Default)]
-pub struct HealthComponentBuilder {
+pub struct Builder {
+    /// The components to check the health of.
     components: HashMap<String, Arc<dyn Healthcheck>>,
 }
 
-/// Create the Health Component builder
-pub fn builder() -> HealthComponentBuilder {
-    HealthComponentBuilder::default()
-}
-
-impl HealthComponentBuilder {
+impl Builder {
     /// Add a new component into the healthchecks.
+    ///
+    /// # Parameters
+    /// - `name` - The name of the component
+    /// - `component` - The component itself
     pub fn with_component<S>(self, name: S, component: Arc<dyn Healthcheck>) -> Self
     where
         S: Into<String>,
@@ -43,8 +44,11 @@ impl HealthComponentBuilder {
     }
 
     /// Build the healthchecks component itself.
-    pub fn build(self) -> Arc<HealthComponent> {
-        Arc::new(HealthComponent {
+    ///
+    /// # Returns
+    /// The actual healthchecks component.
+    pub fn build(self) -> Arc<Component> {
+        Arc::new(Component {
             healthservice: Arc::new(HealthService::new(self.components)),
         })
     }

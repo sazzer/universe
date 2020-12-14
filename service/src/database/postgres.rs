@@ -17,6 +17,9 @@ pub struct Database {
 
 impl Database {
     /// Construct a new database connection.
+    ///
+    /// # Parameters
+    /// - `config` - The connection config
     pub fn new(config: &Config) -> Self {
         let pg_config = tokio_postgres::Config::from_str(&config.url).unwrap();
 

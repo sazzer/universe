@@ -2,6 +2,13 @@ use super::UsersRepository;
 use crate::users::{UserID, UserModel};
 
 impl UsersRepository {
+    /// Get the user that has the given User Id.
+    ///
+    /// # Parameters
+    /// - `user_id` - The ID of the User to retrieve.
+    ///
+    /// # Returns
+    /// The user with the given ID. If no user was found then returns `None`.
     pub async fn get_user(&self, user_id: &UserID) -> Option<UserModel> {
         let conn = self.database.checkout().await.unwrap();
 

@@ -3,12 +3,14 @@ use postgres_types::{accepts, to_sql_checked, FromSql, IsNull, ToSql, Type};
 use serde::Serialize;
 use std::str::FromStr;
 
-/// A username..
+/// A username.
 #[derive(Debug, PartialEq, Serialize, FromSql)]
 pub struct Username(String);
 
+/// Potential errors from parsing a username from a string.
 #[derive(Debug, PartialEq, Clone, Copy, thiserror::Error)]
 pub enum ParseUsernameError {
+    /// The username was blank.
     #[error("The Username was blank")]
     Blank,
 }

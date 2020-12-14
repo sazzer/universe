@@ -75,6 +75,9 @@ impl Problem {
     }
 
     /// Set the Detail of the Problem instance
+    ///
+    /// # Parameters
+    /// - `detail` - The detail to use
     #[allow(dead_code)]
     pub fn with_detail<S>(self, detail: S) -> Self
     where
@@ -87,6 +90,9 @@ impl Problem {
     }
 
     /// Set the Instance of the Problem instance
+    ///
+    /// # Parameters
+    /// - `instance` - The instance value to use
     #[allow(dead_code)]
     pub fn with_instance<S>(self, instance: S) -> Self
     where
@@ -99,6 +105,10 @@ impl Problem {
     }
 
     /// Set some extra data on the Problem instance
+    ///
+    /// # Parameters
+    /// - `key` - The key of the extra data
+    /// - `value` - The value of the extra data
     pub fn with_extra<K, V>(self, key: K, value: V) -> Self
     where
         K: Into<String>,

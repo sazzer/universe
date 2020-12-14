@@ -10,8 +10,10 @@ use crate::{
 /// HTTP Model to represent the health of a single component
 #[derive(Debug, Serialize)]
 pub struct ComponentHealthModel {
+    /// Whether or not the component is healthy.
     pub healthy: bool,
 
+    /// A message about the status of the component.
     #[serde(skip_serializing_if = "Option::is_none")]
     pub message: Option<String>,
 }
@@ -19,7 +21,9 @@ pub struct ComponentHealthModel {
 /// HTTP Model to represent the health of the entire system
 #[derive(Debug, Serialize)]
 pub struct SystemHealthModel {
+    /// Whether or not the system is healthy.
     pub healthy: bool,
+    /// The health of the components.
     pub components: HashMap<String, ComponentHealthModel>,
 }
 

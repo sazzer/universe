@@ -9,6 +9,15 @@ use crate::{
 use actix_web::web::{Data, Path};
 use std::sync::Arc;
 
+/// HTTP handler to get a user by ID.
+///
+/// # Parameters
+/// - `path` - The parsed path details
+/// - `users_service` - The users service to get the user with
+///
+/// # Returns
+/// The representation of the user on the HTTP API, or else an RFC-7807 Problem indicating why
+/// the user couldn't be retrieved.
 pub async fn get_user(
     path: Path<String>,
     users_service: Data<Arc<dyn GetUserUseCase>>,
