@@ -5,7 +5,7 @@ use uuid::Uuid;
 ///
 /// # Types
 /// - `<I>` - The type to use for the ID.
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub struct Identity<I> {
     /// The actual ID of the resource.
     pub id: I,
@@ -22,7 +22,7 @@ pub struct Identity<I> {
 /// # Types
 /// - `<I>` - The type to use for the ID.
 /// - `<D>` - The type to use for the data.
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub struct Model<I, D> {
     /// The identity of the resource.
     pub identity: Identity<I>,

@@ -1,23 +1,31 @@
 use super::UsersService;
-use crate::users::{CreateUserError, CreateUserUseCase, UserData, UserID, UserModel, Username};
+use crate::users::{
+    repository::SaveUserError, CreateUserError, CreateUserUseCase, UserData, UserModel,
+};
 use async_trait::async_trait;
 
 #[async_trait]
 impl CreateUserUseCase for UsersService {
     async fn create_user(&self, data: UserData) -> Result<UserModel, CreateUserError> {
-        self.repository.create_user(data).await
+        self.repository
+            .create_user(data)
+            .await
+            .map_err(|e| match e {
+                SaveUserError::DuplicateEmail => CreateUserError::DuplicateEmail,
+                SaveUserError::DuplicateUsername => CreateUserError::DuplicateUsername,
+                SaveUserError::UnexpectedError => CreateUserError::UnexpectedError,
+            })
     }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::database::test::TestDatabase;
+    use crate::{database::test::TestDatabase, users::GetUserUseCase};
     use assert2::{check, let_assert};
     use universe_testdatabase::seed::SeedUser;
 
     #[actix_rt::test]
-    #[ignore]
     async fn create_user() {
         let test_database = TestDatabase::new().await;
         let sut = UsersService::new(test_database.database.clone());
@@ -38,7 +46,25 @@ mod tests {
     }
 
     #[actix_rt::test]
-    #[ignore]
+    async fn create_refetch_user() {
+        let test_database = TestDatabase::new().await;
+        let sut = UsersService::new(test_database.database.clone());
+
+        let result = sut
+            .create_user(UserData {
+                username: "testuser".parse().unwrap(),
+                email: "testuser@example.com".parse().unwrap(),
+                display_name: "Test User".to_string(),
+            })
+            .await;
+
+        let_assert!(Ok(user) = result);
+
+        let fetched = sut.get_user_by_id(&user.identity.id).await;
+        check!(fetched.unwrap() == user);
+    }
+
+    #[actix_rt::test]
     async fn create_user_duplicate_username() {
         let test_database = TestDatabase::new().await;
         let sut = UsersService::new(test_database.database.clone());
@@ -63,7 +89,6 @@ mod tests {
     }
 
     #[actix_rt::test]
-    #[ignore]
     async fn create_user_duplicate_email() {
         let test_database = TestDatabase::new().await;
         let sut = UsersService::new(test_database.database.clone());

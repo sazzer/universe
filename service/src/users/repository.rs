@@ -1,8 +1,10 @@
 mod create_user;
+mod errors;
 mod get_user;
 
 use super::{UserData, UserID, UserModel};
 use crate::{database::Database, model::Identity};
+pub use errors::*;
 use std::sync::Arc;
 use tokio_postgres::Row;
 

@@ -2,7 +2,7 @@ use super::{Email, UserID, Username};
 use crate::model::Model;
 
 /// Data that makes up a User.
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub struct UserData {
     /// The email address of the user, if known.
     pub email: Email,
