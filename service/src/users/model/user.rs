@@ -5,9 +5,9 @@ use crate::model::Model;
 #[derive(Debug)]
 pub struct UserData {
     /// The email address of the user, if known.
-    pub email: Option<Email>,
+    pub email: Email,
     /// The username of the user, if known.
-    pub username: Option<Username>,
+    pub username: Username,
     /// The display name of the user.
     pub display_name: String,
 }

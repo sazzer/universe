@@ -3,7 +3,7 @@ CREATE TABLE users(
   version UUID NOT NULL,
   created TIMESTAMP WITH TIME ZONE NOT NULL,
   updated TIMESTAMP WITH TIME ZONE NOT NULL,
-  username TEXT NULL UNIQUE,
-  email TEXT NULL UNIQUE,
+  username TEXT NOT NULL UNIQUE,
+  email TEXT NOT NULL UNIQUE,
   display_name TEXT NOT NULL
 );

@@ -13,9 +13,9 @@ pub struct UserResponse {
     /// The display name of the user
     display_name: String,
     /// The email address of the user
-    email: Option<Email>,
+    email: Email,
     /// The username of the user
-    username: Option<Username>,
+    username: Username,
 }
 
 impl From<UserModel> for SirenResponse<UserResponse> {

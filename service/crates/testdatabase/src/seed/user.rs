@@ -10,8 +10,8 @@ pub struct SeedUser {
     pub version: Uuid,
     pub created: DateTime<Utc>,
     pub updated: DateTime<Utc>,
-    pub username: Option<String>,
-    pub email: Option<String>,
+    pub username: String,
+    pub email: String,
     pub display_name: String,
 }
 
@@ -22,8 +22,8 @@ impl Default for SeedUser {
             version: Uuid::new_v4(),
             created: Utc::now().with_nanosecond(0).unwrap(),
             updated: Utc::now().with_nanosecond(0).unwrap(),
-            username: None,
-            email: None,
+            username: format!("{}", Uuid::new_v4()),
+            email: format!("{}", Uuid::new_v4()),
             display_name: format!("{}", Uuid::new_v4()),
         }
     }

@@ -46,60 +46,13 @@ async fn get_unknown_user() {
 }
 
 #[actix_rt::test]
-async fn get_bare_user() {
-    let test_user = SeedUser {
-        user_id: "0f71cb77-9b98-4db8-8b6f-4e736a34133c".parse().unwrap(),
-        version: "588fa1b7-19f1-4366-a637-ab247238557b".parse().unwrap(),
-        display_name: "Test User".to_string(),
-        ..SeedUser::default()
-    };
-
-    let sut = TestService::new().await;
-    sut.seed(&test_user).await;
-
-    let response = sut
-        .inject(
-            TestRequest::get()
-                .uri("/users/0f71cb77-9b98-4db8-8b6f-4e736a34133c")
-                .to_request(),
-        )
-        .await;
-
-    check!(response.status == 200);
-    check!(response.headers.get("content-type").unwrap() == "application/vnd.siren+json");
-    check!(response.headers.get("cache-control").unwrap() == "public, max-age=3600");
-    check!(response.headers.get("etag").unwrap() == "\"588fa1b7-19f1-4366-a637-ab247238557b\"");
-    insta::assert_json_snapshot!(response.to_json().unwrap(), @r###"
-    {
-      "class": [
-        "user",
-        "item"
-      ],
-      "properties": {
-        "displayName": "Test User",
-        "email": null,
-        "username": null
-      },
-      "links": [
-        {
-          "href": "/users/0f71cb77-9b98-4db8-8b6f-4e736a34133c",
-          "rel": [
-            "self"
-          ]
-        }
-      ]
-    }
-    "###);
-}
-
-#[actix_rt::test]
 async fn get_populated_user() {
     let test_user = SeedUser {
         user_id: "0f71cb77-9b98-4db8-8b6f-4e736a34133c".parse().unwrap(),
         version: "588fa1b7-19f1-4366-a637-ab247238557b".parse().unwrap(),
         display_name: "Test User".to_string(),
-        email: Some("testuser@example.com".to_owned()),
-        username: Some("testuser".to_owned()),
+        email: "testuser@example.com".to_owned(),
+        username: "testuser".to_owned(),
         ..SeedUser::default()
     };
 
