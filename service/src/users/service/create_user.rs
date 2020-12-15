@@ -21,7 +21,10 @@ impl CreateUserUseCase for UsersService {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{database::test::TestDatabase, users::GetUserUseCase};
+    use crate::{
+        database::test::TestDatabase,
+        users::{GetUserUseCase, Password},
+    };
     use assert2::{check, let_assert};
     use universe_testdatabase::seed::SeedUser;
 
@@ -35,6 +38,7 @@ mod tests {
                 username: "testuser".parse().unwrap(),
                 email: "testuser@example.com".parse().unwrap(),
                 display_name: "Test User".to_string(),
+                password: Password::from_plaintext("Pa55word"),
             })
             .await;
 
@@ -43,6 +47,7 @@ mod tests {
         check!(user.data.display_name == "Test User");
         check!(user.data.username == "testuser");
         check!(user.data.email == "testuser@example.com");
+        check!(user.data.password == "Pa55word");
     }
 
     #[actix_rt::test]
@@ -55,6 +60,7 @@ mod tests {
                 username: "testuser".parse().unwrap(),
                 email: "testuser@example.com".parse().unwrap(),
                 display_name: "Test User".to_string(),
+                password: Password::from_plaintext("Pa55word"),
             })
             .await;
 
@@ -80,6 +86,7 @@ mod tests {
                 username: "testuser".parse().unwrap(),
                 email: "testuser@example.com".parse().unwrap(),
                 display_name: "Test User".to_string(),
+                password: Password::from_plaintext("Pa55word"),
             })
             .await;
 
@@ -104,6 +111,7 @@ mod tests {
                 username: "testuser".parse().unwrap(),
                 email: "testuser@example.com".parse().unwrap(),
                 display_name: "Test User".to_string(),
+                password: Password::from_plaintext("Pa55word"),
             })
             .await;
 

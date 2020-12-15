@@ -5,5 +5,6 @@ CREATE TABLE users(
   updated TIMESTAMP WITH TIME ZONE NOT NULL,
   username TEXT NOT NULL UNIQUE,
   email TEXT NOT NULL UNIQUE,
-  display_name TEXT NOT NULL
+  display_name TEXT NOT NULL,
+  password TEXT NOT NULL
 );

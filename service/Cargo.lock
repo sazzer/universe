@@ -3143,6 +3143,7 @@ dependencies = [
 name = "universe-testdatabase"
 version = "0.1.0"
 dependencies = [
+ "argonautica",
  "chrono",
  "deadpool",
  "deadpool-postgres",

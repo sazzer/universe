@@ -1,4 +1,5 @@
 use super::SeedData;
+use argonautica::Hasher;
 use chrono::{DateTime, Timelike, Utc};
 use postgres_types::ToSql;
 use uuid::Uuid;
@@ -13,6 +14,7 @@ pub struct SeedUser {
     pub username: String,
     pub email: String,
     pub display_name: String,
+    pub password: String,
 }
 
 impl Default for SeedUser {
@@ -25,14 +27,30 @@ impl Default for SeedUser {
             username: format!("{}", Uuid::new_v4()),
             email: format!("{}", Uuid::new_v4()),
             display_name: format!("{}", Uuid::new_v4()),
+            password: "-".to_string(),
         }
+    }
+}
+
+impl SeedUser {
+    pub fn with_password<S>(mut self, password: S) -> Self
+    where
+        S: Into<String>,
+    {
+        self.password = Hasher::default()
+            .opt_out_of_secret_key(true)
+            .with_password(password.into())
+            .hash()
+            .unwrap();
+
+        self
     }
 }
 
 impl SeedData for SeedUser {
     fn sql(&self) -> &str {
-        "INSERT INTO users(user_id, version, created, updated, username, email, display_name)
-          VALUES ($1, $2, $3, $4, $5, $6, $7)"
+        "INSERT INTO users(user_id, version, created, updated, username, email, display_name, password)
+          VALUES ($1, $2, $3, $4, $5, $6, $7, $8)"
     }
 
     fn binds(&self) -> Vec<&(dyn ToSql + Sync)> {
@@ -44,6 +62,7 @@ impl SeedData for SeedUser {
             &self.username,
             &self.email,
             &self.display_name,
+            &self.password,
         ]
     }
 }

@@ -19,14 +19,15 @@ impl UsersRepository {
         let identity: Identity<UserID> = Identity::default();
 
         let user = conn.query_one(
-            "INSERT INTO users(user_id, version, created, updated, username, email, display_name) VALUES ($1, $2, $3, $3, $4, $5, $6) RETURNING *",
+            "INSERT INTO users(user_id, version, created, updated, username, email, display_name, password) VALUES ($1, $2, $3, $3, $4, $5, $6, $7) RETURNING *",
             &[
                 &identity.id,
                 &identity.version,
                 &identity.created,
                 &data.username,
                 &data.email,
-                &data.display_name
+                &data.display_name,
+                &data.password,
             ],
         )
         .await

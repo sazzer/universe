@@ -1,4 +1,4 @@
-use super::{Email, UserID, Username};
+use super::{Email, Password, UserID, Username};
 use crate::model::Model;
 
 /// Data that makes up a User.
@@ -10,6 +10,8 @@ pub struct UserData {
     pub username: Username,
     /// The display name of the user.
     pub display_name: String,
+    /// The users password.
+    pub password: Password,
 }
 
 /// Model representation for a persisted user.

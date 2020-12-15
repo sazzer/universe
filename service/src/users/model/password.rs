@@ -1,7 +1,10 @@
 use argonautica::{Hasher, Verifier};
+use bytes::BytesMut;
+use postgres_types::{accepts, to_sql_checked, FromSql, IsNull, ToSql, Type};
+use serde::Serialize;
 
 /// Representation of a password for a user, either hashed or not.
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Serialize, FromSql)]
 pub struct Password(String);
 
 impl Password {
@@ -46,6 +49,20 @@ impl PartialEq<&str> for Password {
             .with_password(*other)
             .verify()
             .unwrap()
+    }
+}
+
+impl ToSql for Password {
+    accepts!(VARCHAR, TEXT);
+
+    to_sql_checked!();
+
+    fn to_sql(
+        &self,
+        t: &Type,
+        w: &mut BytesMut,
+    ) -> Result<IsNull, Box<dyn std::error::Error + Sync + Send>> {
+        self.0.to_sql(t, w)
     }
 }
 

@@ -41,7 +41,8 @@ mod tests {
             email: "testuser@example.com".to_owned(),
             username: "testuser".to_owned(),
             ..SeedUser::default()
-        };
+        }
+        .with_password("Pa55w0rd");
         test_database.seed(&test_user).await;
 
         let user_id = "2caefb5e-712c-4e99-8d18-199c344cc311".parse().unwrap();
@@ -58,6 +59,7 @@ mod tests {
         check!(user.data.display_name == test_user.display_name);
         check!(user.data.username == test_user.username.as_ref());
         check!(user.data.email == test_user.email.as_ref());
+        check!(user.data.password == "Pa55w0rd");
     }
 
     #[actix_rt::test]

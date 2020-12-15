@@ -48,6 +48,7 @@ pub(super) fn parse_row(row: &Row) -> UserModel {
             username: row.get("username"),
             email: row.get("email"),
             display_name: row.get("display_name"),
+            password: row.get("password"),
         },
     }
 }
