@@ -1,3 +1,4 @@
+mod create_user;
 mod get_user;
 
 use super::{UserData, UserID, UserModel};
