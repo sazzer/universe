@@ -1,7 +1,7 @@
 use actix_http::http::header::CacheDirective;
 
 use crate::{
-    http::siren::{Action, Field, SirenPayload, SirenResponse},
+    http::siren::{Action, Field, Link, SirenPayload, SirenResponse},
     http::Response,
 };
 
@@ -14,8 +14,10 @@ pub async fn index() -> Response<SirenPayload<()>> {
         body: Some(
             SirenPayload::new(())
                 .with_class("authentication")
+                .with_link(Link::new("/authentication").with_rel("self"))
                 .with_action(
-                    Action::new("authenticate", "POST", "/authentication")
+                    Action::new("start-authentication", "POST", "/authentication")
+                        .with_type_form()
                         .with_field(Field::new("username", "text")),
                 ),
         ),
