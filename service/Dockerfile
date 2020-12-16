@@ -49,3 +49,5 @@ ENV PORT=8000
 ENV RUST_LOG=debug
 
 CMD ["/universe/start.sh"]
+
+HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 CMD wget -q http://localhost:$PORT/health

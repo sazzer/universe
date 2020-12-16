@@ -9,7 +9,9 @@ actix-cors = "0.5.3"
 actix-http = "2.2.0"
 actix-rt = "1.1.1"
 actix-web = "3.3.0"
+argonautica = "0.2.0"
 async-trait = "0.1.42"
+biscuit = "0.5.0"
 bytes = "0.5.6"
 chrono = { version = "0.4.19", features = ["serde"] }
 config = "0.10.1"
@@ -17,24 +19,25 @@ deadpool = "0.5.2"
 deadpool-postgres = "0.5.6"
 dotenv = "0.15.0"
 futures = "0.3.8"
-rust-embed = "5.7.0"
 postgres-types = { version = "0.1.3", features = ["derive", "with-uuid-0_8", "with-chrono-0_4", "with-serde_json-1"] }
+rust-embed = "5.7.0"
 serde = { version = "1.0.117", features = ["derive"] }
 serde_json = { version = "1.0.59", features = ["preserve_order"] }
 spandoc = "0.2.1"
+thiserror = "1.0.22"
 tokio-postgres = { version = "0.5.5", features = ["with-uuid-0_8", "with-chrono-0_4", "with-serde_json-1"] }
 tracing = "0.1.22"
 tracing-futures = "0.2.4"
 tracing-log = "0.1.1"
 tracing-subscriber = "0.2.15"
 uuid = {version = "0.8.1", features = ["v4", "serde"] }
-thiserror = "1.0.22"
-biscuit = "0.5.0"
-argonautica = "0.2.0"
 
 [dev-dependencies]
 assert2 = "0.3.3"
 insta = {version = "1.3.0", features=["redactions"] }
 string-error = "0.1.0"
-universe-testdatabase = { path = './crates/testdatabase'}
 test-case = "1.0.0"
+universe-testdatabase = { path = './crates/testdatabase'}
+
+[package.metadata.commands]
+docker = "docker build -t universe-service ."
