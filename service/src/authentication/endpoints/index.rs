@@ -1,0 +1,26 @@
+use actix_http::http::header::CacheDirective;
+
+use crate::{
+    http::siren::{Action, Field, SirenPayload, SirenResponse},
+    http::Response,
+};
+
+/// HTTP handler to get the model for how to start authentication.
+///
+/// # Returns
+/// The Siren model for how to start authentication
+pub async fn index() -> Response<SirenPayload<()>> {
+    SirenResponse {
+        body: Some(
+            SirenPayload::new(())
+                .with_class("authentication")
+                .with_action(
+                    Action::new("authenticate", "POST", "/authentication")
+                        .with_field(Field::new("username", "text")),
+                ),
+        ),
+        cache_control: vec![CacheDirective::Public, CacheDirective::MaxAge(3600)],
+        ..SirenResponse::default()
+    }
+    .into()
+}

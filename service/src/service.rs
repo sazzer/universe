@@ -1,3 +1,4 @@
+mod authentication;
 mod authorization;
 mod database;
 mod health;
@@ -36,11 +37,13 @@ impl Service {
 
         let _authorization = authorization::build();
         let users = users::build(db.clone());
+        let authentication = authentication::build();
         let health = health::Builder::default().with_component("db", db).build();
 
         let server = server::Builder::default()
             .with_component(health)
             .with_component(users)
+            .with_component(authentication)
             .build();
 
         tracing::debug!("Built Universe");
