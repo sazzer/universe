@@ -1,5 +1,5 @@
 use actix_http::Request;
-use universe_lib::{Config, DatabaseConfig, Service, TestResponse};
+use universe::{Config, DatabaseConfig, Service, TestResponse};
 use universe_testdatabase::{seed::SeedData, TestDatabase};
 
 /// Wrapper around the service being tested

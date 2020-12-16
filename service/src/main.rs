@@ -27,10 +27,10 @@ impl Default for Settings {
     }
 }
 
-impl Into<universe_lib::Config> for Settings {
-    fn into(self) -> universe_lib::Config {
-        universe_lib::Config {
-            database: universe_lib::DatabaseConfig {
+impl Into<universe::Config> for Settings {
+    fn into(self) -> universe::Config {
+        universe::Config {
+            database: universe::DatabaseConfig {
                 url: self.database_url,
             },
         }
@@ -49,6 +49,6 @@ async fn main() {
 
     tracing::info!("Starting Universe");
 
-    let service = universe_lib::Service::new(settings.into()).await;
+    let service = universe::Service::new(settings.into()).await;
     service.start(port).await;
 }
