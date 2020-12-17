@@ -56,14 +56,14 @@ pub async fn start(
         payload = payload.with_action(
             Action::new("authenticate", "POST", "/authentication/authenticate")
                 .with_type_form()
-                .with_field(Field::new("username", "hidden").with_value(""))
+                .with_field(Field::new("username", "hidden").with_value(username))
                 .with_field(Field::new("password", "password").with_class("enter-password")),
         );
     } else {
         payload = payload.with_action(
             Action::new("register", "POST", "/authentication/register")
                 .with_type_form()
-                .with_field(Field::new("username", "hidden").with_value(""))
+                .with_field(Field::new("username", "hidden").with_value(username))
                 .with_field(Field::new("email", "email"))
                 .with_field(Field::new("display_name", "text"))
                 .with_field(Field::new("password", "password").with_class("set-password")),

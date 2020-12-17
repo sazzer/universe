@@ -220,6 +220,39 @@ impl Entity {
         }
     }
 }
+
+/// Wrapper around the value for a field
+#[derive(Debug, Serialize)]
+pub struct FieldValue(String);
+
+impl FieldValue {
+    /// Create a new instance of `FieldValue`.
+    ///
+    /// # Parameters
+    /// - `value` - The value to wrap
+    pub fn new<S>(value: S) -> Self
+    where
+        S: Into<String>,
+    {
+        Self(value.into())
+    }
+}
+
+/// Trait that can be implemented by anything that can be converted into a `FieldValue`.
+pub trait IntoFieldValue {
+    /// Convert the value into a `FieldValue` object
+    fn into_field_value(self) -> FieldValue;
+}
+
+impl<S> IntoFieldValue for S
+where
+    S: Into<String>,
+{
+    fn into_field_value(self) -> FieldValue {
+        FieldValue::new(self)
+    }
+}
+
 /// Fields represent controls inside of actions
 #[derive(Debug, Serialize)]
 pub struct Field {
@@ -232,7 +265,7 @@ pub struct Field {
     pub r#type: String,
     /// A value assigned to the field
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub value: Option<String>,
+    pub value: Option<FieldValue>,
 }
 
 impl Field {
@@ -272,9 +305,9 @@ impl Field {
     /// - `value` - The new value to use
     pub fn with_value<S>(mut self, value: S) -> Self
     where
-        S: Into<String>,
+        S: IntoFieldValue,
     {
-        self.value = Some(value.into());
+        self.value = Some(value.into_field_value());
         self
     }
 }

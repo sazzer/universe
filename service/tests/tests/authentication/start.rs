@@ -90,7 +90,7 @@ async fn start_unknown_user() {
             {
               "name": "username",
               "type": "hidden",
-              "value": ""
+              "value": "unknown"
             },
             {
               "name": "email",
@@ -163,7 +163,7 @@ async fn start_known_user() {
             {
               "name": "username",
               "type": "hidden",
-              "value": ""
+              "value": "known"
             },
             {
               "name": "password",

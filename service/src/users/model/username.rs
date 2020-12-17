@@ -3,6 +3,8 @@ use postgres_types::{accepts, to_sql_checked, FromSql, IsNull, ToSql, Type};
 use serde::Serialize;
 use std::str::FromStr;
 
+use crate::http::siren::{FieldValue, IntoFieldValue};
+
 /// A username.
 #[derive(Debug, PartialEq, Serialize, FromSql)]
 pub struct Username(String);
@@ -39,6 +41,12 @@ impl ToSql for Username {
         w: &mut BytesMut,
     ) -> Result<IsNull, Box<dyn std::error::Error + Sync + Send>> {
         self.0.to_sql(t, w)
+    }
+}
+
+impl IntoFieldValue for Username {
+    fn into_field_value(self) -> FieldValue {
+        FieldValue::new(self.0)
     }
 }
 
