@@ -66,7 +66,7 @@ async fn start_unknown_user() {
 
     check!(response.status == 200);
     check!(response.headers.get("content-type").unwrap() == "application/vnd.siren+json");
-    check!(response.headers.get("cache-control").unwrap() == "private");
+    check!(response.headers.get("cache-control").unwrap() == "no-cache");
     insta::assert_json_snapshot!(response.to_json().unwrap(), @r###"
     {
       "class": [
@@ -139,7 +139,7 @@ async fn start_known_user() {
 
     check!(response.status == 200);
     check!(response.headers.get("content-type").unwrap() == "application/vnd.siren+json");
-    check!(response.headers.get("cache-control").unwrap() == "private");
+    check!(response.headers.get("cache-control").unwrap() == "no-cache");
     insta::assert_json_snapshot!(response.to_json().unwrap(), @r###"
     {
       "class": [
