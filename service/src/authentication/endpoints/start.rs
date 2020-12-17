@@ -1,4 +1,7 @@
 use crate::{
+    http::problem::Problem,
+    http::problem::ValidationProblem,
+    http::problem::VALIDATION_PROBLEM_MISSING_FIELD,
     http::siren::Link,
     http::siren::SirenResponse,
     http::siren::{Action, Field, SirenPayload},
@@ -14,7 +17,7 @@ use std::{str::FromStr, sync::Arc};
 #[derive(Deserialize)]
 pub struct FormData {
     /// The username submitted
-    username: String,
+    username: Option<String>,
 }
 
 /// HTTP handler to start authentication for a username.
@@ -27,11 +30,22 @@ pub struct FormData {
 /// The Siren model for how to start authentication.
 /// If the provided username is known to the system then returns the model for the Authentiate action.
 /// If the provided username isn't known to the system then returns the model for the Register action.
+///
+/// If no username was provided then an RFC-7807 problem is returned indicating this.
 pub async fn start(
     form: Form<FormData>,
     users_service: Data<Arc<dyn GetUserUseCase>>,
-) -> Response<SirenPayload<()>> {
-    let username = Username::from_str(&form.username).unwrap();
+) -> Result<Response<SirenPayload<()>>, Problem> {
+    let username = form
+        .username
+        .clone()
+        .and_then(|input| Username::from_str(&input).ok())
+        .ok_or_else(|| {
+            ValidationProblem::default()
+                .with_field("username", VALIDATION_PROBLEM_MISSING_FIELD)
+                .build()
+        })?;
+
     let user = users_service.get_user_by_username(&username).await;
 
     let mut payload = SirenPayload::new(())
@@ -42,23 +56,23 @@ pub async fn start(
         payload = payload.with_action(
             Action::new("authenticate", "POST", "/authentication/authenticate")
                 .with_type_form()
-                .with_field(Field::new("username", "hidden").with_value(form.username.clone()))
+                .with_field(Field::new("username", "hidden").with_value(""))
                 .with_field(Field::new("password", "password").with_class("enter-password")),
         );
     } else {
         payload = payload.with_action(
             Action::new("register", "POST", "/authentication/register")
                 .with_type_form()
-                .with_field(Field::new("username", "hidden").with_value(form.username.clone()))
+                .with_field(Field::new("username", "hidden").with_value(""))
                 .with_field(Field::new("email", "email"))
                 .with_field(Field::new("display_name", "text"))
                 .with_field(Field::new("password", "password").with_class("set-password")),
         );
     }
 
-    SirenResponse {
+    Ok(SirenResponse {
         body: Some(payload),
         ..SirenResponse::default()
     }
-    .into()
+    .into())
 }

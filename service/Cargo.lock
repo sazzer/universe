@@ -2710,9 +2710,9 @@ dependencies = [
 [[package]]
 name = "test-case"
 version = "1.0.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "199464148b42bcf3da8b2a56f6ee87ca68f47402496d1268849291ec9fb463c8"
+source = "git+https://github.com/frondeus/test-case.git#290276e8f9e069d0cbb874a5e1aa64045344959c"
 dependencies = [
+ "cfg-if 1.0.0",
  "proc-macro2 1.0.24",
  "quote 1.0.7",
  "syn",
