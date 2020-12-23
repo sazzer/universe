@@ -1,3 +1,5 @@
+use actix_cors::Cors;
+use actix_http::http::header;
 use actix_web::{middleware::Logger, web::ServiceConfig, App, HttpServer};
 use std::sync::Arc;
 
@@ -40,7 +42,12 @@ impl Server {
         HttpServer::new(move || {
             let config = config.clone();
 
-            let mut app = App::new().wrap(Logger::default());
+            let mut app = App::new().wrap(Logger::default()).wrap(
+                Cors::default()
+                    .allow_any_origin()
+                    .allow_any_method()
+                    .expose_headers(vec![header::ETAG]),
+            );
 
             for c in &config {
                 app = app.configure(move |server_config| {
