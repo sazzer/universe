@@ -74,8 +74,7 @@ async fn get_populated_user() {
     insta::assert_json_snapshot!(response.to_json().unwrap(), @r###"
     {
       "class": [
-        "user",
-        "item"
+        "tag:universe,2020:classes/user"
       ],
       "properties": {
         "displayName": "Test User",

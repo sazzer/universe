@@ -8,7 +8,7 @@ use serde_json::Value;
 use super::Response;
 
 /// Links represent navigational transitions.
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, Clone)]
 pub struct Link {
     /// The URI of the linked resource
     pub href: String,
@@ -62,7 +62,7 @@ impl Link {
 }
 
 /// Sub-entities can be expressed as either an embedded link or an embedded representation.
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, Clone)]
 #[serde(untagged)]
 pub enum Entity {
     Link {
@@ -222,7 +222,7 @@ impl Entity {
 }
 
 /// Wrapper around the value for a field
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, Clone)]
 pub struct FieldValue(String);
 
 impl FieldValue {
@@ -254,7 +254,7 @@ where
 }
 
 /// Fields represent controls inside of actions
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, Clone)]
 pub struct Field {
     /// A name describing the control
     pub name: String,
@@ -313,7 +313,7 @@ impl Field {
 }
 
 /// Actions show available behaviors an entity exposes.
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, Clone)]
 pub struct Action {
     /// A string that identifies the action to be performed
     pub name: String,
@@ -398,7 +398,7 @@ impl Action {
 }
 
 /// The actual representation of a Siren document.
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, Clone)]
 pub struct SirenPayload<T>
 where
     T: Serialize,

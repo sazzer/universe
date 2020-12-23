@@ -2,6 +2,7 @@ mod authentication;
 mod authorization;
 mod database;
 mod health;
+mod home;
 mod server;
 pub mod testing;
 mod users;
@@ -40,10 +41,16 @@ impl Service {
         let authentication = authentication::build();
         let health = health::Builder::default().with_component("db", db).build();
 
+        let home = home::Builder::default()
+            .with_component(authentication.clone())
+            .with_component(users.clone())
+            .build();
+
         let server = server::Builder::default()
             .with_component(health)
             .with_component(users)
             .with_component(authentication)
+            .with_component(home)
             .build();
 
         tracing::debug!("Built Universe");

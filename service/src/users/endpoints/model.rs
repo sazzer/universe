@@ -25,8 +25,7 @@ impl From<UserModel> for SirenResponse<UserResponse> {
             email: user.data.email,
             username: user.data.username,
         })
-        .with_class("user")
-        .with_class("item")
+        .with_class("tag:universe,2020:classes/user")
         .with_link(Link::from(user.identity.id).with_rel("self"));
 
         Self {

@@ -1,6 +1,5 @@
-use std::sync::Arc;
-
 use crate::server::{Configurer, Server};
+use std::sync::Arc;
 
 /// Builder for building the server.
 #[derive(Default)]

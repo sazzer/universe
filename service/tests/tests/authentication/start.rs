@@ -19,7 +19,7 @@ async fn index() {
     insta::assert_json_snapshot!(response.to_json().unwrap(), @r###"
     {
       "class": [
-        "authentication"
+        "tag:universe,2020:classes/authentication"
       ],
       "properties": null,
       "links": [
@@ -32,7 +32,7 @@ async fn index() {
       ],
       "actions": [
         {
-          "name": "start-authentication",
+          "name": "tag:universe,2020:actions/authentication/start",
           "method": "POST",
           "href": "/authentication",
           "fields": [
@@ -70,7 +70,7 @@ async fn start_unknown_user() {
     insta::assert_json_snapshot!(response.to_json().unwrap(), @r###"
     {
       "class": [
-        "authentication"
+        "tag:universe,2020:classes/authentication"
       ],
       "properties": null,
       "links": [
@@ -83,7 +83,7 @@ async fn start_unknown_user() {
       ],
       "actions": [
         {
-          "name": "register",
+          "name": "tag:universe,2020:actions/authentication/register",
           "method": "POST",
           "href": "/authentication/register",
           "fields": [
@@ -103,7 +103,7 @@ async fn start_unknown_user() {
             {
               "name": "password",
               "class": [
-                "set-password"
+                "tag:universe,2020:classes/authentication/password/set"
               ],
               "type": "password"
             }
@@ -143,7 +143,7 @@ async fn start_known_user() {
     insta::assert_json_snapshot!(response.to_json().unwrap(), @r###"
     {
       "class": [
-        "authentication"
+        "tag:universe,2020:classes/authentication"
       ],
       "properties": null,
       "links": [
@@ -156,7 +156,7 @@ async fn start_known_user() {
       ],
       "actions": [
         {
-          "name": "authenticate",
+          "name": "tag:universe,2020:actions/authentication/authenticate",
           "method": "POST",
           "href": "/authentication/authenticate",
           "fields": [
@@ -168,7 +168,7 @@ async fn start_known_user() {
             {
               "name": "password",
               "class": [
-                "enter-password"
+                "tag:universe,2020:classes/authentication/password/enter"
               ],
               "type": "password"
             }

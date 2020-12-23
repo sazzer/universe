@@ -1,11 +1,10 @@
-use actix_web::web::ServiceConfig;
-
 use crate::{
     health::endpoints,
     health::HealthCheckUseCase,
     health::{service::HealthService, Healthcheck},
     server::Configurer,
 };
+use actix_web::web::ServiceConfig;
 use std::{collections::HashMap, sync::Arc};
 
 /// Representation of the Health component in the service

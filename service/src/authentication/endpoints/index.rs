@@ -13,12 +13,16 @@ pub async fn index() -> Response<SirenPayload<()>> {
     SirenResponse {
         body: Some(
             SirenPayload::new(())
-                .with_class("authentication")
+                .with_class("tag:universe,2020:classes/authentication")
                 .with_link(Link::new("/authentication").with_rel("self"))
                 .with_action(
-                    Action::new("start-authentication", "POST", "/authentication")
-                        .with_type_form()
-                        .with_field(Field::new("username", "text")),
+                    Action::new(
+                        "tag:universe,2020:actions/authentication/start",
+                        "POST",
+                        "/authentication",
+                    )
+                    .with_type_form()
+                    .with_field(Field::new("username", "text")),
                 ),
         ),
         cache_control: vec![CacheDirective::Public, CacheDirective::MaxAge(3600)],

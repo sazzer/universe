@@ -49,24 +49,38 @@ pub async fn start(
     let user = users_service.get_user_by_username(&username).await;
 
     let mut payload = SirenPayload::new(())
-        .with_class("authentication")
+        .with_class("tag:universe,2020:classes/authentication")
         .with_link(Link::new("/authentication").with_rel("self"));
 
     if user.is_some() {
         payload = payload.with_action(
-            Action::new("authenticate", "POST", "/authentication/authenticate")
-                .with_type_form()
-                .with_field(Field::new("username", "hidden").with_value(username))
-                .with_field(Field::new("password", "password").with_class("enter-password")),
+            Action::new(
+                "tag:universe,2020:actions/authentication/authenticate",
+                "POST",
+                "/authentication/authenticate",
+            )
+            .with_type_form()
+            .with_field(Field::new("username", "hidden").with_value(username))
+            .with_field(
+                Field::new("password", "password")
+                    .with_class("tag:universe,2020:classes/authentication/password/enter"),
+            ),
         );
     } else {
         payload = payload.with_action(
-            Action::new("register", "POST", "/authentication/register")
-                .with_type_form()
-                .with_field(Field::new("username", "hidden").with_value(username))
-                .with_field(Field::new("email", "email"))
-                .with_field(Field::new("display_name", "text"))
-                .with_field(Field::new("password", "password").with_class("set-password")),
+            Action::new(
+                "tag:universe,2020:actions/authentication/register",
+                "POST",
+                "/authentication/register",
+            )
+            .with_type_form()
+            .with_field(Field::new("username", "hidden").with_value(username))
+            .with_field(Field::new("email", "email"))
+            .with_field(Field::new("display_name", "text"))
+            .with_field(
+                Field::new("password", "password")
+                    .with_class("tag:universe,2020:classes/authentication/password/set"),
+            ),
         );
     }
 
