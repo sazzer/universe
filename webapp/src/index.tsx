@@ -1,6 +1,6 @@
 import "./i18n";
 
-import React from "react";
+import React, { Suspense } from "react";
 import ReactDOM from "react-dom";
 import reportWebVitals from "./reportWebVitals";
 import { App } from "./ui";
@@ -17,11 +17,13 @@ const queryClient = new QueryClient({
 
 ReactDOM.render(
   <React.StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
-    </QueryClientProvider>
+    <Suspense fallback={"Loading..."}>
+      <QueryClientProvider client={queryClient}>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </QueryClientProvider>
+    </Suspense>
   </React.StrictMode>,
   document.getElementById("root")
 );
