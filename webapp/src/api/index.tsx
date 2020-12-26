@@ -3,8 +3,14 @@ import { useQuery } from "react-query";
 
 /** The Butes client to access the API with */
 const client = newClient(async (url, request) => {
-  await new Promise((resolve) => setTimeout(resolve, 500));
-  return fetch(url, request);
+  console.log(url);
+  console.log(request);
+  try {
+    return await fetch(url, request);
+  } catch (e) {
+    console.log(e);
+    return null;
+  }
 });
 
 /** The shape of the hook for accessing the API */

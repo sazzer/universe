@@ -4,7 +4,7 @@
     "toggleNavigation": "Toggle Navigation"
   },
   "authentication": {
-    "start": {
+    "tag;universe,2020:actions/authentication/start": {
       "title": "Log In / Register",
       "submit": "Log In / Register"
     },
@@ -13,5 +13,8 @@
         "label": "Username"
       }
     }
+  },
+  "spinner": {
+    "label": "Loading..."
   }
 }
