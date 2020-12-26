@@ -1,3 +1,17 @@
 {
-  "title": "Universe"
+  "title": "Universe",
+  "header": {
+    "toggleNavigation": "Toggle Navigation"
+  },
+  "authentication": {
+    "start": {
+      "title": "Log In / Register",
+      "submit": "Log In / Register"
+    },
+    "fields": {
+      "username": {
+        "label": "Username"
+      }
+    }
+  }
 }
