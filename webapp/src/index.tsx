@@ -1,5 +1,4 @@
 import "./i18n";
-import "./index.css";
 
 import React, { Suspense } from "react";
 import ReactDOM from "react-dom";
