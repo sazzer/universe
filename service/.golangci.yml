@@ -1,0 +1,8 @@
+run:
+  allow-parallel-runners: false
+
+linters:
+  enable-all: true
+  disable:
+    - exhaustivestruct
+    - paralleltest
