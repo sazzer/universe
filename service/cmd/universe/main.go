@@ -7,6 +7,7 @@ import (
 	_ "github.com/joho/godotenv/autoload"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
+	"github.com/sazzer/universe/service/internal/service"
 )
 
 func main() {
@@ -22,5 +23,6 @@ func main() {
 		log.Logger = zerolog.New(os.Stderr).With().Timestamp().Caller().Logger()
 	}
 
-	log.Info().Msg("Hello")
+	service := service.New()
+	service.Start(config.Port)
 }

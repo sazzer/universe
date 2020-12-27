@@ -8,6 +8,7 @@ import (
 
 type config struct {
 	Debug bool
+	Port  uint16 `default:"8000"`
 }
 
 func newConfig() config {
