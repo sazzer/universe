@@ -23,6 +23,6 @@ func main() {
 		log.Logger = zerolog.New(os.Stderr).With().Timestamp().Caller().Logger()
 	}
 
-	service := service.New()
+	service := service.New(config.DatabaseURL)
 	service.Start(config.Port)
 }

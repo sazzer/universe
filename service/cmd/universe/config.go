@@ -7,8 +7,9 @@ import (
 )
 
 type config struct {
-	Debug bool
-	Port  uint16 `default:"8000"`
+	Debug       bool
+	Port        uint16 `default:"8000"`
+	DatabaseURL string `envconfig:"DATABASE_URL"`
 }
 
 func newConfig() config {

@@ -1,7 +1,6 @@
 package testservice
 
 import (
-	"fmt"
 	"net/http"
 	"testing"
 
@@ -20,9 +19,7 @@ func New(t *testing.T) TestService {
 
 	postgresURL := postgres.url(t)
 
-	fmt.Println(postgresURL)
-
-	service := service.New()
+	service := service.New(postgresURL)
 
 	return TestService{service, postgres}
 }

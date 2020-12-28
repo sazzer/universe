@@ -2,6 +2,7 @@ package service
 
 import (
 	"github.com/rs/zerolog/log"
+	"github.com/sazzer/universe/service/internal/database"
 	"github.com/sazzer/universe/service/internal/server"
 )
 
@@ -11,8 +12,10 @@ type Service struct {
 }
 
 // New will create a new instance of the service ready to run.
-func New() Service {
+func New(databaseURL string) Service {
 	log.Info().Msg("Building Universe")
+
+	_ = database.New(databaseURL)
 
 	server := server.New()
 
