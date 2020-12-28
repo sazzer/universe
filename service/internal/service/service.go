@@ -2,7 +2,6 @@ package service
 
 import (
 	"github.com/rs/zerolog/log"
-	"github.com/sazzer/universe/service/internal/database"
 	"github.com/sazzer/universe/service/internal/server"
 )
 
@@ -15,9 +14,8 @@ type Service struct {
 func New(databaseURL string) Service {
 	log.Info().Msg("Building Universe")
 
-	_ = database.New(databaseURL)
-
-	server := server.New()
+	_ = newDatabase(databaseURL)
+	server := newServer()
 
 	log.Info().Msg("Built Universe")
 
