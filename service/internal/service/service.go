@@ -2,6 +2,7 @@ package service
 
 import (
 	"github.com/rs/zerolog/log"
+	"github.com/sazzer/universe/service/internal/health"
 	"github.com/sazzer/universe/service/internal/server"
 )
 
@@ -15,6 +16,7 @@ func New(databaseURL string) Service {
 	log.Info().Msg("Building Universe")
 
 	_ = newDatabase(databaseURL)
+	_ = newHealthComponent(map[string]health.Component{})
 	server := newServer()
 
 	log.Info().Msg("Built Universe")
