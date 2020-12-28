@@ -16,8 +16,10 @@ func New(databaseURL string) Service {
 	log.Info().Msg("Building Universe")
 
 	_ = newDatabase(databaseURL)
-	_ = newHealthComponent(map[string]health.Component{})
-	server := newServer()
+	healthComponent := newHealthComponent(map[string]health.Component{})
+	server := newServer([]server.Endpoints{
+		healthComponent.Endpoints,
+	})
 
 	log.Info().Msg("Built Universe")
 

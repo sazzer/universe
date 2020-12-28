@@ -14,7 +14,7 @@ type Server struct {
 }
 
 // New will create a new instance of the server ready to run.
-func New() Server {
+func New(endpoints []Endpoints) Server {
 	log.Info().Msg("Building HTTP Server")
 
 	e := echo.New()
@@ -26,6 +26,10 @@ func New() Server {
 	}))
 	e.Use(middleware.Gzip())
 	e.Use(middleware.RequestID())
+
+	for _, endpoint := range endpoints {
+		endpoint.Mount(e)
+	}
 
 	return Server{e}
 }

@@ -17,7 +17,7 @@ func (suite *Suite) TestHealth() {
 	res := suite.ServeHTTP(httptest.NewRequest("GET", "/health", nil))
 	defer res.Body.Close()
 
-	suite.Assertions.Equal(http.StatusNotFound, res.StatusCode)
+	suite.Assertions.Equal(http.StatusOK, res.StatusCode)
 }
 
 func TestHealthSuite(t *testing.T) {
