@@ -3,7 +3,6 @@
 prepare:
 
 tidy:
-	go get -u ./...
 	go mod tidy
 
 run: prepare

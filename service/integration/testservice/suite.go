@@ -15,14 +15,14 @@ type Suite struct {
 func (suite *Suite) SetupTest() {
 	fmt.Println("Setting up suite")
 
-	testservice := New()
+	testservice := New(suite.T())
 	suite.service = &testservice
 }
 
 func (suite *Suite) TearDownSuite() {
 	fmt.Println("Tearing down suite")
 
-	suite.service.Close()
+	suite.service.Close(suite.T())
 }
 
 // ServeHTTP will inject an HTTP Request into the service and return the response.
