@@ -18,8 +18,11 @@ build: prepare
 lint:
 	golangci-lint run
 	
+clearcache:
+	go clean -testcache
+
 test: prepare lint
-	go test ${GOTEST_FLAGS} ./internal/...
+	go test -v ${GOTEST_FLAGS} ./internal/...
 
 integration: prepare lint test
-	go test ${GOTEST_FLAGS} ./integration/...
+	go test -v ${GOTEST_FLAGS} ./integration/...
