@@ -1,0 +1,19 @@
+version: "3"
+
+services:
+  universe-e2e-postgres:
+    image: postgres:12.4-alpine
+    environment:
+      POSTGRES_DB: universe
+      POSTGRES_USER: universe
+      POSTGRES_PASSWORD: universe
+
+  universe-e2e-service:
+    image: universe-service:latest
+    environment:
+      PORT: 8000
+      DEBUG: "true"
+      DATABASE_URL: postgres://universe:universe@universe-e2e-postgres:5432/universe
+      DOCKERIZE_ARGS: -wait tcp://universe-e2e-postgres:5432
+    ports:
+      - "127.0.0.1:8000:8000"

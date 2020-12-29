@@ -1,4 +1,5 @@
 .DEFAULT_GOAL := integration
+.PHONY: docker tidy setup
 
 setup:
 	go get -u github.com/gobuffalo/packr/v2/packr2
@@ -14,6 +15,9 @@ run: prepare
 
 build: prepare
 	go build -o output/universe ./cmd/universe/*
+
+docker:
+	docker build -t universe-service:latest .
 
 lint:
 	golangci-lint run
