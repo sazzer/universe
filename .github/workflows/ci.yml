@@ -87,7 +87,7 @@ jobs:
         run: |
           wget https://github.com/jwilder/dockerize/releases/download/v0.6.1/dockerize-linux-amd64-v0.6.1.tar.gz
           tar -xzvf dockerize-linux-amd64-v0.6.1.tar.gz
-          /tmp/dockerize -wait http://localhost:3000/health echo Started
+          /tmp/dockerize -timeout 30s -wait http://localhost:8000/health echo Started
       - name: Service Logs
         if: always()
         working-directory: e2e
