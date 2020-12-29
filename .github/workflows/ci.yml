@@ -7,7 +7,7 @@ jobs:
   test-service:
     runs-on: ubuntu-latest
     env:
-      RUST_TOOLCHAIN: stable
+      GO111MODULE: on
 
     steps:
       - name: Checkout
@@ -24,9 +24,10 @@ jobs:
           version: v1.34.1
           working-directory: service
 
-      - name: Generate
+      - name: Setup
         working-directory: service
         run: |
+          go get ./...
           go get -u github.com/gobuffalo/packr/v2/packr2
           go generate ./...
 
