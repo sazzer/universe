@@ -1,6 +1,10 @@
 .DEFAULT_GOAL := integration
 
+setup:
+	go get -u github.com/gobuffalo/packr/v2/packr2
+	
 prepare:
+	go generate ./...
 
 tidy:
 	go mod tidy
