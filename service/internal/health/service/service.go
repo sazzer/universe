@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 
+	"github.com/rs/zerolog/log"
 	"github.com/sazzer/universe/service/internal/health"
 )
 
@@ -25,5 +26,9 @@ func (h HealthService) CheckHealth(ctx context.Context) health.SystemHealth {
 		components[name] = health.ComponentHealth{Error: result}
 	}
 
-	return health.SystemHealth{Components: components}
+	result := health.SystemHealth{Components: components}
+
+	log.Info().Interface("health", result).Msg("System health")
+
+	return result
 }
