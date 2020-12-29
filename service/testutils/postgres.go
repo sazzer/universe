@@ -17,6 +17,8 @@ type Postgres struct {
 
 // Create a new instance of the Postgres docker container.
 func NewPostgresContainer(t *testing.T) Postgres {
+	t.Helper()
+
 	ctx := context.Background()
 
 	req := testcontainers.ContainerRequest{
@@ -41,6 +43,8 @@ func NewPostgresContainer(t *testing.T) Postgres {
 
 // Close the Postgres docker container.
 func (p Postgres) Close(t *testing.T) {
+	t.Helper()
+
 	ctx := context.Background()
 
 	err := p.container.Terminate(ctx)
@@ -49,6 +53,8 @@ func (p Postgres) Close(t *testing.T) {
 
 // Get the URL to the postgres docker container.
 func (p Postgres) URL(t *testing.T) string {
+	t.Helper()
+
 	ctx := context.Background()
 
 	ip, err := p.container.Host(ctx)

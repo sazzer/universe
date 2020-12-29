@@ -1,7 +1,6 @@
 package testservice
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/stretchr/testify/suite"
@@ -13,15 +12,11 @@ type Suite struct {
 }
 
 func (suite *Suite) SetupTest() {
-	fmt.Println("Setting up suite")
-
 	testservice := New(suite.T())
 	suite.service = &testservice
 }
 
 func (suite *Suite) TearDownSuite() {
-	fmt.Println("Tearing down suite")
-
 	suite.service.Close(suite.T())
 }
 

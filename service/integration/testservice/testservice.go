@@ -16,6 +16,8 @@ type TestService struct {
 
 // New will create a new Test Service.
 func New(t *testing.T) TestService {
+	t.Helper()
+
 	postgres := testutils.NewPostgresContainer(t)
 
 	postgresURL := postgres.URL(t)
@@ -27,6 +29,8 @@ func New(t *testing.T) TestService {
 
 // Close will close the test service down.
 func (s TestService) Close(t *testing.T) {
+	t.Helper()
+
 	s.postgres.Close(t)
 }
 

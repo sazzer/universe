@@ -21,7 +21,7 @@ jobs:
       - name: Lint
         uses: golangci/golangci-lint-action@v2
         with:
-          version: v1.32.2
+          version: v1.34.1
           working-directory: service
 
       - name: Generate
