@@ -8,9 +8,12 @@ import (
 	"golang.org/x/net/context"
 )
 
+// Timeout for the healthchecks.
+const timeout = 5 * time.Second
+
 // Endpoint for checking the health of the system.
 func (e Endpoints) CheckHealth(c echo.Context) response.Responder {
-	ctx, cancel := context.WithTimeout(c.Request().Context(), 5*time.Second)
+	ctx, cancel := context.WithTimeout(c.Request().Context(), timeout)
 	defer cancel()
 
 	health := e.healthcheckUseCase.CheckHealth(ctx)
