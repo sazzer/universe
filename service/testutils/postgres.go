@@ -1,4 +1,4 @@
-package testservice
+package testutils
 
 import (
 	"context"
@@ -11,12 +11,12 @@ import (
 )
 
 // Wrapper around the Postgres docker container.
-type postgres struct {
+type Postgres struct {
 	container testcontainers.Container
 }
 
 // Create a new instance of the Postgres docker container.
-func newPostgresContainer(t *testing.T) postgres {
+func NewPostgresContainer(t *testing.T) Postgres {
 	ctx := context.Background()
 
 	req := testcontainers.ContainerRequest{
@@ -36,11 +36,11 @@ func newPostgresContainer(t *testing.T) postgres {
 	})
 	assert.NoError(t, err)
 
-	return postgres{container}
+	return Postgres{container}
 }
 
 // Close the Postgres docker container.
-func (p postgres) close(t *testing.T) {
+func (p Postgres) Close(t *testing.T) {
 	ctx := context.Background()
 
 	err := p.container.Terminate(ctx)
@@ -48,7 +48,7 @@ func (p postgres) close(t *testing.T) {
 }
 
 // Get the URL to the postgres docker container.
-func (p postgres) url(t *testing.T) string {
+func (p Postgres) URL(t *testing.T) string {
 	ctx := context.Background()
 
 	ip, err := p.container.Host(ctx)

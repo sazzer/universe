@@ -5,19 +5,20 @@ import (
 	"testing"
 
 	"github.com/sazzer/universe/service/internal/service"
+	"github.com/sazzer/universe/service/testutils"
 )
 
 // Wrapper around the Universe service for testing against.
 type TestService struct {
 	service  service.Service
-	postgres postgres
+	postgres testutils.Postgres
 }
 
 // New will create a new Test Service.
 func New(t *testing.T) TestService {
-	postgres := newPostgresContainer(t)
+	postgres := testutils.NewPostgresContainer(t)
 
-	postgresURL := postgres.url(t)
+	postgresURL := postgres.URL(t)
 
 	service := service.New(postgresURL)
 
@@ -26,7 +27,7 @@ func New(t *testing.T) TestService {
 
 // Close will close the test service down.
 func (s TestService) Close(t *testing.T) {
-	s.postgres.close(t)
+	s.postgres.Close(t)
 }
 
 // ServeHTTP will inject an HTTP Request into the service and return the response.
