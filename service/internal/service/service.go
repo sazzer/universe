@@ -15,8 +15,10 @@ type Service struct {
 func New(databaseURL string) Service {
 	log.Info().Msg("Building Universe")
 
-	_ = newDatabase(databaseURL)
-	healthComponent := newHealthComponent(map[string]health.Component{})
+	db := newDatabase(databaseURL)
+	healthComponent := newHealthComponent(map[string]health.Component{
+		"db": db,
+	})
 	server := newServer([]server.Endpoints{
 		healthComponent.Endpoints,
 	})
