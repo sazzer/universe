@@ -18,56 +18,6 @@ func TestMarshalUserID(t *testing.T) {
 	assert.Equal(t, "\"f783d2db-b0fc-4fb4-b89a-5beead0f582b\"", string(encoded))
 }
 
-func TestUnmarshalUserIDSuccess(t *testing.T) {
-	t.Parallel()
-
-	tests := []string{
-		"\"f783d2db-b0fc-4fb4-b89a-5beead0f582b\"",
-		"\"  f783d2db-b0fc-4fb4-b89a-5beead0f582b\"",
-		"\"f783d2db-b0fc-4fb4-b89a-5beead0f582b  \"",
-		"\"  f783d2db-b0fc-4fb4-b89a-5beead0f582b  \"",
-	}
-
-	for _, input := range tests {
-		input := input
-		t.Run(input, func(t *testing.T) {
-			t.Parallel()
-
-			var userID users.UserID
-			err := json.Unmarshal([]byte(input), &userID)
-			assert.NoError(t, err)
-
-			assert.Equal(t, "f783d2db-b0fc-4fb4-b89a-5beead0f582b", userID.String())
-		})
-	}
-}
-
-func TestUnmarshalUserIDFailure(t *testing.T) {
-	t.Parallel()
-
-	tests := []string{
-		"\"f783d2db-b0fc-4fb4-b89a-5beead0f582\"",
-		"\"f783d2db-b0fc-4fb4-b89a-5beead0f582bc\"",
-		"\"f783d2db-b0fc-4fb4-b89a-5beead0f582z\"",
-		"\"  \"",
-		"\"\"",
-		"{}",
-		"7",
-		"false",
-	}
-
-	for _, input := range tests {
-		input := input
-		t.Run(input, func(t *testing.T) {
-			t.Parallel()
-
-			var userID users.UserID
-			err := json.Unmarshal([]byte(input), &userID)
-			assert.Error(t, err)
-		})
-	}
-}
-
 func TestParseUserIDSuccess(t *testing.T) {
 	t.Parallel()
 
