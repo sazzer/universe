@@ -68,27 +68,19 @@ async fn get_populated_user() {
         .await;
 
     check!(response.status == 200);
-    check!(response.headers.get("content-type").unwrap() == "application/vnd.siren+json");
+    check!(response.headers.get("content-type").unwrap() == "application/hal+json");
     check!(response.headers.get("cache-control").unwrap() == "public, max-age=3600");
     check!(response.headers.get("etag").unwrap() == "\"588fa1b7-19f1-4366-a637-ab247238557b\"");
     insta::assert_json_snapshot!(response.to_json().unwrap(), @r###"
     {
-      "class": [
-        "tag:universe,2020:classes/user"
-      ],
-      "properties": {
-        "displayName": "Test User",
-        "email": "testuser@example.com",
-        "username": "testuser"
-      },
-      "links": [
-        {
-          "href": "/users/0f71cb77-9b98-4db8-8b6f-4e736a34133c",
-          "rel": [
-            "self"
-          ]
+      "displayName": "Test User",
+      "email": "testuser@example.com",
+      "username": "testuser",
+      "_links": {
+        "self": {
+          "href": "/users/0f71cb77-9b98-4db8-8b6f-4e736a34133c"
         }
-      ]
+      }
     }
     "###);
 }

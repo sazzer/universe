@@ -2,7 +2,7 @@ use actix_http::http::header::{CacheDirective, EntityTag};
 use serde::Serialize;
 
 use crate::{
-    http::siren::{Link, SirenPayload, SirenResponse},
+    http::hal::{HalPayload, HalResponse},
     users::{Email, UserModel, Username},
 };
 
@@ -18,15 +18,14 @@ pub struct UserResponse {
     username: Username,
 }
 
-impl From<UserModel> for SirenResponse<UserResponse> {
+impl From<UserModel> for HalResponse<UserResponse> {
     fn from(user: UserModel) -> Self {
-        let payload = SirenPayload::new(UserResponse {
+        let payload = HalPayload::new(UserResponse {
             display_name: user.data.display_name,
             email: user.data.email,
             username: user.data.username,
         })
-        .with_class("tag:universe,2020:classes/user")
-        .with_link(Link::from(user.identity.id).with_rel("self"));
+        .with_link("self", user.identity.id);
 
         Self {
             cache_control: vec![CacheDirective::Public, CacheDirective::MaxAge(3600)],

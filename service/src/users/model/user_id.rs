@@ -1,4 +1,4 @@
-use crate::{authorization::Principal, http::siren::Link};
+use crate::{authorization::Principal, http::hal::Link};
 use bytes::BytesMut;
 use postgres_types::{accepts, to_sql_checked, FromSql, IsNull, ToSql, Type};
 use std::str::FromStr;
@@ -35,7 +35,7 @@ impl FromStr for UserID {
 
 impl From<UserID> for Link {
     fn from(user_id: UserID) -> Self {
-        Self::new(format!("/users/{}", user_id.0))
+        format!("/users/{}", user_id.0).into()
     }
 }
 
