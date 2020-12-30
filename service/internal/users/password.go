@@ -12,6 +12,13 @@ type Password struct {
 	hash string
 }
 
+// Create a Password struct wrapping the provided hash.
+func NewPassword(hash string) Password {
+	return Password{
+		hash,
+	}
+}
+
 // Hash a plaintext password to generate a secure version for storage.
 func HashPassword(plaintext string) (Password, error) {
 	hash, err := argon2id.CreateHash(plaintext, argon2id.DefaultParams)

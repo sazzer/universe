@@ -30,10 +30,12 @@ func ParseUserID(input string) (UserID, error) {
 	return UserID{data: id}, nil
 }
 
+// Marshal a User ID as JSON.
 func (u UserID) MarshalJSON() ([]byte, error) {
 	return json.Marshal(u.data)
 }
 
+// Extract the User ID as a string.
 func (u UserID) String() string {
 	return u.data.String()
 }

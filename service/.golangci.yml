@@ -6,3 +6,4 @@ linters:
   disable:
     - exhaustivestruct
     - paralleltest
+    - dupl
