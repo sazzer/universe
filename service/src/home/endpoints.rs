@@ -1,27 +1,24 @@
-use crate::http::siren::{Action, Entity, Link, SirenPayload};
+use crate::http::hal::{HalPayload, Link};
 use actix_web::web::{get, resource, ServiceConfig};
 use index::HomeDocument;
+use std::collections::HashMap;
 
 mod index;
 
 /// Configure the endpoints for authentication.
 ///
 /// # Parameters
-/// - `entities` - The entities to represent on the home document
-/// - `actions` - The actions to represent on the home document
 /// - `config` - The configuration object to register the endpoints on to.
-pub fn configure(entities: &[Entity], actions: &[Action], config: &mut ServiceConfig) {
-    let mut siren_payload = SirenPayload::new(())
-        .with_class("tag:universe,2020:classes/home")
-        .with_link(Link::new("/").with_rel("self"));
+/// - `links` - The links to represent on the home document
+pub fn configure(config: &mut ServiceConfig, links: &Vec<HashMap<String, Link>>) {
+    let mut hal_payload = HalPayload::new(());
 
-    for entity in entities {
-        siren_payload = siren_payload.with_entity(entity.clone());
-    }
-    for action in actions {
-        siren_payload = siren_payload.with_action(action.clone());
+    for l in links {
+        for (name, link) in l {
+            hal_payload = hal_payload.with_link(name.clone(), link.clone());
+        }
     }
 
-    config.data(HomeDocument(siren_payload));
+    config.data(HomeDocument(hal_payload));
     config.service(resource("/").route(get().to(index::index)));
 }

@@ -9,7 +9,7 @@ use serde::Serialize;
 use super::Response;
 
 /// Representation of a single link in a resource.
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, Clone)]
 pub struct Link {
     /// The actual link href.
     pub href: String,
@@ -31,7 +31,7 @@ where
 }
 
 /// Representation of a set of links for a single name.
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, Clone)]
 #[serde(untagged)]
 pub enum Links {
     /// A single link.
@@ -41,7 +41,7 @@ pub enum Links {
 }
 
 /// Representation of a HAL resource.
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, Clone)]
 pub struct HalPayload<T> {
     /// The data for the resource
     #[serde(flatten)]

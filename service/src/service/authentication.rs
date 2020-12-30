@@ -13,8 +13,8 @@ impl Configurer for Component {
 }
 
 impl Contributor for Component {
-    fn entities(&self) -> Vec<crate::http::siren::Entity> {
-        endpoints::home_document_entities()
+    fn links(&self) -> std::collections::HashMap<String, crate::http::hal::Link> {
+        endpoints::home_document_links()
     }
 }
 

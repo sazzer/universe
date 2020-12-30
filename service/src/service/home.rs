@@ -1,36 +1,24 @@
-use crate::{
-    home::endpoints,
-    http::siren::{Action, Entity},
-    server::Configurer,
-};
+use crate::{home::endpoints, http::hal::Link, server::Configurer};
 use actix_web::web::ServiceConfig;
-use std::sync::Arc;
+use std::{collections::HashMap, sync::Arc};
 
 /// Trait for components that can contribute to the home document to implement.
 pub trait Contributor {
-    /// Generate a list of all the entities that should be represented on the home document.
-    fn entities(&self) -> Vec<Entity> {
-        vec![]
-    }
-
-    /// Generate a list of all the actions that should be represented on the home document.
-    fn actions(&self) -> Vec<Action> {
-        vec![]
+    /// Generate a collection of the links to contribute to the home document.
+    fn links(&self) -> HashMap<String, Link> {
+        HashMap::new()
     }
 }
 
 /// The Component for managing the home document.
 pub struct Component {
-    /// The entities to represent on the home document.
-    entities: Vec<Entity>,
-
-    /// The actions to represent on the home document.
-    actions: Vec<Action>,
+    /// The links to represent on the home document.
+    links: Vec<HashMap<String, Link>>,
 }
 
 impl Configurer for Component {
     fn configure_server(&self, config: &mut ServiceConfig) {
-        endpoints::configure(&self.entities, &self.actions, config);
+        endpoints::configure(config, &self.links);
     }
 }
 
@@ -57,14 +45,12 @@ impl Builder {
     /// # Returns
     /// The home component to wire in to other components.
     pub fn build(self) -> Arc<Component> {
-        let mut entities: Vec<Entity> = vec![];
-        let mut actions: Vec<Action> = vec![];
+        let mut links: Vec<HashMap<String, Link>> = vec![];
 
         for component in self.components {
-            entities.extend(component.entities());
-            actions.extend(component.actions());
+            links.push(component.links());
         }
 
-        Arc::new(Component { entities, actions })
+        Arc::new(Component { links })
     }
 }

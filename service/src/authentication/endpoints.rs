@@ -1,5 +1,6 @@
-use crate::http::siren::Entity;
+use crate::http::hal::Link;
 use actix_web::web::{get, post, resource, ServiceConfig};
+use std::collections::HashMap;
 
 mod index;
 mod start;
@@ -16,7 +17,13 @@ pub fn configure(config: &mut ServiceConfig) {
     );
 }
 
-/// Return the entities that should contribute to the home document for authentication
-pub fn home_document_entities() -> Vec<Entity> {
-    vec![Entity::new_link("/authentication").with_rel("tag:universe,2020:rels/authentication")]
+/// Return the links that should contribute to the home document for authentication
+pub fn home_document_links() -> HashMap<String, Link> {
+    let mut links = HashMap::new();
+    links.insert(
+        "tag:universe,2020:rels/authentication".to_string(),
+        "/authentication".into(),
+    );
+
+    links
 }
