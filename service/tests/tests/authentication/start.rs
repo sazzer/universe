@@ -6,49 +6,6 @@ use test_case::test_case;
 use universe_testdatabase::seed::SeedUser;
 
 #[actix_rt::test]
-async fn index() {
-    let sut = TestService::new().await;
-
-    let response = sut
-        .inject(TestRequest::get().uri("/authentication").to_request())
-        .await;
-
-    check!(response.status == 200);
-    check!(response.headers.get("content-type").unwrap() == "application/vnd.siren+json");
-    check!(response.headers.get("cache-control").unwrap() == "public, max-age=3600");
-    insta::assert_json_snapshot!(response.to_json().unwrap(), @r###"
-    {
-      "class": [
-        "tag:universe,2020:classes/authentication"
-      ],
-      "properties": null,
-      "links": [
-        {
-          "href": "/authentication",
-          "rel": [
-            "self"
-          ]
-        }
-      ],
-      "actions": [
-        {
-          "name": "tag:universe,2020:actions/authentication/start",
-          "method": "POST",
-          "href": "/authentication",
-          "fields": [
-            {
-              "name": "username",
-              "type": "text"
-            }
-          ],
-          "type": "application/x-www-form-urlencoded"
-        }
-      ]
-    }
-    "###);
-}
-
-#[actix_rt::test]
 async fn start_unknown_user() {
     let sut = TestService::new().await;
 

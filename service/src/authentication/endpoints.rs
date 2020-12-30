@@ -2,7 +2,6 @@ use crate::http::hal::Link;
 use actix_web::web::{get, post, resource, ServiceConfig};
 use std::collections::HashMap;
 
-mod index;
 mod start;
 
 /// Configure the endpoints for authentication.
@@ -10,11 +9,7 @@ mod start;
 /// # Parameters
 /// - `config` - The configuration object to register the endpoints on to.
 pub fn configure(config: &mut ServiceConfig) {
-    config.service(
-        resource("/authentication")
-            .route(get().to(index::index))
-            .route(post().to(start::start)),
-    );
+    config.service(resource("/authentication").route(post().to(start::start)));
 }
 
 /// Return the links that should contribute to the home document for authentication
