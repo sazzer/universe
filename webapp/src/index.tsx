@@ -1,11 +1,12 @@
 import "./i18n";
 
+import { QueryClient, QueryClientProvider } from "react-query";
 import React, { Suspense } from "react";
-import ReactDOM from "react-dom";
-import reportWebVitals from "./reportWebVitals";
+
 import { App } from "./ui";
 import { BrowserRouter } from "react-router-dom";
-import { QueryClient, QueryClientProvider } from "react-query";
+import ReactDOM from "react-dom";
+import reportWebVitals from "./reportWebVitals";
 
 const queryClient = new QueryClient({
   defaultOptions: {
