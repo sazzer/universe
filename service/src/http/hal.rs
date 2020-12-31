@@ -1,10 +1,9 @@
-use std::collections::HashMap;
-
 use actix_http::http::{
     header::{CacheDirective, ContentType, EntityTag},
     StatusCode,
 };
 use serde::Serialize;
+use std::collections::BTreeMap;
 
 use super::Response;
 
@@ -48,7 +47,7 @@ pub struct HalPayload<T> {
     pub data: T,
     /// The links for the resource
     #[serde(rename = "_links")]
-    pub links: HashMap<String, Links>,
+    pub links: BTreeMap<String, Links>,
 }
 
 impl<T> HalPayload<T> {
@@ -59,7 +58,7 @@ impl<T> HalPayload<T> {
     pub fn new(data: T) -> Self {
         Self {
             data,
-            links: HashMap::new(),
+            links: BTreeMap::new(),
         }
     }
 

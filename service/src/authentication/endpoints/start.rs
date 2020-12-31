@@ -1,13 +1,10 @@
 use crate::{
-    http::problem::Problem,
-    http::problem::ValidationProblem,
-    http::problem::VALIDATION_PROBLEM_MISSING_FIELD,
-    http::siren::Link,
-    http::siren::SirenResponse,
-    http::siren::{Action, Field, SirenPayload},
-    http::Response,
-    users::GetUserUseCase,
-    users::Username,
+    http::{
+        hal::{HalPayload, HalResponse},
+        problem::{Problem, ValidationProblem, VALIDATION_PROBLEM_MISSING_FIELD},
+        Response,
+    },
+    users::{GetUserUseCase, Username},
 };
 use actix_web::web::{Data, Form};
 use serde::Deserialize;
@@ -27,7 +24,7 @@ pub struct FormData {
 /// - `users_service` - The users service, to see if the username exists
 ///
 /// # Returns
-/// The Siren model for how to start authentication.
+/// The Hal model for how to start authentication.
 /// If the provided username is known to the system then returns the model for the Authentiate action.
 /// If the provided username isn't known to the system then returns the model for the Register action.
 ///
@@ -35,7 +32,7 @@ pub struct FormData {
 pub async fn start(
     form: Form<FormData>,
     users_service: Data<Arc<dyn GetUserUseCase>>,
-) -> Result<Response<SirenPayload<()>>, Problem> {
+) -> Result<Response<HalPayload<()>>, Problem> {
     let username = form
         .username
         .clone()
@@ -48,45 +45,23 @@ pub async fn start(
 
     let user = users_service.get_user_by_username(&username).await;
 
-    let mut payload = SirenPayload::new(())
-        .with_class("tag:universe,2020:classes/authentication")
-        .with_link(Link::new("/authentication").with_rel("self"));
+    let mut payload = HalPayload::new(()).with_link("self", "/authentication");
 
     if user.is_some() {
-        payload = payload.with_action(
-            Action::new(
-                "tag:universe,2020:actions/authentication/authenticate",
-                "POST",
-                "/authentication/authenticate",
-            )
-            .with_type_form()
-            .with_field(Field::new("username", "hidden").with_value(username))
-            .with_field(
-                Field::new("password", "password")
-                    .with_class("tag:universe,2020:classes/authentication/password/enter"),
-            ),
-        );
+        payload = payload.with_link(
+            "tag:universe,2020:rels/authentication/authenticate",
+            "/authentication/authenticate",
+        )
     } else {
-        payload = payload.with_action(
-            Action::new(
-                "tag:universe,2020:actions/authentication/register",
-                "POST",
-                "/authentication/register",
-            )
-            .with_type_form()
-            .with_field(Field::new("username", "hidden").with_value(username))
-            .with_field(Field::new("email", "email"))
-            .with_field(Field::new("display_name", "text"))
-            .with_field(
-                Field::new("password", "password")
-                    .with_class("tag:universe,2020:classes/authentication/password/set"),
-            ),
-        );
+        payload = payload.with_link(
+            "tag:universe,2020:rels/authentication/register",
+            "/authentication/register",
+        )
     }
 
-    Ok(SirenResponse {
+    Ok(HalResponse {
         body: Some(payload),
-        ..SirenResponse::default()
+        ..HalResponse::default()
     }
     .into())
 }

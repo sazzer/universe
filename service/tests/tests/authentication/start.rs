@@ -22,52 +22,18 @@ async fn start_unknown_user() {
         .await;
 
     check!(response.status == 200);
-    check!(response.headers.get("content-type").unwrap() == "application/vnd.siren+json");
+    check!(response.headers.get("content-type").unwrap() == "application/hal+json");
     check!(response.headers.get("cache-control").unwrap() == "no-cache");
     insta::assert_json_snapshot!(response.to_json().unwrap(), @r###"
     {
-      "class": [
-        "tag:universe,2020:classes/authentication"
-      ],
-      "properties": null,
-      "links": [
-        {
-          "href": "/authentication",
-          "rel": [
-            "self"
-          ]
+      "_links": {
+        "self": {
+          "href": "/authentication"
+        },
+        "tag:universe,2020:rels/authentication/register": {
+          "href": "/authentication/register"
         }
-      ],
-      "actions": [
-        {
-          "name": "tag:universe,2020:actions/authentication/register",
-          "method": "POST",
-          "href": "/authentication/register",
-          "fields": [
-            {
-              "name": "username",
-              "type": "hidden",
-              "value": "unknown"
-            },
-            {
-              "name": "email",
-              "type": "email"
-            },
-            {
-              "name": "display_name",
-              "type": "text"
-            },
-            {
-              "name": "password",
-              "class": [
-                "tag:universe,2020:classes/authentication/password/set"
-              ],
-              "type": "password"
-            }
-          ],
-          "type": "application/x-www-form-urlencoded"
-        }
-      ]
+      }
     }
     "###);
 }
@@ -95,44 +61,18 @@ async fn start_known_user() {
         .await;
 
     check!(response.status == 200);
-    check!(response.headers.get("content-type").unwrap() == "application/vnd.siren+json");
+    check!(response.headers.get("content-type").unwrap() == "application/hal+json");
     check!(response.headers.get("cache-control").unwrap() == "no-cache");
     insta::assert_json_snapshot!(response.to_json().unwrap(), @r###"
     {
-      "class": [
-        "tag:universe,2020:classes/authentication"
-      ],
-      "properties": null,
-      "links": [
-        {
-          "href": "/authentication",
-          "rel": [
-            "self"
-          ]
+      "_links": {
+        "self": {
+          "href": "/authentication"
+        },
+        "tag:universe,2020:rels/authentication/authenticate": {
+          "href": "/authentication/authenticate"
         }
-      ],
-      "actions": [
-        {
-          "name": "tag:universe,2020:actions/authentication/authenticate",
-          "method": "POST",
-          "href": "/authentication/authenticate",
-          "fields": [
-            {
-              "name": "username",
-              "type": "hidden",
-              "value": "known"
-            },
-            {
-              "name": "password",
-              "class": [
-                "tag:universe,2020:classes/authentication/password/enter"
-              ],
-              "type": "password"
-            }
-          ],
-          "type": "application/x-www-form-urlencoded"
-        }
-      ]
+      }
     }
     "###);
 }
