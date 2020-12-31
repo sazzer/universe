@@ -16,7 +16,7 @@ async fn start_unknown_user() {
         .inject(
             TestRequest::post()
                 .uri("/authentication")
-                .set_form(&form)
+                .set_json(&form)
                 .to_request(),
         )
         .await;
@@ -55,7 +55,7 @@ async fn start_known_user() {
         .inject(
             TestRequest::post()
                 .uri("/authentication")
-                .set_form(&form)
+                .set_json(&form)
                 .to_request(),
         )
         .await;
@@ -96,7 +96,7 @@ async fn start_invalid_username(input: &str) {
         .inject(
             TestRequest::post()
                 .uri("/authentication")
-                .set_form(&form)
+                .set_json(&form)
                 .to_request(),
         )
         .await;
@@ -131,7 +131,7 @@ async fn start_missing_username() {
         .inject(
             TestRequest::post()
                 .uri("/authentication")
-                .set_form(&form)
+                .set_json(&form)
                 .to_request(),
         )
         .await;

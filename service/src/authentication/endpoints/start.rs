@@ -6,13 +6,13 @@ use crate::{
     },
     users::{GetUserUseCase, Username},
 };
-use actix_web::web::{Data, Form};
+use actix_web::web::{Data, Json};
 use serde::Deserialize;
 use std::{str::FromStr, sync::Arc};
 
 /// Representation of the form data to consume
 #[derive(Deserialize)]
-pub struct FormData {
+pub struct Input {
     /// The username submitted
     username: Option<String>,
 }
@@ -30,13 +30,13 @@ pub struct FormData {
 ///
 /// If no username was provided then an RFC-7807 problem is returned indicating this.
 pub async fn start(
-    form: Form<FormData>,
+    input: Json<Input>,
     users_service: Data<Arc<dyn GetUserUseCase>>,
 ) -> Result<Response<HalPayload<()>>, Problem> {
-    let username = form
+    let username = input
         .username
         .clone()
-        .and_then(|input| Username::from_str(&input).ok())
+        .and_then(|username| Username::from_str(&username).ok())
         .ok_or_else(|| {
             ValidationProblem::default()
                 .with_field("username", VALIDATION_PROBLEM_MISSING_FIELD)
