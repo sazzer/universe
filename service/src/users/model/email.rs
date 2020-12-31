@@ -20,7 +20,7 @@ impl FromStr for Email {
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let trimmed = s.trim();
-        if trimmed == "" {
+        if trimmed.is_empty() {
             Err(ParseEmailError::Blank)
         } else {
             Ok(Self(trimmed.to_string()))
