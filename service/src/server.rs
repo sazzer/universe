@@ -46,7 +46,8 @@ impl Server {
                 Cors::default()
                     .allow_any_origin()
                     .allow_any_method()
-                    .expose_headers(vec![header::ETAG]),
+                    .allow_any_header()
+                    .expose_headers(vec![header::ETAG, header::LOCATION, header::LINK]),
             );
 
             for c in &config {
