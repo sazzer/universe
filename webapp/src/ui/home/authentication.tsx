@@ -1,8 +1,8 @@
-import { useTranslation } from "react-i18next";
+import { Action } from "butes";
 import { useApi } from "../../api";
 import { useQuery } from "react-query";
 import { useState } from "react";
-import { Action } from "butes";
+import { useTranslation } from "react-i18next";
 
 /** Mapping of the action name to the fields that are understood in the order to display them */
 const ORDERED_FIELDS: Record<string, string[]> = {
@@ -88,10 +88,10 @@ export const Authentication = () => {
       ?.fetch()
   );
 
-  const [actionName, setActionName] = useState(
+  const [actionName] = useState(
     "tag;universe,2020:actions/authentication/start"
   );
-  const [action, setAction] = useState(
+  const [action] = useState(
     authenticationResource.data?.actions[
       "tag:universe,2020:actions/authentication/start"
     ]
