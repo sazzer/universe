@@ -1,5 +1,5 @@
 use crate::http::hal::Link;
-use actix_web::web::{get, post, resource, ServiceConfig};
+use actix_web::web::{post, resource, ServiceConfig};
 use std::collections::HashMap;
 
 mod start;
