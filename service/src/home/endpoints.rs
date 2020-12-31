@@ -10,7 +10,7 @@ mod index;
 /// # Parameters
 /// - `config` - The configuration object to register the endpoints on to.
 /// - `links` - The links to represent on the home document
-pub fn configure(config: &mut ServiceConfig, links: &Vec<HashMap<String, Link>>) {
+pub fn configure(config: &mut ServiceConfig, links: &[HashMap<String, Link>]) {
     let mut hal_payload = HalPayload::new(());
 
     for l in links {

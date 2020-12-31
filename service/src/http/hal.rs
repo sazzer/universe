@@ -55,6 +55,7 @@ impl<T> HalPayload<T> {
     ///
     /// # Parameters
     /// - `data` - The data for the resource
+    #[allow(clippy::missing_const_for_fn)]
     pub fn new(data: T) -> Self {
         Self {
             data,
