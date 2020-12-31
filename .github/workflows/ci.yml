@@ -95,12 +95,32 @@ jobs:
           push_git_tag: true
           context: service
 
+  build-webapp-container:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Get the git tag
+        run: |
+          echo GIT_TAG=$(echo ${GITHUB_REF} | sed -e "s/refs\/.*\///g") >> $GITHUB_ENV
+
+      - uses: whoan/docker-build-with-cache-action@v5
+        with:
+          registry: docker.pkg.github.com
+          username: "publisher"
+          password: "${{ secrets.GITHUB_TOKEN }}"
+          image_name: "${{ format('{0}/universe-webapp', github.repository) }}"
+          image_tag: "${{ env.GIT_TAG }}"
+          push_git_tag: true
+          context: webapp
+
   e2e:
     runs-on: ubuntu-latest
     needs:
       - test-service
       - test-webapp
       - build-service-container
+      - build-webapp-container
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -119,6 +139,11 @@ jobs:
           docker pull docker.pkg.github.com/${{ format('{0}/universe-service', github.repository) }}:${{ env.GIT_TAG }}
           docker tag docker.pkg.github.com/${{ format('{0}/universe-service', github.repository) }}:${{ env.GIT_TAG }} universe-service:latest
 
+      - name: Pull Webapp Container
+        run: |
+          docker pull docker.pkg.github.com/${{ format('{0}/universe-webapp', github.repository) }}:${{ env.GIT_TAG }}
+          docker tag docker.pkg.github.com/${{ format('{0}/universe-webapp', github.repository) }}:${{ env.GIT_TAG }} universe-webapp:latest
+
       - name: Start Services
         working-directory: e2e
         run: docker-compose up -d
@@ -133,7 +158,7 @@ jobs:
       - name: Service Logs
         if: always()
         working-directory: e2e
-        run: docker-compose logs universe-e2e-service
+        run: docker-compose logs universe-e2e-service universe-e2e-webapp
 
   deploy-service-container:
     runs-on: ubuntu-latest
