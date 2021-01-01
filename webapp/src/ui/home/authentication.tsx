@@ -4,6 +4,7 @@ import {
 } from "../../api/authentication";
 import React, { useState } from "react";
 
+import { AuthenticateAuthentication } from "./authenticate";
 import { StartAuthentication } from "./start";
 
 /**
@@ -13,6 +14,8 @@ export const Authentication: React.FC = () => {
   const api = useAuthenticationApi();
   const [state, setState] = useState<AuthenticationAction>(api.start);
 
+  const doCancel = () => setState(api.start);
+
   if (state.action === "START") {
     const onSubmit = async (username: string) => {
       const result = await state.start(username);
@@ -20,6 +23,13 @@ export const Authentication: React.FC = () => {
     };
 
     return <StartAuthentication onSubmit={onSubmit} />;
+  } else if (state.action === "AUTHENTICATE") {
+    return (
+      <AuthenticateAuthentication
+        username={state.username}
+        onCancel={doCancel}
+      />
+    );
   } else {
     return <div>{state.action}</div>;
   }

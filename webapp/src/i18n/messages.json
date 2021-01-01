@@ -8,9 +8,17 @@
       "title": "Log In / Register",
       "submit": "Log In / Register"
     },
+    "authenticate": {
+      "title": "Log In",
+      "submit": "Log In",
+      "cancel": "Cancel"
+    },
     "fields": {
       "username": {
         "label": "Username"
+      },
+      "password": {
+        "label": "Password"
       }
     }
   },
