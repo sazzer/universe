@@ -76,6 +76,12 @@ jobs:
         working-directory: webapp
         run: npm run build
 
+      - name: Upload build output
+        uses: actions/upload-artifact@v1
+        with:
+          name: webapp
+          path: webapp/build
+
   build-service-container:
     runs-on: ubuntu-latest
     steps:
@@ -192,3 +198,40 @@ jobs:
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
         run: heroku container:release -a universe-cd web
+
+  deploy-webapp:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    needs:
+      - e2e
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - uses: actions/setup-node@v2-beta
+        with:
+          node-version: "15"
+
+      - name: Install dependencies
+        working-directory: webapp
+        run: npm install react-env netlify-cli
+
+      - uses: actions/download-artifact@v2
+        with:
+          name: webapp
+          path: webapp/build
+
+      - name: Set up runtime environment
+        working-directory: webapp
+        env:
+          REACT_APP_URL_BASE: "https://universe-cd.herokuapp.com"
+          NODE_ENV: production
+        run: npx react-env --dest build
+
+      - name: Deploy to Netlify
+        working-directory: webapp
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+        run: |
+          npx netlify deploy --dir=build --prod --message=$GITHUB_SHA
