@@ -1,6 +1,11 @@
+import * as z from "zod";
+
+import { FormProvider, useForm } from "react-hook-form";
+
+import { FormInput } from "../../components/form/input";
 import React from "react";
-import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 /** Shape of the form submission */
 interface AuthenticateAuthenticationForm {
@@ -22,11 +27,13 @@ export const AuthenticateAuthentication: React.FC<AuthenticateAuthenticationProp
   onCancel,
 }) => {
   const { t } = useTranslation();
-  const {
-    register,
-    handleSubmit,
-    formState,
-  } = useForm<AuthenticateAuthenticationForm>({
+  const schema = z.object({
+    username: z.string().nonempty(),
+    password: z.string().nonempty(),
+  });
+
+  const methods = useForm<AuthenticateAuthenticationForm>({
+    resolver: zodResolver(schema),
     defaultValues: {
       username,
     },
@@ -40,49 +47,38 @@ export const AuthenticateAuthentication: React.FC<AuthenticateAuthenticationProp
         {t("authentication.authenticate.title")}
       </div>
       <div className="card-body">
-        <form onSubmit={handleSubmit(doSubmit)}>
-          <fieldset disabled={formState.isSubmitting}>
-            <div className="mb-3">
-              <label htmlFor="username" className="form-label">
-                {t("authentication.fields.username.label")}
-              </label>
-              <input
-                ref={register({ required: true })}
-                type="text"
-                className="form-control"
-                id="username"
+        <FormProvider {...methods}>
+          <form onSubmit={methods.handleSubmit(doSubmit)}>
+            <fieldset disabled={methods.formState.isSubmitting}>
+              <FormInput
+                label={t("authentication.fields.username.label")}
                 name="username"
                 readOnly
               />
-            </div>
-            <div className="mb-3">
-              <label htmlFor="password" className="form-label">
-                {t("authentication.fields.password.label")}
-              </label>
-              <input
-                ref={register({ required: true })}
-                type="password"
-                className="form-control"
-                id="password"
+              <FormInput
+                label={t("authentication.fields.password.label")}
                 name="password"
-                required
+                errorBuilder={(type) =>
+                  t(`authentication.fields.password.errors.${type}`)
+                }
                 autoFocus
+                required
               />
-            </div>
-            <div className="btn-group" role="group">
-              <button type="submit" className="btn btn-primary">
-                {t("authentication.authenticate.submit")}
-              </button>
-              <button
-                type="button"
-                className="btn btn-outline-secondary"
-                onClick={onCancel}
-              >
-                {t("authentication.authenticate.cancel")}
-              </button>
-            </div>
-          </fieldset>
-        </form>
+              <div className="btn-group" role="group">
+                <button type="submit" className="btn btn-primary">
+                  {t("authentication.authenticate.submit")}
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-outline-secondary"
+                  onClick={onCancel}
+                >
+                  {t("authentication.authenticate.cancel")}
+                </button>
+              </div>
+            </fieldset>
+          </form>
+        </FormProvider>
       </div>
     </div>
   );

@@ -1,6 +1,11 @@
+import * as z from "zod";
+
+import { FormProvider, useForm } from "react-hook-form";
+
+import { FormInput } from "../../components/form/input";
 import React from "react";
-import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 /** Shape of the form submission */
 interface StartAuthenticationForm {
@@ -19,11 +24,13 @@ export const StartAuthentication: React.FC<StartAuthenticationProps> = ({
   onSubmit,
 }) => {
   const { t } = useTranslation();
-  const {
-    register,
-    handleSubmit,
-    formState,
-  } = useForm<StartAuthenticationForm>();
+  const schema = z.object({
+    username: z.string().nonempty(),
+  });
+
+  const methods = useForm<StartAuthenticationForm>({
+    resolver: zodResolver(schema),
+  });
 
   const doSubmit = (data: StartAuthenticationForm) => onSubmit(data.username);
 
@@ -31,27 +38,24 @@ export const StartAuthentication: React.FC<StartAuthenticationProps> = ({
     <div className="card">
       <div className="card-header">{t("authentication.start.title")}</div>
       <div className="card-body">
-        <form onSubmit={handleSubmit(doSubmit)}>
-          <fieldset disabled={formState.isSubmitting}>
-            <div className="mb-3">
-              <label htmlFor="username" className="form-label">
-                {t("authentication.fields.username.label")}
-              </label>
-              <input
-                ref={register({ required: true })}
-                type="text"
-                className="form-control"
-                id="username"
+        <FormProvider {...methods}>
+          <form onSubmit={methods.handleSubmit(doSubmit)}>
+            <fieldset disabled={methods.formState.isSubmitting}>
+              <FormInput
+                label={t("authentication.fields.username.label")}
                 name="username"
-                required
+                errorBuilder={(type) =>
+                  t(`authentication.fields.username.errors.${type}`)
+                }
                 autoFocus
+                required
               />
-            </div>
-            <button type="submit" className="btn btn-primary">
-              {t("authentication.start.submit")}
-            </button>
-          </fieldset>
-        </form>
+              <button type="submit" className="btn btn-primary">
+                {t("authentication.start.submit")}
+              </button>
+            </fieldset>
+          </form>
+        </FormProvider>
       </div>
     </div>
   );
