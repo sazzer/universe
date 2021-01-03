@@ -1,5 +1,6 @@
 import React, { Suspense } from "react";
-import { Spinner } from "../utilities/spinner";
+
+import { Spinner } from "../../components/spinner";
 import landing from "./landing.jpg";
 
 export const Landing: React.FC = ({ children }) => {
