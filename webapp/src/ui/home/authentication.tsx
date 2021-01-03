@@ -5,6 +5,7 @@ import {
 import React, { useState } from "react";
 
 import { AuthenticateAuthentication } from "./authenticate";
+import { RegisterAuthentication } from "./register";
 import { StartAuthentication } from "./start";
 
 /**
@@ -16,21 +17,24 @@ export const Authentication: React.FC = () => {
 
   const doCancel = () => setState(api.start);
 
-  if (state.action === "START") {
-    const onSubmit = async (username: string) => {
-      const result = await state.start(username);
-      setState(result);
-    };
+  switch (state.action) {
+    case "START":
+      const onSubmit = async (username: string) => {
+        const result = await state.start(username);
+        setState(result);
+      };
 
-    return <StartAuthentication onSubmit={onSubmit} />;
-  } else if (state.action === "AUTHENTICATE") {
-    return (
-      <AuthenticateAuthentication
-        username={state.username}
-        onCancel={doCancel}
-      />
-    );
-  } else {
-    return <div>{state.action}</div>;
+      return <StartAuthentication onSubmit={onSubmit} />;
+    case "AUTHENTICATE":
+      return (
+        <AuthenticateAuthentication
+          username={state.username}
+          onCancel={doCancel}
+        />
+      );
+    case "REGISTER":
+      return (
+        <RegisterAuthentication username={state.username} onCancel={doCancel} />
+      );
   }
 };
