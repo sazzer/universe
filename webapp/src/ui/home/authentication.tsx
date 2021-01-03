@@ -18,23 +18,43 @@ export const Authentication: React.FC = () => {
   const doCancel = () => setState(api.start);
 
   switch (state.action) {
-    case "START":
+    case "START": {
       const onSubmit = async (username: string) => {
         const result = await state.start(username);
         setState(result);
       };
 
       return <StartAuthentication onSubmit={onSubmit} />;
-    case "AUTHENTICATE":
+    }
+    case "AUTHENTICATE": {
+      const onSubmit = async (password: string) => {
+        await state.authenticate(password);
+      };
+
       return (
         <AuthenticateAuthentication
           username={state.username}
           onCancel={doCancel}
+          onSubmit={onSubmit}
         />
       );
-    case "REGISTER":
+    }
+    case "REGISTER": {
+      const onSubmit = async (
+        email: string,
+        displayName: string,
+        password: string
+      ) => {
+        await state.register(email, displayName, password);
+      };
+
       return (
-        <RegisterAuthentication username={state.username} onCancel={doCancel} />
+        <RegisterAuthentication
+          username={state.username}
+          onCancel={doCancel}
+          onSubmit={onSubmit}
+        />
       );
+    }
   }
 };

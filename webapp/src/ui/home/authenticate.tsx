@@ -17,6 +17,7 @@ interface AuthenticateAuthenticationForm {
 interface AuthenticateAuthenticationProps {
   username: string;
   onCancel: () => void;
+  onSubmit: (password: string) => Promise<void>;
 }
 
 /**
@@ -25,6 +26,7 @@ interface AuthenticateAuthenticationProps {
 export const AuthenticateAuthentication: React.FC<AuthenticateAuthenticationProps> = ({
   username,
   onCancel,
+  onSubmit,
 }) => {
   const { t } = useTranslation();
   const schema = z.object({
@@ -39,7 +41,8 @@ export const AuthenticateAuthentication: React.FC<AuthenticateAuthenticationProp
     },
   });
 
-  const doSubmit = (data: AuthenticateAuthenticationForm) => console.log(data);
+  const doSubmit = (data: AuthenticateAuthenticationForm) =>
+    onSubmit(data.password);
 
   return (
     <div className="card">

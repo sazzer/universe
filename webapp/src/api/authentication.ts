@@ -1,3 +1,4 @@
+import Client from "ketting";
 import { useApi } from ".";
 
 /**
@@ -57,35 +58,87 @@ export function useAuthenticationApi(): AuthenticationApi {
     start: {
       action: "START",
       start: async (username) => {
-        const authResource = await api.follow(
+        const startAuthResource = await api.follow(
           "tag:universe,2020:rels/authentication"
         );
-        const response = await authResource.post({ data: { username } });
-
+        const response = await startAuthResource.post({ data: { username } });
         if (
           response.links.has(
             "tag:universe,2020:rels/authentication/authenticate"
           )
         ) {
-          // Known user
-          return {
-            action: "AUTHENTICATE",
-            username,
-            authenticate: async (password) => {
-              console.log("Authenticating");
-            },
-          };
+          return buildAuthenticateAction(
+            response.client,
+            response.links.get(
+              "tag:universe,2020:rels/authentication/authenticate"
+            )?.href!!,
+            username
+          );
         } else {
-          // Unknown user
-          return {
-            action: "REGISTER",
-            username,
-            register: async (email, displayName, password) => {
-              console.log("Registering");
-            },
-          };
+          return buildRegisterAction(
+            response.client,
+            response.links.get("tag:universe,2020:rels/authentication/register")
+              ?.href!!,
+            username
+          );
         }
       },
+    },
+  };
+}
+
+/**
+ * Helper to build the action for authenticating as an existing user
+ * @param client The Ketting client to use
+ * @param url The URL to send the data to
+ * @param username The username to authenticate as
+ */
+function buildAuthenticateAction(
+  client: Client,
+  url: string,
+  username: string
+): AuthenticateAction {
+  return {
+    action: "AUTHENTICATE",
+    username,
+    authenticate: async (password) => {
+      const authResource = client.go(url);
+      const authResponse = await authResource.post({
+        data: {
+          username,
+          password,
+        },
+      });
+      console.log(authResponse);
+    },
+  };
+}
+
+/**
+ * Helper to build the action for registering as a new user
+ * @param client The Ketting client to use
+ * @param url The URL to send the data to
+ * @param username The username to authenticate as
+ */
+function buildRegisterAction(
+  client: Client,
+  url: string,
+  username: string
+): RegisterAction {
+  return {
+    action: "REGISTER",
+    username,
+    register: async (email, displayName, password) => {
+      const authResource = client.go(url);
+      const authResponse = await authResource.post({
+        data: {
+          username,
+          email,
+          displayName,
+          password,
+        },
+      });
+      console.log(authResponse);
     },
   };
 }

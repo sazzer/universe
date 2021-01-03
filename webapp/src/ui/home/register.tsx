@@ -20,6 +20,11 @@ interface RegisterAuthenticationForm {
 interface RegisterAuthenticationProps {
   username: string;
   onCancel: () => void;
+  onSubmit: (
+    email: string,
+    displayName: string,
+    password: string
+  ) => Promise<void>;
 }
 
 /**
@@ -28,6 +33,7 @@ interface RegisterAuthenticationProps {
 export const RegisterAuthentication: React.FC<RegisterAuthenticationProps> = ({
   username,
   onCancel,
+  onSubmit,
 }) => {
   const { t } = useTranslation();
   const schema = z
@@ -50,7 +56,8 @@ export const RegisterAuthentication: React.FC<RegisterAuthenticationProps> = ({
     },
   });
 
-  const doSubmit = (data: RegisterAuthenticationForm) => console.log(data);
+  const doSubmit = (data: RegisterAuthenticationForm) =>
+    onSubmit(data.email, data.displayName, data.password);
 
   return (
     <div className="card">
