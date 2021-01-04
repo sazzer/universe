@@ -30,7 +30,7 @@ export const AuthenticateAuthentication: React.FC<AuthenticateAuthenticationProp
   onCancel,
   onSubmit,
 }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [error, setError] = useState<string | null>(null);
 
   const schema = z.object({
@@ -50,11 +50,17 @@ export const AuthenticateAuthentication: React.FC<AuthenticateAuthenticationProp
     try {
       await onSubmit(data.password);
     } catch (e) {
+      let errorCode = null;
+
       if (e instanceof ProblemError) {
-        setError(e.problem.type);
-      } else {
-        setError("unexpected_error");
+        errorCode = `authentication.errors.${e.problem.type}`;
       }
+
+      if (errorCode === null || !i18n.exists(errorCode)) {
+        errorCode = "authentication.errors.unexpected_error";
+      }
+
+      setError(errorCode);
     }
   };
 
@@ -95,7 +101,7 @@ export const AuthenticateAuthentication: React.FC<AuthenticateAuthenticationProp
               </div>
               {error && (
                 <div className="mt-3">
-                  <Alert message={t(`authentication.errors.${error}`)} />
+                  <Alert message={t(error)} />
                 </div>
               )}
             </fieldset>
