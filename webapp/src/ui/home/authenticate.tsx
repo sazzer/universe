@@ -4,8 +4,8 @@ import { FormProvider, useForm } from "react-hook-form";
 import React, { useState } from "react";
 
 import { Alert } from "../../components/alerts";
+import { AuthenticationFailedError } from "../../api/authentication";
 import { FormInput } from "../../components/form/input";
-import { ProblemError } from "../../api/problem";
 import { useTranslation } from "react-i18next";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -30,7 +30,7 @@ export const AuthenticateAuthentication: React.FC<AuthenticateAuthenticationProp
   onCancel,
   onSubmit,
 }) => {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const [error, setError] = useState<string | null>(null);
 
   const schema = z.object({
@@ -50,17 +50,11 @@ export const AuthenticateAuthentication: React.FC<AuthenticateAuthenticationProp
     try {
       await onSubmit(data.password);
     } catch (e) {
-      let errorCode = null;
-
-      if (e instanceof ProblemError) {
-        errorCode = `authentication.errors.${e.problem.type}`;
+      if (e instanceof AuthenticationFailedError) {
+        setError("authentication_failed");
+      } else {
+        setError("unexpected_error");
       }
-
-      if (errorCode === null || !i18n.exists(errorCode)) {
-        errorCode = "authentication.errors.unexpected_error";
-      }
-
-      setError(errorCode);
     }
   };
 
@@ -101,7 +95,7 @@ export const AuthenticateAuthentication: React.FC<AuthenticateAuthenticationProp
               </div>
               {error && (
                 <div className="mt-3">
-                  <Alert message={t(error)} />
+                  <Alert message={t(`authentication.errors.${error}`)} />
                 </div>
               )}
             </fieldset>

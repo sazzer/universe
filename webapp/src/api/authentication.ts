@@ -1,6 +1,5 @@
 import Client, { Problem } from "ketting";
 
-import { ProblemError } from "./problem";
 import { useApi } from ".";
 
 /**
@@ -116,10 +115,13 @@ function buildAuthenticateAction(
         console.log(authResponse);
       } catch (e) {
         if (e instanceof Problem) {
-          throw new ProblemError(e);
-        } else {
-          throw e;
+          const type = (e.body as Record<string, any>).type;
+
+          if (type === "tag:universe/2020:problems/authentication/failed") {
+            throw new AuthenticationFailedError();
+          }
         }
+        throw new UnexpectedError();
       }
     },
   };
@@ -152,12 +154,24 @@ function buildRegisterAction(
         });
         console.log(authResponse);
       } catch (e) {
-        if (e instanceof Problem) {
-          throw new ProblemError(e);
-        } else {
-          throw e;
-        }
+        throw new UnexpectedError();
       }
     },
   };
+}
+
+export class AuthenticationFailedError extends Error {
+  constructor() {
+    super();
+    this.name = "AuthenticationFailedError";
+    Object.setPrototypeOf(this, new.target.prototype);
+  }
+}
+
+export class UnexpectedError extends Error {
+  constructor() {
+    super();
+    this.name = "UnexpectedError";
+    Object.setPrototypeOf(this, new.target.prototype);
+  }
 }
