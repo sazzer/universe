@@ -61,9 +61,9 @@ pub async fn authenticate(
         .await
         .ok_or_else(|| Problem::from(AUTHENTICATION_FAILED))?;
 
-    if user.data.password != password.as_ref() {
-        Err(Problem::from(AUTHENTICATION_FAILED))
-    } else {
+    if user.data.password == password.as_ref() {
         todo!()
+    } else {
+        Err(Problem::from(AUTHENTICATION_FAILED))
     }
 }
