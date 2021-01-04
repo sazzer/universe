@@ -10,7 +10,7 @@ use actix_web::web::{Data, Json};
 use serde::Deserialize;
 use std::{str::FromStr, sync::Arc};
 
-/// Representation of the form data to consume
+/// Representation of the input data to consume
 #[derive(Deserialize)]
 pub struct Input {
     /// The username submitted
@@ -20,7 +20,7 @@ pub struct Input {
 /// HTTP handler to start authentication for a username.
 ///
 /// # Parameters
-/// - `form` - The form data containing the username
+/// - `input` - The input data containing the username
 /// - `users_service` - The users service, to see if the username exists
 ///
 /// # Returns
