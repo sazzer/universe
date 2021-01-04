@@ -1,9 +1,11 @@
 import * as z from "zod";
 
 import { FormProvider, useForm } from "react-hook-form";
+import React, { useState } from "react";
 
+import { Alert } from "../../components/alerts";
 import { FormInput } from "../../components/form/input";
-import React from "react";
+import { ProblemError } from "../../api/problem";
 import { useTranslation } from "react-i18next";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -29,6 +31,8 @@ export const AuthenticateAuthentication: React.FC<AuthenticateAuthenticationProp
   onSubmit,
 }) => {
   const { t } = useTranslation();
+  const [error, setError] = useState<string | null>(null);
+
   const schema = z.object({
     username: z.string().nonempty(),
     password: z.string().nonempty(),
@@ -41,8 +45,18 @@ export const AuthenticateAuthentication: React.FC<AuthenticateAuthenticationProp
     },
   });
 
-  const doSubmit = (data: AuthenticateAuthenticationForm) =>
-    onSubmit(data.password);
+  const doSubmit = async (data: AuthenticateAuthenticationForm) => {
+    setError(null);
+    try {
+      await onSubmit(data.password);
+    } catch (e) {
+      if (e instanceof ProblemError) {
+        setError(e.problem.type);
+      } else {
+        setError("unexpected_error");
+      }
+    }
+  };
 
   return (
     <div className="card">
@@ -79,6 +93,11 @@ export const AuthenticateAuthentication: React.FC<AuthenticateAuthenticationProp
                   {t("authentication.authenticate.cancel")}
                 </button>
               </div>
+              {error && (
+                <div className="mt-3">
+                  <Alert message={t(`authentication.errors.${error}`)} />
+                </div>
+              )}
             </fieldset>
           </form>
         </FormProvider>

@@ -50,6 +50,10 @@
           "mismatch": "Passwords do not match"
         }
       }
+    },
+    "errors": {
+      "tag:universe/2020:problems/authentication/failed": "Invalid username or password",
+      "unexpected_error": "An unexpected error occurred"
     }
   },
   "spinner": {

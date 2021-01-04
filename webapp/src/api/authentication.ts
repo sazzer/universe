@@ -1,4 +1,6 @@
-import Client from "ketting";
+import Client, { Problem } from "ketting";
+
+import { ProblemError } from "./problem";
 import { useApi } from ".";
 
 /**
@@ -103,13 +105,22 @@ function buildAuthenticateAction(
     username,
     authenticate: async (password) => {
       const authResource = client.go(url);
-      const authResponse = await authResource.post({
-        data: {
-          username,
-          password,
-        },
-      });
-      console.log(authResponse);
+
+      try {
+        const authResponse = await authResource.post({
+          data: {
+            username,
+            password,
+          },
+        });
+        console.log(authResponse);
+      } catch (e) {
+        if (e instanceof Problem) {
+          throw new ProblemError(e);
+        } else {
+          throw e;
+        }
+      }
     },
   };
 }
@@ -130,15 +141,23 @@ function buildRegisterAction(
     username,
     register: async (email, displayName, password) => {
       const authResource = client.go(url);
-      const authResponse = await authResource.post({
-        data: {
-          username,
-          email,
-          displayName,
-          password,
-        },
-      });
-      console.log(authResponse);
+      try {
+        const authResponse = await authResource.post({
+          data: {
+            username,
+            email,
+            displayName,
+            password,
+          },
+        });
+        console.log(authResponse);
+      } catch (e) {
+        if (e instanceof Problem) {
+          throw new ProblemError(e);
+        } else {
+          throw e;
+        }
+      }
     },
   };
 }
