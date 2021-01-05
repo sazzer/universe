@@ -1,6 +1,6 @@
-use crate::users::Username;
-
 use super::AuthenticatedUser;
+use crate::users::Username;
+use async_trait::async_trait;
 
 #[derive(Debug, thiserror::Error)]
 pub enum AuthenticationError {
@@ -12,6 +12,7 @@ pub enum AuthenticationError {
 }
 
 /// Use Case for authenticating a user.
+#[async_trait]
 pub trait AuthenticateUserUseCase {
     /// Authenticate the user with the provided details.
     ///
@@ -21,9 +22,9 @@ pub trait AuthenticateUserUseCase {
     ///
     /// - # Returns
     /// The authenticated user details.
-    fn authenticate_user(
+    async fn authenticate_user(
         &self,
-        username: Username,
-        password: String,
+        username: &Username,
+        password: &str,
     ) -> Result<AuthenticatedUser, AuthenticationError>;
 }

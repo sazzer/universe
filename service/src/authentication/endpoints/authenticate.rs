@@ -1,4 +1,5 @@
 use crate::{
+    authentication::AuthenticateUserUseCase,
     http::{
         hal::HalPayload,
         problem::{
@@ -6,7 +7,7 @@ use crate::{
         },
         Response,
     },
-    users::{GetUserUseCase, Username},
+    users::Username,
 };
 use actix_http::http::StatusCode;
 use actix_web::web::{Data, Json};
@@ -33,12 +34,12 @@ const AUTHENTICATION_FAILED: SimpleProblemType = SimpleProblemType {
 ///
 /// # Parameters
 /// - `input` - The input data containing the username and password
-/// - `users_service` - The users service, to see if the username exists
+/// - `authentication_service` - The authentication service
 ///
 /// # Returns
 pub async fn authenticate(
     input: Json<Input>,
-    users_service: Data<Arc<dyn GetUserUseCase>>,
+    authentication_service: Data<Arc<dyn AuthenticateUserUseCase>>,
 ) -> Result<Response<HalPayload<()>>, Problem> {
     let username = input
         .username
@@ -56,14 +57,13 @@ pub async fn authenticate(
             .build()
     })?;
 
-    let user = users_service
-        .get_user_by_username(&username)
+    authentication_service
+        .authenticate_user(&username, &password)
         .await
-        .ok_or_else(|| Problem::from(AUTHENTICATION_FAILED))?;
+        .map_err(|e| {
+            tracing::warn!(username = ?username, e = ?e, "Authentication failure");
+            Problem::from(AUTHENTICATION_FAILED)
+        })?;
 
-    if user.data.password == password.as_ref() {
-        todo!()
-    } else {
-        Err(Problem::from(AUTHENTICATION_FAILED))
-    }
+    todo!()
 }
