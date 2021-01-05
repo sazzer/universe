@@ -36,9 +36,9 @@ impl Service {
 
         let db = database::build(&config.database).await;
 
-        let _authorization = authorization::build();
+        let authorization = authorization::build();
         let users = users::build(db.clone());
-        let authentication = authentication::build();
+        let authentication = authentication::build(users.clone(), authorization.clone());
         let health = health::Builder::default().with_component("db", db).build();
 
         let home = home::Builder::default()

@@ -1,5 +1,6 @@
 use crate::{
-    authorization::service::AuthorizationService, authorization::service::SigningKey,
+    authorization::service::AuthorizationService,
+    authorization::{service::SigningKey, GenerateSecurityContextUseCase},
     server::Configurer,
 };
 use actix_web::web::ServiceConfig;
@@ -9,12 +10,12 @@ use std::sync::Arc;
 /// The Authorization Component.
 pub struct Component {
     /// The authorization service.
-    service: Arc<AuthorizationService>,
+    pub service: Arc<AuthorizationService>,
 }
 
 impl Configurer for Component {
     fn configure_server(&self, config: &mut ServiceConfig) {
-        config.data(self.service.clone());
+        config.data(self.service.clone() as Arc<dyn GenerateSecurityContextUseCase>);
     }
 }
 

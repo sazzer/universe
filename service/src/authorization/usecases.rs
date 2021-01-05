@@ -1,7 +1,7 @@
 use super::{AccessToken, Principal, SecurityContext};
 
 /// Use Case for generating an security context for a principal.
-pub trait GenerateSecurityContextUseCase {
+pub trait GenerateSecurityContextUseCase: Send + Sync {
     /// Generate the security context for the given principal.
     ///
     /// # Parameters

@@ -3,7 +3,7 @@ use async_trait::async_trait;
 
 /// Use Case to get a single user by their unique ID.
 #[async_trait]
-pub trait GetUserUseCase {
+pub trait GetUserUseCase: Send + Sync {
     /// Get the user that has the given User Id.
     ///
     /// # Parameters
