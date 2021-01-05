@@ -1,4 +1,5 @@
 use chrono::{DateTime, Utc};
+use serde::Serialize;
 use uuid::Uuid;
 
 /// The details of the principal that is being authenticated.
@@ -32,5 +33,5 @@ pub struct SecurityContext {
 }
 
 /// The details of an access token. That is a Security Context that has been serialized into a single string form.
-#[derive(Debug)]
+#[derive(Debug, Serialize)]
 pub struct AccessToken(pub String);

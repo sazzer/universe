@@ -14,6 +14,8 @@ use actix_web::web::{Data, Json};
 use serde::Deserialize;
 use std::{str::FromStr, sync::Arc};
 
+use super::model::AuthenticatedUserResponse;
+
 /// Representation of the input data to consume
 #[derive(Deserialize)]
 pub struct Input {
@@ -40,7 +42,7 @@ const AUTHENTICATION_FAILED: SimpleProblemType = SimpleProblemType {
 pub async fn authenticate(
     input: Json<Input>,
     authentication_service: Data<Arc<dyn AuthenticateUserUseCase>>,
-) -> Result<Response<HalPayload<()>>, Problem> {
+) -> Result<Response<HalPayload<AuthenticatedUserResponse>>, Problem> {
     let username = input
         .username
         .clone()
@@ -57,7 +59,7 @@ pub async fn authenticate(
             .build()
     })?;
 
-    authentication_service
+    let authenticated_user = authentication_service
         .authenticate_user(&username, &password)
         .await
         .map_err(|e| {
@@ -65,5 +67,5 @@ pub async fn authenticate(
             Problem::from(AUTHENTICATION_FAILED)
         })?;
 
-    todo!()
+    Ok(authenticated_user.into())
 }

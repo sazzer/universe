@@ -31,8 +31,8 @@ impl Contributor for Component {
 /// # Returns
 /// The authentication component to wire in to other components.
 pub fn build(
-    users_service: Arc<super::users::Component>,
-    authorization_service: Arc<super::authorization::Component>,
+    users_service: &Arc<super::users::Component>,
+    authorization_service: &Arc<super::authorization::Component>,
 ) -> Arc<Component> {
     let service = Arc::new(AuthenticationService::new(
         users_service.service.clone(),

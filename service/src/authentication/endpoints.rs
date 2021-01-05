@@ -4,8 +4,8 @@ use authenticate::authenticate;
 use std::collections::HashMap;
 
 mod authenticate;
+mod model;
 mod start;
-
 /// Configure the endpoints for authentication.
 ///
 /// # Parameters

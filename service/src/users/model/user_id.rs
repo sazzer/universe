@@ -5,7 +5,7 @@ use std::str::FromStr;
 use uuid::Uuid;
 
 /// The unique ID of a user.
-#[derive(Debug, PartialEq, FromSql)]
+#[derive(Debug, PartialEq, FromSql, Clone)]
 pub struct UserID(Uuid);
 
 impl Default for UserID {
