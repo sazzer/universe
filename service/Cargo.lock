@@ -3113,6 +3113,7 @@ dependencies = [
  "futures 0.3.8",
  "insta",
  "postgres-types",
+ "regex",
  "rust-embed",
  "serde 1.0.118",
  "serde_json",

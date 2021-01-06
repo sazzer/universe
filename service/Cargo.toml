@@ -38,6 +38,7 @@ insta = {version = "1.3.0", features=["redactions"] }
 string-error = "0.1.0"
 test-case = { git = "https://github.com/frondeus/test-case.git" }
 universe-testdatabase = { path = './crates/testdatabase'}
+regex = "1.4.2"
 
 [package.metadata.commands]
 docker = "docker build -t universe-service ."
