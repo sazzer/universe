@@ -33,15 +33,11 @@ pub enum CreateUserError {
     /// The email address is already registered
     #[error("The email address is already registered")]
     DuplicateEmail,
-
-    /// An unexpected error occured
-    #[error("An unexpected error occurred")]
-    UnexpectedError,
 }
 
 /// Use Case to create new users.
 #[async_trait]
-pub trait CreateUserUseCase {
+pub trait CreateUserUseCase: Send + Sync {
     /// Create a new user with the given data.
     ///
     /// # Parameters

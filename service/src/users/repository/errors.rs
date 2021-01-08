@@ -11,10 +11,6 @@ pub enum SaveUserError {
     /// The email address is already registered
     #[error("The email address is already registered")]
     DuplicateEmail,
-
-    /// An unexpected error occured
-    #[error("An unexpected error occurred")]
-    UnexpectedError,
 }
 
 impl From<tokio_postgres::Error> for SaveUserError {
@@ -35,13 +31,13 @@ impl From<tokio_postgres::Error> for SaveUserError {
                     "users_username_key" => Self::DuplicateUsername,
                     _ => {
                         tracing::warn!("Unexpected constraint violation error: {:?}", constraint);
-                        Self::UnexpectedError
+                        panic!()
                     }
                 })
-                .unwrap_or(Self::UnexpectedError)
+                .unwrap()
         } else {
             tracing::warn!("Unexpected database error: {:?}", e);
-            Self::UnexpectedError
+            panic!()
         }
     }
 }

@@ -1,22 +1,29 @@
-use crate::{authorization::GenerateSecurityContextUseCase, users::GetUserUseCase};
+use crate::{
+    authorization::GenerateSecurityContextUseCase,
+    users::{CreateUserUseCase, GetUserUseCase},
+};
 use std::sync::Arc;
 
 mod authenticate;
+mod register;
 
 /// Service implementation for authenticating users.
 pub struct AuthenticationService {
-    users_service: Arc<dyn GetUserUseCase>,
+    get_users_service: Arc<dyn GetUserUseCase>,
+    create_users_service: Arc<dyn CreateUserUseCase>,
     authorization_service: Arc<dyn GenerateSecurityContextUseCase>,
 }
 
 impl AuthenticationService {
     /// Create a new instance of the authentication service.
     pub fn new(
-        users_service: Arc<dyn GetUserUseCase>,
+        get_users_service: Arc<dyn GetUserUseCase>,
+        create_users_service: Arc<dyn CreateUserUseCase>,
         authorization_service: Arc<dyn GenerateSecurityContextUseCase>,
     ) -> Self {
         Self {
-            users_service,
+            get_users_service,
+            create_users_service,
             authorization_service,
         }
     }

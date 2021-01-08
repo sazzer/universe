@@ -13,7 +13,7 @@ impl AuthenticateUserUseCase for AuthenticationService {
         password: &str,
     ) -> Result<AuthenticatedUser, AuthenticationError> {
         let user = self
-            .users_service
+            .get_users_service
             .get_user_by_username(username)
             .await
             .ok_or(AuthenticationError::UnknownUser)?;

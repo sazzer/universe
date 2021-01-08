@@ -3,29 +3,22 @@ use actix_web::test::TestRequest;
 use assert2::check;
 use regex::Regex;
 use std::collections::HashMap;
-use test_case::test_case;
 use universe_testdatabase::seed::SeedUser;
 
 #[actix_rt::test]
-async fn correct_password() {
-    let test_user = SeedUser {
-        user_id: "d6fc9429-1ee8-49f5-a218-b3d42b74de21".parse().unwrap(),
-        username: "known".to_owned(),
-        ..SeedUser::default()
-    }
-    .with_password("correct");
-
+async fn success() {
     let sut = TestService::new().await;
-    sut.seed(&test_user).await;
 
     let mut form = HashMap::new();
-    form.insert("username", "known");
-    form.insert("password", "correct");
+    form.insert("username", "testuser");
+    form.insert("email", "testuser@example.com");
+    form.insert("displayName", "Test User");
+    form.insert("password", "password");
 
     let response = sut
         .inject(
             TestRequest::post()
-                .uri("/authentication/authenticate")
+                .uri("/authentication/register")
                 .set_json(&form)
                 .to_request(),
         )
@@ -49,13 +42,21 @@ async fn correct_password() {
 
         "<redactedExpires>"
       }),
+      "[\"_links\"].related.href" => insta::dynamic_redaction(|value, _| {
+        let value = value.as_str().unwrap();
+        let regex = Regex::new(r#"^/users/[a-z0-9-]{36}$"#).unwrap();
+        check!(regex.is_match(value));
+
+        "<redactedUserUrl>"
+      }),
+
     }, @r###"
     {
       "accessToken": "<redactedAccessToken>",
       "expires": "<redactedExpires>",
       "_links": {
         "related": {
-          "href": "/users/d6fc9429-1ee8-49f5-a218-b3d42b74de21"
+          "href": "<redactedUserUrl>"
         }
       }
     }
@@ -63,17 +64,15 @@ async fn correct_password() {
 }
 
 #[actix_rt::test]
-async fn unknown_user() {
+async fn empty_input() {
     let sut = TestService::new().await;
 
-    let mut form = HashMap::new();
-    form.insert("username", "unknown");
-    form.insert("password", "unknown");
+    let form = HashMap::<String, String>::new();
 
     let response = sut
         .inject(
             TestRequest::post()
-                .uri("/authentication/authenticate")
+                .uri("/authentication/register")
                 .set_json(&form)
                 .to_request(),
         )
@@ -81,71 +80,7 @@ async fn unknown_user() {
 
     check!(response.status == 422);
     check!(response.headers.get("content-type").unwrap() == "application/problem+json");
-    insta::assert_json_snapshot!(response.to_json().unwrap(), @r###"
-    {
-      "type": "tag:universe/2020:problems/authentication/failed",
-      "title": "Authentication failed",
-      "status": 422
-    }
-    "###);
-}
-
-#[actix_rt::test]
-async fn incorrect_password() {
-    let test_user = SeedUser {
-        username: "known".to_owned(),
-        ..SeedUser::default()
-    }
-    .with_password("password");
-
-    let sut = TestService::new().await;
-    sut.seed(&test_user).await;
-
-    let mut form = HashMap::new();
-    form.insert("username", "known");
-    form.insert("password", "incorrect");
-
-    let response = sut
-        .inject(
-            TestRequest::post()
-                .uri("/authentication/authenticate")
-                .set_json(&form)
-                .to_request(),
-        )
-        .await;
-
-    check!(response.status == 422);
-    check!(response.headers.get("content-type").unwrap() == "application/problem+json");
-    insta::assert_json_snapshot!(response.to_json().unwrap(), @r###"
-    {
-      "type": "tag:universe/2020:problems/authentication/failed",
-      "title": "Authentication failed",
-      "status": 422
-    }
-    "###);
-}
-
-#[test_case("" ; "Blank")]
-#[test_case(" " ; "Whitespace")]
-#[actix_rt::test]
-async fn invalid_username(input: &str) {
-    let sut = TestService::new().await;
-
-    let mut form = HashMap::new();
-    form.insert("username", input);
-    form.insert("password", "unknown");
-
-    let response = sut
-        .inject(
-            TestRequest::post()
-                .uri("/authentication/authenticate")
-                .set_json(&form)
-                .to_request(),
-        )
-        .await;
-
-    check!(response.status == 422);
-    check!(response.headers.get("content-type").unwrap() == "application/problem+json");
+    // TODO - This should include both username and password as missing.
     insta::assert_json_snapshot!(response.to_json().unwrap(), @r###"
     {
       "type": "tag:universe/2020:problems/validation_error",
@@ -163,71 +98,14 @@ async fn missing_username() {
     let sut = TestService::new().await;
 
     let mut form = HashMap::new();
-    form.insert("password", "unknown");
+    form.insert("email", "testuser@example.com");
+    form.insert("displayName", "Test User");
+    form.insert("password", "password");
 
     let response = sut
         .inject(
             TestRequest::post()
-                .uri("/authentication/authenticate")
-                .set_json(&form)
-                .to_request(),
-        )
-        .await;
-
-    check!(response.status == 422);
-    check!(response.headers.get("content-type").unwrap() == "application/problem+json");
-    insta::assert_json_snapshot!(response.to_json().unwrap(), @r###"
-    {
-      "type": "tag:universe/2020:problems/validation_error",
-      "title": "The incoming request was not valid",
-      "status": 422,
-      "fields": {
-        "username": "tag:universe/2020:validations/missing_field"
-      }
-    }
-    "###);
-}
-
-#[actix_rt::test]
-async fn missing_password() {
-    let sut = TestService::new().await;
-
-    let mut form = HashMap::new();
-    form.insert("username", "unknown");
-
-    let response = sut
-        .inject(
-            TestRequest::post()
-                .uri("/authentication/authenticate")
-                .set_json(&form)
-                .to_request(),
-        )
-        .await;
-
-    check!(response.status == 422);
-    check!(response.headers.get("content-type").unwrap() == "application/problem+json");
-    insta::assert_json_snapshot!(response.to_json().unwrap(), @r###"
-    {
-      "type": "tag:universe/2020:problems/validation_error",
-      "title": "The incoming request was not valid",
-      "status": 422,
-      "fields": {
-        "password": "tag:universe/2020:validations/missing_field"
-      }
-    }
-    "###);
-}
-
-#[actix_rt::test]
-async fn empty_input() {
-    let sut = TestService::new().await;
-
-    let form = HashMap::<String, String>::new();
-
-    let response = sut
-        .inject(
-            TestRequest::post()
-                .uri("/authentication/authenticate")
+                .uri("/authentication/register")
                 .set_json(&form)
                 .to_request(),
         )
@@ -244,6 +122,181 @@ async fn empty_input() {
       "fields": {
         "username": "tag:universe/2020:validations/missing_field"
       }
+    }
+    "###);
+}
+
+#[actix_rt::test]
+async fn missing_email() {
+    let sut = TestService::new().await;
+
+    let mut form = HashMap::new();
+    form.insert("username", "testuser");
+    form.insert("displayName", "Test User");
+    form.insert("password", "password");
+
+    let response = sut
+        .inject(
+            TestRequest::post()
+                .uri("/authentication/register")
+                .set_json(&form)
+                .to_request(),
+        )
+        .await;
+
+    check!(response.status == 422);
+    check!(response.headers.get("content-type").unwrap() == "application/problem+json");
+    // TODO - This should include both username and password as missing.
+    insta::assert_json_snapshot!(response.to_json().unwrap(), @r###"
+    {
+      "type": "tag:universe/2020:problems/validation_error",
+      "title": "The incoming request was not valid",
+      "status": 422,
+      "fields": {
+        "email": "tag:universe/2020:validations/missing_field"
+      }
+    }
+    "###);
+}
+
+#[actix_rt::test]
+async fn missing_display_name() {
+    let sut = TestService::new().await;
+
+    let mut form = HashMap::new();
+    form.insert("username", "testuser");
+    form.insert("email", "testuser@example.com");
+    form.insert("password", "password");
+
+    let response = sut
+        .inject(
+            TestRequest::post()
+                .uri("/authentication/register")
+                .set_json(&form)
+                .to_request(),
+        )
+        .await;
+
+    check!(response.status == 422);
+    check!(response.headers.get("content-type").unwrap() == "application/problem+json");
+    // TODO - This should include both username and password as missing.
+    insta::assert_json_snapshot!(response.to_json().unwrap(), @r###"
+    {
+      "type": "tag:universe/2020:problems/validation_error",
+      "title": "The incoming request was not valid",
+      "status": 422,
+      "fields": {
+        "displayName": "tag:universe/2020:validations/missing_field"
+      }
+    }
+    "###);
+}
+
+#[actix_rt::test]
+async fn missing_password() {
+    let sut = TestService::new().await;
+
+    let mut form = HashMap::new();
+    form.insert("username", "testuser");
+    form.insert("email", "testuser@example.com");
+    form.insert("displayName", "Test User");
+
+    let response = sut
+        .inject(
+            TestRequest::post()
+                .uri("/authentication/register")
+                .set_json(&form)
+                .to_request(),
+        )
+        .await;
+
+    check!(response.status == 422);
+    check!(response.headers.get("content-type").unwrap() == "application/problem+json");
+    // TODO - This should include both username and password as missing.
+    insta::assert_json_snapshot!(response.to_json().unwrap(), @r###"
+    {
+      "type": "tag:universe/2020:problems/validation_error",
+      "title": "The incoming request was not valid",
+      "status": 422,
+      "fields": {
+        "password": "tag:universe/2020:validations/missing_field"
+      }
+    }
+    "###);
+}
+
+#[actix_rt::test]
+async fn duplicate_username() {
+    let test_user = SeedUser {
+        username: "testuser".to_owned(),
+        ..SeedUser::default()
+    }
+    .with_password("correct");
+
+    let sut = TestService::new().await;
+    sut.seed(&test_user).await;
+
+    let mut form = HashMap::new();
+    form.insert("username", "testuser");
+    form.insert("email", "testuser@example.com");
+    form.insert("displayName", "Test User");
+    form.insert("password", "password");
+
+    let response = sut
+        .inject(
+            TestRequest::post()
+                .uri("/authentication/register")
+                .set_json(&form)
+                .to_request(),
+        )
+        .await;
+
+    check!(response.status == 422);
+    check!(response.headers.get("content-type").unwrap() == "application/problem+json");
+    // TODO - This should include both username and password as missing.
+    insta::assert_json_snapshot!(response.to_json().unwrap(), @r###"
+    {
+      "type": "tag:universe/2020:problems/authentication/duplicate_username",
+      "title": "Duplicate Username",
+      "status": 422
+    }
+    "###);
+}
+
+#[actix_rt::test]
+async fn duplicate_email() {
+    let test_user = SeedUser {
+        email: "testuser@example.com".to_owned(),
+        ..SeedUser::default()
+    }
+    .with_password("correct");
+
+    let sut = TestService::new().await;
+    sut.seed(&test_user).await;
+
+    let mut form = HashMap::new();
+    form.insert("username", "testuser");
+    form.insert("email", "testuser@example.com");
+    form.insert("displayName", "Test User");
+    form.insert("password", "password");
+
+    let response = sut
+        .inject(
+            TestRequest::post()
+                .uri("/authentication/register")
+                .set_json(&form)
+                .to_request(),
+        )
+        .await;
+
+    check!(response.status == 422);
+    check!(response.headers.get("content-type").unwrap() == "application/problem+json");
+    // TODO - This should include both username and password as missing.
+    insta::assert_json_snapshot!(response.to_json().unwrap(), @r###"
+    {
+      "type": "tag:universe/2020:problems/authentication/duplicate_email",
+      "title": "Duplicate email address",
+      "status": 422
     }
     "###);
 }

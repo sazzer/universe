@@ -1,6 +1,8 @@
 use super::home::Contributor;
 use crate::{
-    authentication::{endpoints, service::AuthenticationService, AuthenticateUserUseCase},
+    authentication::{
+        endpoints, service::AuthenticationService, AuthenticateUserUseCase, RegisterUserUseCase,
+    },
     server::Configurer,
 };
 use actix_web::web::ServiceConfig;
@@ -15,6 +17,7 @@ pub struct Component {
 impl Configurer for Component {
     fn configure_server(&self, config: &mut ServiceConfig) {
         config.data(self.service.clone() as Arc<dyn AuthenticateUserUseCase>);
+        config.data(self.service.clone() as Arc<dyn RegisterUserUseCase>);
 
         endpoints::configure(config);
     }
@@ -35,6 +38,7 @@ pub fn build(
     authorization_service: &Arc<super::authorization::Component>,
 ) -> Arc<Component> {
     let service = Arc::new(AuthenticationService::new(
+        users_service.service.clone(),
         users_service.service.clone(),
         authorization_service.service.clone(),
     ));

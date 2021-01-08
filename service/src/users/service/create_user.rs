@@ -13,7 +13,6 @@ impl CreateUserUseCase for UsersService {
             .map_err(|e| match e {
                 SaveUserError::DuplicateEmail => CreateUserError::DuplicateEmail,
                 SaveUserError::DuplicateUsername => CreateUserError::DuplicateUsername,
-                SaveUserError::UnexpectedError => CreateUserError::UnexpectedError,
             })
     }
 }

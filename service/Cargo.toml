@@ -42,3 +42,4 @@ regex = "1.4.2"
 
 [package.metadata.commands]
 docker = "docker build -t universe-service ."
+psql = "PGPASSWORD=universe psql --host localhost --port 45432 --username universe"
