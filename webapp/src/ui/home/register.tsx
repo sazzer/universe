@@ -1,9 +1,14 @@
 import * as z from "zod";
 
+import {
+  DuplicateEmailError,
+  DuplicateUsernameError,
+} from "../../api/authentication";
 import { FormProvider, useForm } from "react-hook-form";
+import React, { useState } from "react";
 
+import { Alert } from "../../components/alerts";
 import { FormInput } from "../../components/form/input";
-import React from "react";
 import { useTranslation } from "react-i18next";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -36,6 +41,8 @@ export const RegisterAuthentication: React.FC<RegisterAuthenticationProps> = ({
   onSubmit,
 }) => {
   const { t } = useTranslation();
+  const [error, setError] = useState<string | null>(null);
+
   const schema = z
     .object({
       username: z.string().nonempty(),
@@ -56,8 +63,21 @@ export const RegisterAuthentication: React.FC<RegisterAuthenticationProps> = ({
     },
   });
 
-  const doSubmit = (data: RegisterAuthenticationForm) =>
-    onSubmit(data.email, data.displayName, data.password);
+  const doSubmit = async (data: RegisterAuthenticationForm) => {
+    setError(null);
+
+    try {
+      await onSubmit(data.email, data.displayName, data.password);
+    } catch (e) {
+      if (e instanceof DuplicateUsernameError) {
+        setError("duplicate_username");
+      } else if (e instanceof DuplicateEmailError) {
+        setError("duplicate_email");
+      } else {
+        setError("unexpected_error");
+      }
+    }
+  };
 
   return (
     <div className="card">
@@ -121,6 +141,11 @@ export const RegisterAuthentication: React.FC<RegisterAuthenticationProps> = ({
                   {t("authentication.register.cancel")}
                 </button>
               </div>
+              {error && (
+                <div className="mt-3">
+                  <Alert message={t(`authentication.errors.${error}`)} />
+                </div>
+              )}
             </fieldset>
           </form>
         </FormProvider>

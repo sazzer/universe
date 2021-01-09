@@ -121,7 +121,7 @@ function buildAuthenticateAction(
             throw new AuthenticationFailedError();
           }
         }
-        throw new UnexpectedError();
+        throw new Error("An unexpected error occurred");
       }
     },
   };
@@ -154,7 +154,21 @@ function buildRegisterAction(
         });
         console.log(authResponse);
       } catch (e) {
-        throw new UnexpectedError();
+        if (e instanceof Problem) {
+          const type = (e.body as Record<string, any>).type;
+
+          if (
+            type ===
+            "tag:universe/2020:problems/authentication/duplicate_username"
+          ) {
+            throw new DuplicateUsernameError();
+          } else if (
+            type === "tag:universe/2020:problems/authentication/duplicate_email"
+          ) {
+            throw new DuplicateEmailError();
+          }
+        }
+        throw new Error("An unexpected error occurred");
       }
     },
   };
@@ -168,10 +182,18 @@ export class AuthenticationFailedError extends Error {
   }
 }
 
-export class UnexpectedError extends Error {
+export class DuplicateUsernameError extends Error {
   constructor() {
     super();
-    this.name = "UnexpectedError";
+    this.name = "DuplicateUsernameError";
+    Object.setPrototypeOf(this, new.target.prototype);
+  }
+}
+
+export class DuplicateEmailError extends Error {
+  constructor() {
+    super();
+    this.name = "DuplicateEmailError";
     Object.setPrototypeOf(this, new.target.prototype);
   }
 }

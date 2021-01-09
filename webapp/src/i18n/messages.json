@@ -53,6 +53,8 @@
     },
     "errors": {
       "authentication_failed": "Invalid username or password",
+      "duplicate_username": "That username is already registered",
+      "duplicate_email": "That email address is already registered",
       "unexpected_error": "An unexpected error occurred"
     }
   },
