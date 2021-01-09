@@ -13,6 +13,7 @@ pub enum SaveUserError {
     DuplicateEmail,
 }
 
+#[allow(clippy::fallible_impl_from)]
 impl From<tokio_postgres::Error> for SaveUserError {
     /// Convert a database error into a `SaveUserError`.
     ///
